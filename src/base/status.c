@@ -14,6 +14,9 @@ const char *mtvk_status_name(mtvk_status status)
     case MTVK_INVALID_CONTEXT: return "invalid context";
     case MTVK_NOT_FOUND: return "not found";
     case MTVK_BUSY: return "busy";
+    case MTVK_OUT_OF_MEMORY: return "out of memory";
+    case MTVK_INCOMPATIBLE_VERSION: return "incompatible version";
+    case MTVK_CLEANUP_REQUIRED: return "cleanup required";
     default: return "unknown status";
     }
 }

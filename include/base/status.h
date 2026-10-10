@@ -17,7 +17,10 @@ typedef enum mtvk_status {
     MTVK_NOT_SUPPORTED,
     MTVK_INVALID_CONTEXT,
     MTVK_NOT_FOUND,
-    MTVK_BUSY
+    MTVK_BUSY,
+    MTVK_OUT_OF_MEMORY,
+    MTVK_INCOMPATIBLE_VERSION,
+    MTVK_CLEANUP_REQUIRED
 } mtvk_status;
 
 const char *mtvk_status_name(mtvk_status status);

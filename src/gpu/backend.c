@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 
-#include "gpu/init.h"
+#include "gpu/backend.h"
 #include <string.h>
 
 static const mtvk_gpu_backend_ops *g_backends[MTVK_GPU_BACKENDS_MAX];

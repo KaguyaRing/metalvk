@@ -34,7 +34,7 @@ def main() -> int:
     kext = build / "MetalVK.kext/Contents"
     for bundle in (app, kext):
         (bundle / "MacOS").mkdir(parents=True, exist_ok=True)
-    for source, target in (("app/Info.plist", app), ("kexts/MetalVK/Info.plist", kext)):
+    for source, target in (("app/Info.plist", app), ("backends/nvidia/kext/Info.plist", kext)):
         content = (root / source).read_bytes()
         plistlib.loads(content)
         (target / "Info.plist").write_bytes(content)
@@ -62,7 +62,7 @@ def main() -> int:
     # upstream SDK headers are system headers, project warnings remain errors.
     run("xcrun", "clang++", "-std=c++14", "-mkernel", "-fapple-kext",
         "-fno-exceptions", "-fno-rtti", "-fno-use-cxa-atexit", "-Wno-deprecated-declarations",
-        "-Wno-unused-parameter", *kernel, "-c", str(root / "kexts/MetalVK/Driver.cpp"),
+        "-Wno-unused-parameter", *kernel, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
         "-o", str(build / "Driver.o"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
         str(build / "Driver.o"), str(build / "diagnostics-kernel.o"),

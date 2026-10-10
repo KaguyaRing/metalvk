@@ -4,5 +4,5 @@
 #ifndef MTVK_GPU_INIT_H
 #define MTVK_GPU_INIT_H
 #include "platform.h"
-#include "gpu/backend.h"
+#include "gpu/runtime.h"
 #endif

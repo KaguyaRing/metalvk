@@ -1,7 +1,5 @@
-name: macOS native build
+name: Optional platform reference build
 on:
-  push:
-  pull_request:
   workflow_dispatch:
 permissions:
   contents: read
@@ -18,6 +16,17 @@ jobs:
           ref: 3f750085caa17ec3a7880f11c11bf4f48cd6a164
           path: target/MacKernelSDK
           persist-credentials: false
+      - name: Get official Vulkan headers
+        uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+        with:
+          repository: KhronosGroup/Vulkan-Headers
+          ref: 6802bb4733b63ed5efd3adb308a6c885ef180ea1
+          path: target/Vulkan-Headers
+          persist-credentials: false
+      - name: Vulkan API compile checks (no GPU execution)
+        run: |
+          clang -std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan -isystem target/Vulkan-Headers/include -fsyntax-only validation/vulkan/context.c validation/vulkan/compute.c
+          clang++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude -isystem target/Vulkan-Headers/include -x c++ -fsyntax-only validation/vulkan/context.h
       - name: Host tests
         run: |
           make test CONFIG=Debug

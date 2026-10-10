@@ -5,5 +5,4 @@
 #define METALVK_H
 #include "base/init.h"
 #include "gpu/init.h"
-#include "ipc/init.h"
 #endif

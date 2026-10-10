@@ -1,69 +1,75 @@
 # metalvk
 
-[English](#english) | 中文
+**厂商中立的 GPU 通用层**，提供版本化公共接口、后端注册、设备与能力枚举、调度转发及生命周期管理。
 
-一个**厂商无关的通用 GPU 库**：上层供 Metal→Vulkan 前端使用，下层由厂商后端实现（NVIDIA 为第一个后端）。目标是让同一套通用机制复用于不同 GPU，而把厂商细节隔离在后端。
+本次默认产物是 `libmetalvk.a`。它只编译 `src/base/status.c` 与 `src/gpu/runtime.c`，只使用标准 C11 头文件；不包含任何厂商 SDK、硬件驱动、GPU 寄存器操作、私有 ioctl、Vulkan 实现或着色器编译器。
 
-## 目标与原则
+## 职责与接入
 
-- **机制与厂商分离**：公共头不含任何厂商类型、寄存器或私有 ABI。
-- **可独立测试**：核心为纯 C11，无平台依赖，用 mock 后端在主机上测试。
-- **明确所有权**：句柄式、有所有者；不暴露裸内核指针或 GPU 地址。
-- **错误向上传播**：统一 `mtvk_status`，缺能力明确返回不支持，不假成功。
-- **后端可替换**：后端通过 OPS 表注册。
-
-## 目录
-
-```
-include/
-  platform.h           平台与语言宏
-  metalvk.h     顶层聚合头
-  base/                status / limits / span
-  gpu/                 backend OPS 与设备接口
-src/                   与 include/ 镜像
-tests/                 主机测试（含 mock 后端）
-Makefile               Debug / Release / Alpha
+```text
+上层 API / Metal→Vulkan 前端（独立模块）
+                    │ 通用接口
+                    ▼
+             metalvk 通用层
+      版本检查 / 注册 / 能力 / 生命周期 / 转发
+          │             │             │
+       后端 A         后端 B         后端 C
+       独立 kext      独立 kext      独立 kext
+          │             │             │
+             对应 GPU 的具体操作
 ```
 
-## 构建与测试
+后端通过 `mtvk_gpu_backend_descriptor` 注册，通用层复制描述表，并只按统一能力与操作合同转发。新增或替换兼容后端无需修改通用层。库不按厂商名称、设备 ID 或任何厂商特例选择执行路径。
+
+核心不会创建实际 GPU 命令或资源；它转发后端所属的队列、命令与完成 token，由后端验证 token 并执行 GPU 操作。**这些 token 不是 Vulkan API**。Metal→Vulkan 的标准语义翻译属于后续独立前端，本层不冒充 Vulkan 实现。
+
+## 公共接口
+
+公共入口：`include/metalvk.h`，版本化合同：`include/gpu/runtime.h`。
+
+- `mtvk_gpu_runtime_create` / `destroy`：由嵌入平台提供分配器与互斥锁，核心不绑定操作系统 SDK。
+- `mtvk_gpu_backend_register` / `unregister`：版本协商、复制注册表、安全替换；仍有设备或回调时返回 `busy`。
+- `mtvk_gpu_device_enumerate` / `open` / `describe` / `close`：能力快照与设备所有权管理。
+- `mtvk_gpu_dispatch`：统一 `submit` / `wait` / `cancel` 转发，按能力拒绝不支持操作。
+
+ABI major 不兼容即拒绝；minor 只允许追加字段并声明最低宿主版本。传给回调、返回调用者的结构始终标明实际持有的已知字段长度。metadata 是快照，不是硬件在线保证。
+
+不同设备可并发转发，同一设备的重叠调用返回 `busy`。后端回调不在核心互斥锁内调用；回调／设备引用存活期间不能注销后端。token 不重复使用，旧 token 与其他 runtime 的 token 不会命中新对象。
+
+## 编译与验收
+
+需要 C11 编译器、ar 和 make；**不需要厂商 SDK、Vulkan SDK 或内核 SDK**。
 
 ```sh
+make CONFIG=Release
 make test CONFIG=Debug
 make test CONFIG=Release
-make test CONFIG=Alpha        # UBSan
+make test CONFIG=Alpha
+make test-plugin CONFIG=Release
+python3 tools/check_core_boundary.py --archive target/Release/libmetalvk.a
 ```
 
-Windows 使用 `mingw32-make`、`AR=llvm-ar`。
+Windows 使用 `mingw32-make` 和 `AR=llvm-ar`。
 
-## 后端接口
+测试覆盖版本不兼容、可兼容的新 minor 前缀、能力检查、多个后端、错误传播、OOM、关闭失败回滚、并发调用与卸载竞态、坏后端清理、过期／跨 runtime token，以及独立编译的两个二进制插件在不重建核心时的加载、替换与卸载。插件只是接口测试夹具，不冒充 GPU 驱动。
 
-后端实现 `mtvk_gpu_backend_ops`（`enumerate` / `open` / `close`），通过 `mtvk_gpu_register_backend` 注册；上层用 `mtvk_gpu_enumerate` / `mtvk_gpu_open` / `mtvk_gpu_close` 访问，无厂商类型跨界。
+默认 CI `.github/workflows/core.yml` 仅构建通用层：Linux/macOS、内存与线程检查、C++ 公共头、freestanding 编译检查、源依赖边界与静态库成员检查。上传产物只包含通用库及公共头。
 
-## 状态
+## 独立组件
 
-G0 骨架：通用后端 API + 注册/分发 + mock 后端 + 主机测试。显示、着色器、命令、同步等模块与 NVIDIA 后端待后续实现。
+- `backends/`：独立厂商 kext 原型，不进入通用库默认构建。
+- `app/`、`include/ipc`、`src/ipc`：旧诊断 App／协议，协议有独立 `libmetalvk-diagnostics.a`，不进入通用库。
+- `validation/vulkan/`：实际 Vulkan ICD 的验证工具，不是通用层或生产后端。
+- G0 的旧全局 API 留在 `include/gpu/backend.h`、`src/gpu/backend.c`；只通过 `make test-legacy` 保留历史测试，不导出到默认稳定公共头／库。
 
-新增 macOS 开发组件：
+平台参考构建 `.github/workflows/reference-macos.yml` 仅手动执行。用法见 [独立组件](docs/reference-components.md)。
 
-- `MetalVK.kext`：限定匹配 `10DE:28E0`，只读取 PCI 配置和资源长度，提供版本化诊断客户端；不写 MMIO、不启动 GPU、不控制显示。
-- `MetalVK.app`：AppKit 诊断界面、后台连接、错误展示和报告导出；可用 `--diagnose` 运行 CLI（0：已连接，1：错误，2：未找到服务）。
-- `include/ipc` / `src/ipc`：显式小端固定长度协议，不依赖 C 结构体布局；导出资源长度而非内核/物理地址。
-- `.github/workflows/macos.yml`：原生构建、主机测试、ad-hoc 签名检查、无设备诊断路径及开发 DMG 产物。
+## kext 边界与实际支持
 
-构建（macOS，Xcode 命令行工具及 Python 3）：
+在内核中，共享的平台 framework/kext 应持有同一个 runtime 并导出通用 C ABI；各厂商 kext 在加载时注册自己的后端，在注销成功后才能卸载。不能让每个厂商 kext 各自建立孤立注册表，也不能把用户态静态库地址直接传到内核。用户态／内核之间的访问需独立平台适配与版本化 IPC。
 
-```sh
-python3 tools/build_macos.py --kernel-sdk /path/to/MacKernelSDK
-target/macos/MetalVK.app/Contents/MacOS/MetalVK --diagnose
-```
-
-CI 固定 MacKernelSDK 提交 `3f750085caa17ec3a7880f11c11bf4f48cd6a164`。
-其头文件按 system headers 处理；原生 kext 目标有意使用 IOKit PCI 接口，单独关闭该已弃用 API 的告警，项目其余告警视为错误。
-
-产物是 **diagnostic-only 开发版本**：ad-hoc 签名不是生产签名或安装批准。App 携带 kext，但尚未提供特权安装器、RM/GSP、Metal 用户态插件、GPU 执行或显示接管；不可当作已经可用的显卡驱动。CI 不加载内核扩展，也不证明 NVIDIA 硬件可用。正式可用后才发布 `0.1.0`。
-
----
+接口对所有厂商一致，但“所有现有 GPU 已实机可用”**尚未验收**：仍需各厂商对应 kext、共享平台接入和逐组合实机测试。当前完成的是通用层及其接入合同，没有完整厂商执行后端，也没有发布可用驱动 `0.1.0`。
 
 ## English
 
-`metalvk` is a vendor-neutral generic GPU library core. A Metal→Vulkan front end uses it; vendor backends (NVIDIA first) implement it through an OPS table. Public headers carry no vendor types. The C11 core is host-testable with a mock backend. Build with `make test CONFIG=Debug|Release|Alpha`.
+`metalvk` is an SDK-free, vendor-neutral C11 GPU orchestration layer. Its versioned ABI manages backend registration, capability snapshots, device lifetimes and dispatch forwarding. Hardware operations belong to independently registered backends. The default library contains no vendor, Vulkan, kernel or application implementation. Actual hardware support requires corresponding backends and target-platform validation.

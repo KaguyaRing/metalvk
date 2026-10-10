@@ -1,0 +1,48 @@
+name: Vendor-neutral core
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  core:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: SDK-free core and contract tests
+        run: |
+          python3 tools/check_core_boundary.py
+          make test CONFIG=Debug
+          make test CONFIG=Release
+          make test CONFIG=Alpha
+          make test-legacy CONFIG=Debug
+          make test-plugin CONFIG=Release
+          python3 tools/check_core_boundary.py --archive target/Release/libmetalvk.a
+          clang++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude -x c++ -fsyntax-only include/metalvk.h
+          clang -std=c11 -ffreestanding -Wall -Wextra -Wpedantic -Werror -Iinclude -fsyntax-only src/gpu/runtime.c src/base/status.c
+      - name: Host memory and thread safety
+        if: runner.os == 'Linux'
+        run: |
+          make test CONFIG=Alpha BUILD=target/Sanitize CFLAGS='-std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -O1 -g -fsanitize=address,undefined' LDFLAGS='-fsanitize=address,undefined'
+          make test CONFIG=Debug BUILD=target/ThreadSanitize CFLAGS='-std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -O1 -g -fsanitize=thread' LDFLAGS='-fsanitize=thread'
+      - name: Static analysis
+        run: clang --analyze -std=c11 -Iinclude -Xanalyzer -analyzer-output=text src/gpu/runtime.c src/base/status.c
+      - name: Upload generic library and public headers
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4
+        with:
+          name: metalvk-core-${{ runner.os }}
+          path: |
+            target/Release/libmetalvk.a
+            include/base/
+            include/gpu/runtime.h
+            include/gpu/init.h
+            include/platform.h
+            include/metalvk.h
+            LICENSE
+          if-no-files-found: error
