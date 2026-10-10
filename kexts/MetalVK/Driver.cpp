@@ -18,6 +18,11 @@ constexpr UInt16 Device = 0x28e0;
 constexpr UInt8 VendorRegister = 0x00, DeviceRegister = 0x02;
 constexpr UInt8 ClassRegister = 0x08, SubsystemVendorRegister = 0x2c;
 constexpr UInt8 SubsystemDeviceRegister = 0x2e, BarRegister = 0x10, BarStride = 4;
+// Stable IOKit property names from XNU's IOKitKeys.h. MacKernelSDK's
+// compatibility header snapshot does not declare these modern macros.
+constexpr const char *DefaultLocking = "IOUserClientDefaultLocking";
+constexpr const char *SetPropertiesLocking = "IOUserClientDefaultLockingSetProperties";
+constexpr const char *SingleThreadMethods = "IOUserClientDefaultLockingSingleThreadExternalMethod";
 }
 OSDefineMetaClassAndStructors(MetalVKDevice, IOService)
 OSDefineMetaClassAndStructors(MetalVKDiagnosticClient, IOUserClient)
@@ -108,10 +113,9 @@ bool MetalVKDiagnosticClient::initWithTask(task_t task, void *security, UInt32 t
     if (!task || type != MTVK_DIAG_CONNECT_TYPE ||
         clientHasPrivilege(task, kIOClientPrivilegeLocalUser) != kIOReturnSuccess ||
         !IOUserClient::initWithTask(task, security, type)) return false;
-    setProperty(kIOUserClientDefaultLockingKey, kOSBooleanTrue);
-    setProperty(kIOUserClientDefaultLockingSetPropertiesKey, kOSBooleanTrue);
-    setProperty(kIOUserClientDefaultLockingSingleThreadExternalMethodKey, kOSBooleanTrue);
-    return true;
+    return setProperty(DefaultLocking, kOSBooleanTrue) &&
+        setProperty(SetPropertiesLocking, kOSBooleanTrue) &&
+        setProperty(SingleThreadMethods, kOSBooleanTrue);
 }
 bool MetalVKDiagnosticClient::start(IOService *provider) {
     auto *device = OSDynamicCast(MetalVKDevice, provider);
