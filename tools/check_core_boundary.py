@@ -14,6 +14,8 @@ CORE_HEADERS = ("include/platform.h", "include/metalvk.h", "include/gpu/init.h",
                 "include/gpu/runtime.h", "include/base/init.h", "include/base/limits.h",
                 "include/base/span.h", "include/base/status.h")
 STANDARD_HEADERS = {"stdbool.h", "stddef.h", "stdint.h", "stdatomic.h", "string.h"}
+# BSD/Darwin ar exposes its reserved symbol-index member in `ar t` output.
+ARCHIVE_INDEX_MEMBERS = {"__.SYMDEF", "__.SYMDEF SORTED", "__.SYMDEF_64", "__.SYMDEF_64 SORTED"}
 
 
 def main() -> int:
@@ -43,7 +45,8 @@ def main() -> int:
         if not archive:
             raise ValueError("llvm-ar/ar is needed to inspect archive membership")
         members = subprocess.check_output([archive, "t", str(args.archive)], text=True).splitlines()
-        if sorted(pathlib.PurePosixPath(m).name for m in members) != ["runtime.o", "status.o"]:
+        objects = [m for m in members if m not in ARCHIVE_INDEX_MEMBERS]
+        if sorted(pathlib.PurePosixPath(m).name for m in objects) != ["runtime.o", "status.o"]:
             raise ValueError(f"Unexpected archive members: {members}")
     print("Generic core boundary verified: standard C headers, isolated sources/archive")
     return 0
