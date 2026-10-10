@@ -20,6 +20,9 @@ public:
 class Connection final {
     io_connect_t value_ = IO_OBJECT_NULL;
 public:
+    Connection() = default;
+    Connection(const Connection &) = delete;
+    Connection &operator=(const Connection &) = delete;
     kern_return_t open(io_service_t service) {
         return IOServiceOpen(service, mach_task_self(), MTVK_DIAG_CONNECT_TYPE, &value_);
     }
@@ -51,7 +54,7 @@ MetalVKReport *MetalVKReadDiagnostics(void) {
         report.failed = YES;
     } else {
         for (NSUInteger count = 0; ; ++count) {
-            Object service(IOIteratorNext(iterator));
+            Object service(iterator ? IOIteratorNext(iterator) : IO_OBJECT_NULL);
             if (!service.get()) break;
             if (count >= MaxDevices) {
                 [text appendString:@"Device enumeration limit exceeded; refresh after checking IOKit state.\n"];
@@ -98,7 +101,7 @@ MetalVKReport *MetalVKReadDiagnostics(void) {
             }
             [text appendString:@"\n"];
         }
-        if (!IOIteratorIsValid(iterator)) {
+        if (iterator && !IOIteratorIsValid(iterator)) {
             report.failed = YES; [text appendString:@"IOKit registry changed while enumerating; refresh.\n"];
         }
         if (!report.devices && !report.failed)
