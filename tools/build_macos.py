@@ -50,7 +50,10 @@ def main() -> int:
         str(build / "diagnostics-user.o"), str(build / "status-user.o"),
         "-framework", "AppKit", "-framework", "IOKit", "-framework", "UniformTypeIdentifiers",
         "-o", str(app / "MacOS/MetalVK"))
-    kernel = ["-arch", "x86_64", "-O2", "-ffreestanding", "-fno-stack-protector",
+    # Older code-generation baseline avoids modern libSystem-only memory
+    # helpers in a freestanding kext. This does not claim old-OS support.
+    kernel = ["-arch", "x86_64", "-mmacosx-version-min=10.8", "-O2",
+              "-ffreestanding", "-fno-builtin", "-fno-stack-protector",
               "-mno-red-zone", "-mno-sse", "-mno-sse2", "-mno-mmx",
               "-DKERNEL", "-DKERNEL_PRIVATE", *warnings, *includes,
               "-isystem", str(sdk / "Headers")]
@@ -60,12 +63,20 @@ def main() -> int:
     # IOKit graphics-driver route. Suppression is limited to this native target;
     # upstream SDK headers are system headers, project warnings remain errors.
     run("xcrun", "clang++", "-std=c++14", "-mkernel", "-fapple-kext",
-        "-fno-exceptions", "-fno-rtti", "-Wno-deprecated-declarations",
+        "-fno-exceptions", "-fno-rtti", "-fno-use-cxa-atexit", "-Wno-deprecated-declarations",
         "-Wno-unused-parameter", *kernel, "-c", str(root / "kexts/MetalVK/Driver.cpp"),
         "-o", str(build / "Driver.o"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
         str(build / "Driver.o"), str(build / "diagnostics-kernel.o"),
         "-o", str(kext / "MacOS/MetalVK"))
+    imports = subprocess.check_output(
+        ["xcrun", "nm", "-u", str(kext / "MacOS/MetalVK")], text=True)
+    forbidden = ("___bzero", "___cxa", "___dso_handle", "___stack_chk", "__Unwind",
+                 "_malloc", "_calloc", "_realloc", "_free", "_pthread", "_objc")
+    for line in imports.splitlines():
+        symbol = line.split()[-1] if line.split() else ""
+        if symbol.startswith(forbidden):
+            raise ValueError(f"Kernel binary imports a user/runtime symbol: {symbol}")
     for bundle in (kext.parent, app.parent):
         run("codesign", "--force", "--sign", "-", str(bundle))
         run("codesign", "--verify", "--strict", "--verbose=2", str(bundle))
@@ -90,6 +101,6 @@ def main() -> int:
 if __name__ == "__main__":
     try:
         raise SystemExit(main())
-    except (OSError, subprocess.CalledProcessError, plistlib.InvalidFileException) as error:
+    except (OSError, ValueError, subprocess.CalledProcessError, plistlib.InvalidFileException) as error:
         print(f"Build failed: {error}", file=sys.stderr)
         raise SystemExit(1)
