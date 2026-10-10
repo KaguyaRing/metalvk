@@ -50,9 +50,7 @@ def main() -> int:
         str(build / "diagnostics-user.o"), str(build / "status-user.o"),
         "-framework", "AppKit", "-framework", "IOKit", "-framework", "UniformTypeIdentifiers",
         "-o", str(app / "MacOS/MetalVK"))
-    # Older code-generation baseline avoids modern libSystem-only memory
-    # helpers in a freestanding kext. This does not claim old-OS support.
-    kernel = ["-arch", "x86_64", "-mmacosx-version-min=10.8", "-O2",
+    kernel = ["-arch", "x86_64", "-mmacosx-version-min=13.0", "-O2",
               "-ffreestanding", "-fno-builtin", "-fno-stack-protector",
               "-mno-red-zone", "-mno-sse", "-mno-sse2", "-mno-mmx",
               "-DKERNEL", "-DKERNEL_PRIVATE", *warnings, *includes,
@@ -71,7 +69,10 @@ def main() -> int:
         "-o", str(kext / "MacOS/MetalVK"))
     imports = subprocess.check_output(
         ["xcrun", "nm", "-u", str(kext / "MacOS/MetalVK")], text=True)
-    forbidden = ("___bzero", "___cxa", "___dso_handle", "___stack_chk", "__Unwind",
+    # XNU Libkern.exports legitimately provides ___bzero, ___cxa_pure_virtual
+    # and stack-check helpers. Only exclude known user-runtime imports here;
+    # this is not a substitute for target-KC dependency/linkage validation.
+    forbidden = ("___cxa_atexit", "___dso_handle", "__Unwind", "___cxa_throw",
                  "_malloc", "_calloc", "_realloc", "_free", "_pthread", "_objc")
     for line in imports.splitlines():
         symbol = line.split()[-1] if line.split() else ""
