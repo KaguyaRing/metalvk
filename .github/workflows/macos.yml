@@ -1,0 +1,43 @@
+name: macOS native build
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: macos-15-intel
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+      - name: Get fixed kernel SDK
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          repository: acidanthera/MacKernelSDK
+          ref: 3f750085caa17ec3a7880f11c11bf4f48cd6a164
+          path: target/MacKernelSDK
+          persist-credentials: false
+      - name: Host tests
+        run: |
+          make test CONFIG=Debug
+          make test CONFIG=Release
+          make test CONFIG=Alpha
+      - name: Native App and kext
+        run: python3 tools/build_macos.py --kernel-sdk target/MacKernelSDK
+      - name: No-device diagnostic path
+        run: |
+          set +e
+          target/macos/MetalVK.app/Contents/MacOS/MetalVK --diagnose
+          code=$?
+          set -e
+          test "$code" -eq 2
+      - name: Upload development artifacts
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: MetalVK-diagnostics-development
+          path: |
+            target/macos/MetalVK-development.dmg
+            target/macos/MetalVK.kext
+            target/macos/MetalVK.app
+          if-no-files-found: error

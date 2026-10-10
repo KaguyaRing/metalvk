@@ -1,0 +1,95 @@
+#!/usr/bin/env python3
+"""Build development-only x86_64 App/kext bundles using native Apple tools.
+
+No signing identity is implied: output is explicitly ad-hoc signed. Hardware
+loading, user approval, Installer integration and production signing are separate.
+"""
+from __future__ import annotations
+
+import argparse
+import pathlib
+import plistlib
+import shutil
+import subprocess
+import sys
+
+
+def run(*args: str) -> None:
+    subprocess.run(args, check=True)
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--kernel-sdk", type=pathlib.Path, required=True)
+    options = parser.parse_args()
+    if sys.platform != "darwin":
+        parser.error("Native macOS tools are required; use the macOS CI job.")
+    root = pathlib.Path(__file__).resolve().parent.parent
+    sdk = options.kernel_sdk.resolve()
+    if not (sdk / "Headers/IOKit/IOService.h").is_file():
+        parser.error("--kernel-sdk must contain Headers/IOKit/IOService.h")
+    build = root / "target/macos"
+    build.mkdir(parents=True, exist_ok=True)
+    app = build / "MetalVK.app/Contents"
+    kext = build / "MetalVK.kext/Contents"
+    for bundle in (app, kext):
+        (bundle / "MacOS").mkdir(parents=True, exist_ok=True)
+    for source, target in (("app/Info.plist", app), ("kexts/MetalVK/Info.plist", kext)):
+        content = (root / source).read_bytes()
+        plistlib.loads(content)
+        (target / "Info.plist").write_bytes(content)
+    includes = ["-I", str(root / "include")]
+    warnings = ["-Wall", "-Wextra", "-Werror"]
+    user = ["-arch", "x86_64", "-mmacosx-version-min=13.0", "-O2", *warnings, *includes]
+    run("xcrun", "clang", "-std=c11", *user, "-c", str(root / "src/ipc/diagnostics.c"),
+        "-o", str(build / "diagnostics-user.o"))
+    run("xcrun", "clang", "-std=c11", *user, "-c", str(root / "src/base/status.c"),
+        "-o", str(build / "status-user.o"))
+    run("xcrun", "clang++", "-std=c++17", "-fobjc-arc", *user,
+        str(root / "app/main.mm"), str(root / "app/Diagnostics.mm"),
+        str(build / "diagnostics-user.o"), str(build / "status-user.o"),
+        "-framework", "AppKit", "-framework", "IOKit", "-framework", "UniformTypeIdentifiers",
+        "-o", str(app / "MacOS/MetalVK"))
+    kernel = ["-arch", "x86_64", "-O2", "-ffreestanding", "-fno-stack-protector",
+              "-mno-red-zone", "-mno-sse", "-mno-sse2", "-mno-mmx",
+              "-DKERNEL", "-DKERNEL_PRIVATE", *warnings, *includes,
+              "-isystem", str(sdk / "Headers")]
+    run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / "src/ipc/diagnostics.c"),
+        "-o", str(build / "diagnostics-kernel.o"))
+    # IOPCIDevice is deprecated in Apple's newer SDK, but needed for the selected
+    # IOKit graphics-driver route. Suppression is limited to this native target;
+    # upstream SDK headers are system headers, project warnings remain errors.
+    run("xcrun", "clang++", "-std=c++14", "-mkernel", "-fapple-kext",
+        "-fno-exceptions", "-fno-rtti", "-Wno-deprecated-declarations",
+        "-Wno-unused-parameter", *kernel, "-c", str(root / "kexts/MetalVK/Driver.cpp"),
+        "-o", str(build / "Driver.o"))
+    run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
+        str(build / "Driver.o"), str(build / "diagnostics-kernel.o"),
+        "-o", str(kext / "MacOS/MetalVK"))
+    for bundle in (kext.parent, app.parent):
+        run("codesign", "--force", "--sign", "-", str(bundle))
+        run("codesign", "--verify", "--strict", "--verbose=2", str(bundle))
+    resources = app / "Resources"
+    resources.mkdir(exist_ok=True)
+    # Only deployment payload, no automatic privileged copy/load in this stage.
+    payload = resources / "MetalVK.kext"
+    if payload.exists():
+        shutil.rmtree(payload)
+    shutil.copytree(kext.parent, payload)
+    shutil.copy2(root / "LICENSE", resources / "LICENSE.txt")
+    run("codesign", "--force", "--sign", "-", str(app.parent))
+    run("codesign", "--verify", "--strict", "--verbose=2", str(app.parent))
+    run("xcrun", "nm", "-g", str(kext / "MacOS/MetalVK"))
+    run("xcrun", "otool", "-hv", str(kext / "MacOS/MetalVK"))
+    run("hdiutil", "create", "-ov", "-format", "UDZO", "-volname", "MetalVK Development",
+        "-srcfolder", str(app.parent), str(build / "MetalVK-development.dmg"))
+    print("Built diagnostic-only development artifacts; no GPU acceleration claimed.")
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except (OSError, subprocess.CalledProcessError, plistlib.InvalidFileException) as error:
+        print(f"Build failed: {error}", file=sys.stderr)
+        raise SystemExit(1)
