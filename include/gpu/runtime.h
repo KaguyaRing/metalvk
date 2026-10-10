@@ -85,6 +85,8 @@ typedef struct mtvk_gpu_response {
  * must return no instance; the core quarantines violations for explicit cleanup.
  * dispatch may be NULL when no dispatch operation is supported. It validates
  * all device-local tokens and implements all actual GPU operations.
+ * Callbacks on the same backend may overlap across devices or enumeration/open
+ * calls; the backend synchronizes its own shared state and bounds blocking work.
  * Callbacks must honor the output struct_size supplied by the core, return a
  * defined mtvk_status, and never throw/unwind/longjmp across the C ABI.
  * Handles are lifetime identifiers, not security/authorization capabilities;
