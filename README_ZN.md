@@ -10,6 +10,8 @@
 
 默认产物 `libmetalvk.a` 编译基础层、纯宿主内存配额、有界 CPU 工作记账与 deadline 运算，只使用标准 C 头文件；不含厂商 SDK、硬件驱动、内核代码、私有 ioctl、Vulkan 实现或着色器编译器。诊断协议是独立产物 `libmetalvk-diagnostics.a`。
 
+还已实现[显示后端控制 API](docs/display-backend.md)：模式／HDR 校验与传递、显示复位／配置恢复、运行时信号及失败关闭状态管理。硬件回调必须由厂商后端提供，没有默认模拟成功路径；目前不宣称物理显示／HDR 已支持。
+
 ```text
 include/                     src/                      （模块布局镜像）
   platform.h                   base/status.c
@@ -17,6 +19,7 @@ include/                     src/                      （模块布局镜像）
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
   runtime/ init.h work.h time.h runtime/work.c time.c
+  display/ init.h control.h     display/control.c validation.c
   ipc/   init.h diagnostics.h
 ```
 
@@ -61,7 +64,7 @@ RTX 4060 Laptop GPU 已在 Windows 上通过真实计算回读与 64×64 离屏�
 
 ```text
 include|src/  platform/  版本探测与私有 ABI 表查询
-              display/   IOFramebuffer 接入、EDID/DisplayID、模式池、HDR 元数据
+              display/   进一步实现 EDID/DisplayID 解析、链路编码与呈现
               accel/     IOGraphicsAccelerator2 接入
               agdc/      AppleGraphicsDeviceControl 接入
               metal/     Metal 语义层（Metal → Vulkan）

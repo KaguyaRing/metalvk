@@ -35,7 +35,7 @@
   → IOFramebuffer／显示协商／显示硬件
 ```
 
-- `libmetalvk.a`：SDK-free 基础层、宿主内存配额、CPU 工作记账与 deadline 运算；仍无平台／厂商依赖。
+- `libmetalvk.a`：SDK-free 基础层、宿主内存配额、CPU 工作记账、deadline 运算和显示后端控制 API；仍无平台／厂商依赖。
 - `libmetalvk-vulkan.a`：可选用户态 Vulkan 上下文，按真实队列能力选设备；不进入内核。
 - `libmetalvk-kernel-platform.a`：原生内核公共模块；包含 PCI 快照、生命周期、只读诊断 UserClient，以及独立的 wired 宿主内存域、CPU 工作队列与 uptime。厂商子类保留精确匹配。内存／工作服务尚未绑定 RM／用户态入口。静态链接进 kext，不是独立加载的驱动。
 - `libmetalvk-diagnostics.a`：独立线协议；诊断可用不代表 Metal 可用。
@@ -50,8 +50,8 @@
 | R2 | macOS 厂商执行路径 | 真实 GPU 初始化、资源分配、提交与 fence 回读；进程退出后无悬挂 DMA | 宿主内存前置服务已实现；GPU 执行未实现 |
 | R3 | Metal 离屏闭环 | 经 Metal API 创建资源与着色器，真实 draw/readback；不 CPU 伪造，不绕回 MoltenVK | 未实现 |
 | R4 | 系统设备发现／跨进程资源 | 未修改应用能发现设备；权限隔离、IOSurface 共享与同步验收 | 未实现 |
-| R5 | 可见呈现与显示管道 | WindowServer／framebuffer 呈现、模式协商、vblank、热插拔、睡眠唤醒 | 未实现 |
-| R6 | HDR／DisplayID／刷新率与故障恢复 | 元数据方向与格式有证据；模式切换、高刷、GPU hang/reset、恢复测试 | 未实现 |
+| R5 | 可见呈现与显示管道 | WindowServer／framebuffer 呈现、模式协商、vblank、热插拔、睡眠唤醒 | 通用参数／事件状态管理已实现；硬件呈现及系统接线未实现 |
+| R6 | HDR／DisplayID／刷新率与故障恢复 | 元数据方向与格式有证据；模式切换、高刷、GPU hang/reset、恢复测试 | 通用 HDR／显示复位 API 已实现；DisplayID 解析、硬件 HDR 和整 GPU 恢复未实现 |
 | R7 | macOS 15/26 与多厂商覆盖 | 逐 OS build／GPU／驱动组合真机记录 | 未验收 |
 
 R2 必须先明确厂商 ICD 在 macOS 上的可用执行后端、固件依赖、许可证与 OS 适配边界。
@@ -65,6 +65,8 @@ MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，�
 后续已加入[有界工作队列、延后释放与 uptime](kernel-runtime.md)。回调锁外执行，停止接受与投递同锁，close 超时保留在途资源；未实现 IRQ 分配池或驱动卸载的模块级静止屏障，也未启用 DMA／GSP／GPU 命令。
 
 ## 系统 Metal 验收门
+
+显示后端现在可接入[模式／HDR、运行时信号与显示复位控制 API](display-backend.md)。生产库执行真实校验、事务状态与厂商回调，不包含模拟成功后端；缺失硬件回调拒绝操作。测试替身仅验证 API 契约，不升级 R5／R6 的硬件验收状态，也不说明 Apple 私有 HDR 接口已核验。
 
 独立客户端 `validation/metal/render.mm` 已实现显式 registry ID 选择、MSL 运行时编译、真实 Metal render/blit、限时完成等待与全图校验；使用方法见 [独立组件](reference-components.md)。它不是 Metal → Vulkan 翻译器，也不注册设备。后续 R3/R4 必须以自己的 accelerator registry ID 运行，不准回落到系统默认 GPU。
 

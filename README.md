@@ -10,6 +10,8 @@ The neutral execution interface is the **Vulkan specification**, not a custom GP
 
 The default artifact, `libmetalvk.a`, contains the base layer, pure host-memory quota accounting, bounded CPU work accounting and deadline arithmetic, using standard C headers. It does not include vendor SDKs, hardware drivers, kernel code, private ioctls, a Vulkan implementation, or a shader compiler. The diagnostics protocol is built separately as `libmetalvk-diagnostics.a`.
 
+It also implements a [display backend control API](docs/display-backend.md) (Chinese): mode/HDR validation and forwarding, display reset/replay, runtime signals and fail-closed state management. Hardware callbacks must be supplied by a vendor backend; none is silently simulated. No physical display/HDR support is claimed yet.
+
 ```text
 include/                     src/                      (mirrored module layout)
   platform.h                   base/status.c
@@ -17,6 +19,7 @@ include/                     src/                      (mirrored module layout)
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
   runtime/ init.h work.h time.h runtime/work.c time.c
+  display/ init.h control.h     display/control.c validation.c
   ipc/   init.h diagnostics.h
 ```
 
@@ -61,7 +64,7 @@ Implement these incrementally as functional modules, rather than empty drivers:
 
 ```text
 include|src/  platform/  OS detection and private ABI table lookup
-              display/   IOFramebuffer, EDID/DisplayID, display modes, HDR metadata
+              display/   Further EDID/DisplayID parsing, link encoding and presentation
               accel/     IOGraphicsAccelerator2 integration
               agdc/      AppleGraphicsDeviceControl integration
               metal/     Metal semantics (Metal → Vulkan)
