@@ -3,6 +3,24 @@
 本计划延续 Metal → Vulkan 的厂商中立路线，不恢复已删除的自造 GPU 注册／命令 ABI。
 状态须以证据更新，不能以代码目录、编译成功或相同类实例大小代替运行验收。
 
+## 最终验收目标：多厂商 Metal 渲染
+
+目标是在 macOS 15／26 上，经本项目 Metal → Vulkan → 厂商执行路径，
+让 NVIDIA、AMD、Intel 的目标 GPU 实际执行 Metal 渲染。Vulkan 是内部执行接口，
+不是将 Vulkan 转回 Apple Metal 驱动；每个厂商仍需自己的 Darwin 硬件后端。
+
+- 支持范围按厂商、GPU 架构／PCI ID、macOS build、后端版本逐项记录。
+  “主流厂商”是覆盖目标，不等于这些厂商的全部型号已支持；目前没有通过的 macOS Metal 硬件组合。
+- 每个组合须显式选择本项目设备 registry ID，核对 PCI 身份与实际执行设备，
+  完成 Metal 资源／着色器／管线创建、draw、完成同步和全图回读校验。
+  不得以 CPU 光栅化、软件 Vulkan、系统默认 GPU 或 MoltenVK 回退满足验收。
+- MSL 源码和预编译 AIR／metallib 分别验收；最小图案通过只证明对应功能子集，
+  不能宣称任意 Metal 应用兼容。未支持的功能明确拒绝，持续补充图形功能与应用回归。
+- 编译、加载、Vulkan 执行、Metal 离屏、未修改应用设备发现与系统显示分别记录。
+  Metal 离屏通过不升级 WindowServer／直接显示、HDR、高刷、睡眠恢复或整卡 reset 状态。
+- 多厂商最终通过要求每个声明支持的组合均有上述真机证据；缺卡或缺目标机标记未验收，
+  不得用 Windows 官方 ICD、Apple Paravirtual 或独立离线编译结果拼成 macOS 支持证据。
+
 ## 已有实测（2026-10-11）
 
 - Windows Vulkan ICD：NVIDIA GeForce RTX 4060 Laptop GPU，`10de:28e0`。
@@ -90,6 +108,18 @@ CI 的 Apple Paravirtual 参考渲染只检查验收客户端本身；不升级 
 - 所有阶段分别记录“编译”“加载”“执行”“显示”；缺证据不能越级标记完成。
 
 ## 本轮安全复核范围
+
+### NVIDIA 传输能力声明复核（2026-10-12）
+
+范围仅为共享 transport／session 与其主机测试；不包含已加载的 UserClient 或 GPU。
+不可信响应不能携带目录以外的能力位；被修改的 session 版本／handler mask 必须拒绝且不写输出。
+dma-buf 声明要求 import 与 export 同时存在，缺失 discovery 输入返回全零数据。
+回归覆盖每个未实现操作位、全部未知高位、绕过编码器直接伪造的响应和输出未修改断言；
+Debug／Release／Alpha（UBSan）及 Clang 静态分析通过，无编译诊断。
+
+残余限制：discovery 仍复制主机结构，尚非显式跨端字节编码；request 的 response_bytes 语义、
+缓冲区重叠标准和真实 probe／UserClient 接线尚待完成。session 由拥有者串行访问，
+共享源码不能证明字段语义、RM 资源标准或双方运行时完整对齐。上述结果不升级 R2／R3。
 
 范围：共享 Vulkan 上下文、验证输入／回读／清理、共享 PCI 服务与诊断 UserClient、受影响构建脚本。
 

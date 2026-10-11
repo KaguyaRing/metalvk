@@ -51,10 +51,10 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 
 对齐不是让两侧各自“看起来能编过”，而是让用户态 NVK／nvkmd 与 Darwin 内核端点共享同一份可机器核验的标准。当前已落实的部分：
 
-1. **一份共享源码。** `backends/nvidia/include/nvidia/transport.h` 定义分帧标准（版本、op 目录、类别、请求信封与校验 API），`backends/nvidia/include/nvidia/discovery.h` 定义 `DEVICE_QUERY` 载荷（对齐上游 `nv_device_info` 的固定布局）。`backends/nvidia/src/transport.c` 是唯一的编解码实现。内核库 `libmetalvk-nvidia-kernel.a` 与 Mesa 内的用户态适配器都编译这一个 `.c`，因此两侧不可能各自漂移。
-2. **双向且受能力门控。** `backends/nvidia/include/nvidia/session.h` 与 `src/session.c` 是内核端点的分发核心：`mtvk_nv_session_dispatch` 校验请求、写回响应，并在响应里附带 `backed_op_mask`（第 i 位表示第 i 个 op 真正有实现）。任何不在 `MTVK_NV_IMPLEMENTED_OPS` 里的 op 一律以 `MTVK_NOT_SUPPORTED` 拒绝，绝不复用成功路径。`mtvk_nv_effective_device_info` 会把未被支持的能力位裁掉；内核在构造响应时裁一次，用户态在读响应时再裁一次（纵深防御），因此任一侧出错都无法对外宣称未实现的能力。
+1. **按职责共享源码。** `transport.h/.c` 定义并校验信封、op 目录和类别；`discovery.h/.c` 管理设备数据与能力投影；`session.h/.c` 管理分发。内核库与 Mesa 主机验收适配器构建这些共享模块，减少重复实现。discovery 仍复制主机结构，不是稳定的跨端字节编码；共享源码不能证明完整字段语义或运行时已对齐。
+2. **双向且受能力门控。** `mtvk_nv_session_dispatch` 校验请求、写回响应并附带 `backed_op_mask`，未实现操作以 `MTVK_NOT_SUPPORTED` 拒绝。未知能力位、错误 session 版本和被修改为未实现 handler 的 mask 均拒绝。`mtvk_nv_effective_device_info` 在分发与消费时分别裁剪能力，dma-buf 要求 import/export 均存在；这属于纵深校验，不是“任一侧出错仍保证正确”的证明。
 3. **可机器核验的映射。** `backends/nvidia/nvkmd-alignment.json` 逐项记录固定上游每个 `nvkmd` 操作到传输 op 的映射、类别与内核状态。`tools/check_nvkmd_alignment.py` 从固定的 `nvkmd.h` 解析出真实操作集，与清单、`transport.h` 目录、`transport.c` 类别表三方比对。本地与 CI `38152949000` 均已通过：**30 个上游操作、28 个传输操作、无缺漏、无多余、类别一致**。
-4. **用户态适配器。** `validation/nvidia/nvkmd-metalvk.c` 在固定 Mesa 树内编译（不是上游文件）。它的自测是**真正的双向回路**：先用内核侧共享代码 `mtvk_nv_session_dispatch` 生成响应字节，再把同一批字节交给用户侧 `mtvk_nvkmd_open` 消费。它还额外验证一条伪造响应（声称有能力但 `backed_op_mask=0`）也会被客户端裁掉。全部执行类别 `create_dev` 返回 `VK_ERROR_INCOMPATIBLE_DRIVER`。
+4. **用户态验收适配器。** `validation/nvidia/nvkmd-metalvk.c` 在固定 Mesa 树内编译，未挂接真实 NVK physical-device discovery。自测在同一主机进程调用共享分发器生成响应，再交给 `mtvk_nvkmd_open` 消费，是主机 loopback，不是 IOUserClient 内核往返。伪造能力响应会被裁剪；`create_dev` 返回 `VK_ERROR_INCOMPATIBLE_DRIVER`。修复后的 CI [38155051978](https://github.com/KaguyaRing/metalvk/actions/runs/38155051978) 已通过；后续拆分修改须重新验证。
 5. **多对一是被允许的。** 例如 `DRM_FD` 同时覆盖 `pdev.get_drm_primary_fd` 与 `dev.get_drm_fd`，以及 `pdev.destroy`、`mem.log_handle` 属于本地处理、无传输 op。检查器要求每个传输 op 至少被覆盖一次，不强制一对一。
 
 **对齐验证不等于执行验证。** 上述全部是标准面一致性证据：它们证明两侧对同一份消息布局、op 目录、类别和错误路径达成一致，并证明用户态在缺执行能力时正确拒绝。它们不使用 GPU、不产生像素，也不升级任何硬件支持状态。
@@ -63,19 +63,19 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 
 | 传输类别 | 需要的内核能力 | 用户态已对齐 | 内核已实现 |
 |---|---|---|---|
-| discovery | 只读身份、boot register | 通过（映射 + 拒绝执行） | `DEVICE_QUERY` 已由只读 probe 支撑；其余 discovery op 未实现 |
-| memory | GART／VRAM、DMA／IOMMU、预算与回滚 | 通过 | 无（仅 wired CPU 内存，不能替代 GPU BO） |
-| address | GPU VA、页表、对齐与溢出检查 | 通过 | 无 |
-| execution | GPFIFO／pushbuffer、引擎 class、fence、超时 | 通过 | 无 |
-| sync | fence／semaphore 等待与信号 | 通过 | 无 |
-| replaced | Linux fd／dma-buf → macOS 原生句柄 | 通过（明确不支持） | 无 |
+| discovery | 只读身份、boot register | 操作映射与主机 fixture 回归通过 | 共享 DEVICE_QUERY handler 使用提供的数据；probe／UserClient 接线未完成 |
+| memory | GART／VRAM、DMA／IOMMU、预算与回滚 | 仅名称／类别映射与拒绝路径通过 | 无（仅 wired CPU 内存，不能替代 GPU BO） |
+| address | GPU VA、页表、对齐与溢出检查 | 仅名称／类别映射与拒绝路径通过 | 无 |
+| execution | GPFIFO／pushbuffer、引擎 class、fence、超时 | 仅名称／类别映射与拒绝路径通过 | 无 |
+| sync | fence／semaphore 等待与信号 | 仅名称／类别映射与拒绝路径通过 | 无 |
+| replaced | Linux fd／dma-buf → macOS 原生句柄 | 映射与不支持状态明确 | 无 |
 
-结论：**标准已对齐并可机器验证，能力门控已成为可执行代码；执行层仍未对齐。** 首个真实 draw 被 memory／address／execution 三类尚未实现所阻塞，而不是被接口不一致所阻塞。把某一类接到真实 RM／GSP／DMA 后，只需把对应位加入 `MTVK_NV_IMPLEMENTED_OPS` 并更新 `nvkmd-alignment.json` 的 `kernel` 状态，同一响应即会把该能力带给用户态适配器。
+结论：**操作目录映射与共享拒绝策略可验证，完整传输／RM 语义与执行层尚未对齐。** 首个 draw 仍需真实资源、GPU VA、提交、同步以及双方字段和生命周期标准。能力位只能在实际 handler、权限／ownership／回收和双端集成回归全部完成后加入，不能靠改 mask／清单宣称实现。
 
 ## 后续首个真实 draw 的验收顺序
 
 1. 完成项目 vertex／fragment 的离线 NAK 编译与 IR／binary 记录。（已完成）
-2. 固定并机器核验两侧传输标准与操作映射。（已完成）
+2. 固定并核验两侧标准：操作目录映射已通过；显式载荷编码、字段语义与真实双端接线未完成。
 3. 在 Darwin 内核侧实现 discovery／memory／address／execution／sync：可信匹配固件、RM／GSP、DMA／IOMMU、GPU VA、queue／fence，并让 `nvkmd-alignment.json` 中对应条目的 `kernel` 状态从 `not-implemented` 变为已实现。
 4. 在独立 Darwin build graph 编译 NVK／NAK 及真实 nvkmd adapter，禁用尚不可用的扩展。不得把 Linux 构建通过标记为此步通过。
 5. 同一 `vulkan-render` 客户端通过明确 NVIDIA ICD 运行 draw → fence → 回读，验证全部像素与零验证诊断；需要隔离 macOS 真机。Windows 官方 ICD 结果只作 oracle，不作新后端结果。
