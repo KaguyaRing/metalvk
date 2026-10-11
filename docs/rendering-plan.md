@@ -35,9 +35,9 @@
   → IOFramebuffer／显示协商／显示硬件
 ```
 
-- `libmetalvk.a`：SDK-free 基础层，边界不变。
+- `libmetalvk.a`：SDK-free 基础层与纯宿主内存配额逻辑；仍无平台／厂商依赖。
 - `libmetalvk-vulkan.a`：可选用户态 Vulkan 上下文，按真实队列能力选设备；不进入内核。
-- `libmetalvk-kernel-platform.a`：原生内核公共模块；当前仅 PCI 快照、生命周期、只读诊断 UserClient。厂商子类保留精确硬件匹配。静态链接进 kext，不是独立加载的驱动。
+- `libmetalvk-kernel-platform.a`：原生内核公共模块；包含 PCI 快照、生命周期、只读诊断 UserClient，以及独立的 wired 宿主内存域。厂商子类保留精确匹配。内存域尚未绑定 RM／用户态入口。静态链接进 kext，不是独立加载的驱动。
 - `libmetalvk-diagnostics.a`：独立线协议；诊断可用不代表 Metal 可用。
 - 后续采用平台管理器协调内存、提交、同步、显示、恢复子管理器；实现具体功能时才增加模块，不增加假成功入口。
 
@@ -47,7 +47,7 @@
 |---|---|---|---|
 | R0 | 官方 Vulkan 的真实 compute + graphics 闭环 | 硬件身份、全量回读、零验证消息 | Windows NVIDIA 已通过 |
 | R1 | 可复用用户态／内核模块与真实 kext 构建 | 核心隔离、回归测试、原生链接／签名检查 | 首批模块与原生 CI 通过；不等于加载／加速 |
-| R2 | macOS 厂商执行路径 | 真实 GPU 初始化、资源分配、提交与 fence 回读；进程退出后无悬挂 DMA | 未实现 |
+| R2 | macOS 厂商执行路径 | 真实 GPU 初始化、资源分配、提交与 fence 回读；进程退出后无悬挂 DMA | 宿主内存前置服务已实现；GPU 执行未实现 |
 | R3 | Metal 离屏闭环 | 经 Metal API 创建资源与着色器，真实 draw/readback；不 CPU 伪造，不绕回 MoltenVK | 未实现 |
 | R4 | 系统设备发现／跨进程资源 | 未修改应用能发现设备；权限隔离、IOSurface 共享与同步验收 | 未实现 |
 | R5 | 可见呈现与显示管道 | WindowServer／framebuffer 呈现、模式协商、vblank、热插拔、睡眠唤醒 | 未实现 |
@@ -57,6 +57,10 @@
 R2 必须先明确厂商 ICD 在 macOS 上的可用执行后端、固件依赖、许可证与 OS 适配边界。
 Windows 的厂商 ICD 不可直接拿来当 macOS 内核执行实现。Vulkan Loader 本身也不提供硬件驱动。
 MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，两类输入须分别处理和验证。
+
+### R2 前置：宿主内存
+
+已加入独立的纯 C 预算／关闭状态与原生 wired 内存域，详见 [宿主内存模块](kernel-memory.md)。域关闭与待发布分配同锁核验，失败回滚、不释放仍被引用的 backing；没有将 CPU 指针当作 DMA 地址，也未声称已绑定官方 RM 回调。原生编译／符号检查通过不等于已经在目标内核中执行这些分配／释放方法。
 
 ## 系统 Metal 验收门
 

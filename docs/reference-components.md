@@ -17,6 +17,8 @@ CLI 状态为 0：连接成功；1：错误；2：没有服务。输出 App/kext
 
 手动 CI 在 `macos-15-intel` 与 `macos-26-intel` 构建，检查共享模块已链接、没有已知用户态运行时导入，并执行 App 无设备路径。不加载 kext；构建宿主版本不等于目标内核 ABI 验收。
 
+共享库还包含 [wired 宿主内存域](kernel-memory.md)，由纯 C 配额逻辑与 IOBufferMemoryDescriptor 实现。它是后续 RM 平台服务的前置模块，尚未被诊断设备或用户态入口调用；不具备 DMA 或 GPU 提交功能。
+
 ## Vulkan 验证工具
 
 `include/vk`／`src/vk` 的可选共享上下文库使用官方 Vulkan API 与系统 Loader/ICD；默认基础库不依赖它。`validation/vulkan` 是此库的验证客户端。需要 Vulkan SDK（含头文件、Loader import library、glslangValidator、spirv-val、Khronos Validation Layer）、Clang、llvm-ar/ar。
