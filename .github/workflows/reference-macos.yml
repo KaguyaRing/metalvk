@@ -48,6 +48,14 @@ jobs:
           code=$?
           set -e
           test "$code" -eq 2
+      - name: System Metal discovery and argument checks (no rendering claim)
+        run: |
+          target/macos/metal-render --list-devices
+          set +e
+          target/macos/metal-render --registry-id invalid
+          code=$?
+          set -e
+          test "$code" -eq 64
       - name: Upload development artifacts
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
@@ -57,4 +65,5 @@ jobs:
             target/macos/MetalVK.kext
             target/macos/MetalVK.app
             target/macos/libmetalvk-kernel-platform.a
+            target/macos/metal-render
           if-no-files-found: error
