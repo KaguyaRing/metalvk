@@ -1,0 +1,40 @@
+name: Vulkan hardware probes
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compile:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, macos-15-intel]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Install toolchain and Vulkan (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y clang libvulkan-dev glslang-tools spirv-tools
+      - name: Install toolchain and Vulkan (macOS)
+        if: runner.os == 'macOS'
+        run: brew install vulkan-headers vulkan-loader glslang spirv-tools
+      - name: Compile the hardware probes (no GPU required)
+        run: |
+          CFLAGS="-std=c11 -O2 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan"
+          for unit in context compute render; do
+            clang $CFLAGS -c "validation/vulkan/$unit.c" -o "/tmp/$unit.o"
+          done
+          clang /tmp/compute.o /tmp/context.o -lvulkan -o /tmp/vulkan-compute
+          clang /tmp/render.o /tmp/context.o -lvulkan -o /tmp/vulkan-render
+      - name: Validate the shaders
+        run: |
+          for shader in readback.comp pattern.vert pattern.frag; do
+            glslangValidator -V --target-env vulkan1.2 \
+              -o "/tmp/$shader.spv" "validation/vulkan/shaders/$shader"
+            spirv-val --target-env vulkan1.2 "/tmp/$shader.spv"
+          done
