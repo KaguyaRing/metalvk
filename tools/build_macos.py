@@ -80,6 +80,12 @@ def main() -> int:
         obj = build / f"runtime-{unit}-kernel.o"
         run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / f"src/runtime/{unit}.c"), "-o", str(obj))
         platform_objects.append(obj)
+    for unit in ("control", "validation"):
+        obj = build / f"display-{unit}-kernel.o"
+        run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / f"src/display/{unit}.c"), "-o", str(obj))
+        platform_objects.append(obj)
+        run("xcrun", "clang", "-std=c11", *kernel, "--analyze", "-Xanalyzer", "-analyzer-output=text",
+            str(root / f"src/display/{unit}.c"))
     for unit in ("pci", "device", "client", "memory", "context", "work"):
         obj = build / f"platform-{unit}.o"
         run("xcrun", "clang++", *kernel_cpp, "-c",
@@ -112,7 +118,8 @@ def main() -> int:
         ["xcrun", "nm", "-g", str(kext / "MacOS/MetalVK")], text=True)
     for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci",
                  "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve",
-                 "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push"):
+                  "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push",
+                  "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")

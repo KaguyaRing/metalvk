@@ -6,4 +6,5 @@
 #include "base/init.h"
 #include "memory/init.h"
 #include "runtime/init.h"
+#include "display/init.h"
 #endif

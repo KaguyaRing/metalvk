@@ -8,4 +8,5 @@
 #include "platform/memory.hpp"
 #include "platform/context.hpp"
 #include "platform/work.hpp"
+#include "display/init.h"
 #endif

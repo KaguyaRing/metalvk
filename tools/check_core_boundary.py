@@ -9,11 +9,13 @@ import subprocess
 import sys
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-CORE_SOURCES = ("src/base/status.c", "src/memory/budget.c", "src/runtime/work.c", "src/runtime/time.c")
+CORE_SOURCES = ("src/base/status.c", "src/memory/budget.c", "src/runtime/work.c", "src/runtime/time.c",
+                "src/display/validation.c", "src/display/control.c")
 CORE_HEADERS = ("include/platform.h", "include/metalvk.h",
                 "include/base/init.h", "include/base/span.h", "include/base/status.h",
                 "include/memory/init.h", "include/memory/budget.h",
-                "include/runtime/init.h", "include/runtime/work.h", "include/runtime/time.h")
+                "include/runtime/init.h", "include/runtime/work.h", "include/runtime/time.h",
+                "include/display/init.h", "include/display/control.h")
 STANDARD_HEADERS = {"stdbool.h", "stddef.h", "stdint.h", "stdatomic.h", "string.h"}
 # BSD/Darwin ar exposes its reserved symbol-index member in `ar t` output.
 ARCHIVE_INDEX_MEMBERS = {"__.SYMDEF", "__.SYMDEF SORTED", "__.SYMDEF_64", "__.SYMDEF_64 SORTED"}
@@ -47,7 +49,7 @@ def main() -> int:
             raise ValueError("llvm-ar/ar is needed to inspect archive membership")
         members = subprocess.check_output([archive, "t", str(args.archive)], text=True).splitlines()
         objects = [m for m in members if m not in ARCHIVE_INDEX_MEMBERS]
-        if sorted(pathlib.PurePosixPath(m).name for m in objects) != ["budget.o", "status.o", "time.o", "work.o"]:
+        if sorted(pathlib.PurePosixPath(m).name for m in objects) != ["budget.o", "control.o", "status.o", "time.o", "validation.o", "work.o"]:
             raise ValueError(f"Unexpected archive members: {members}")
     print("Generic core boundary verified: standard C headers, isolated sources/archive")
     return 0
