@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 #include "vk/init.h"
+#include "context-internal.h"
+#include "base/span.h"
 #include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -12,6 +14,8 @@ struct mtvk_vk_context {
     VkDevice device;
     VkQueue queue;
     uint32_t family;
+    VkQueueFlags queue_flags;
+    uint32_t targets;
     VkPhysicalDeviceProperties properties;
     VkPhysicalDeviceDriverProperties driver;
     VkPhysicalDeviceMemoryProperties memory;
@@ -143,6 +147,7 @@ VkResult mtvk_vk_open_for_queues(uint32_t vendor, bool validation,
         for (uint32_t j = 0; j < families; ++j) {
             if (queues[j].queueCount && (queues[j].queueFlags & required) == required) {
                 context->physical = devices[i]; context->family = j;
+                context->queue_flags = queues[j].queueFlags;
                 context->properties = properties; break;
             }
         }
@@ -182,6 +187,7 @@ failure:
 }
 VkResult mtvk_vk_close(mtvk_vk_context *context) {
     if (!context) return VK_SUCCESS;
+    if (context->targets) return VK_NOT_READY;
     VkResult result = VK_SUCCESS;
     if (context->device) {
         result = vkDeviceWaitIdle(context->device);
@@ -189,6 +195,19 @@ VkResult mtvk_vk_close(mtvk_vk_context *context) {
     }
     const VkResult disposed = dispose(context);
     return result == VK_SUCCESS ? disposed : result;
+}
+VkResult mtvk_vk_context_hold_target(mtvk_vk_context *context) {
+    if (!context || !(context->queue_flags & VK_QUEUE_GRAPHICS_BIT)) return VK_ERROR_INITIALIZATION_FAILED;
+    if (context->targets == MTVK_VK_OFFSCREEN_MAX_TARGETS) return VK_ERROR_TOO_MANY_OBJECTS;
+    ++context->targets;
+    return VK_SUCCESS;
+}
+void mtvk_vk_context_release_target(mtvk_vk_context *context) {
+    --context->targets; // Called exactly once by an acquired target's destructor.
+}
+bool mtvk_vk_context_output_valid(const mtvk_vk_context *context, const void *out, size_t size) {
+    return out && mtvk_span_valid(out, size) &&
+        (!context || !mtvk_spans_overlap(context, sizeof(*context), out, size));
 }
 VkDevice mtvk_vk_device(const mtvk_vk_context *c) { return c ? c->device : VK_NULL_HANDLE; }
 VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *c) { return c ? c->physical : VK_NULL_HANDLE; }

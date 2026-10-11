@@ -52,7 +52,7 @@ On Windows, use `mingw32-make` and `AR=llvm-ar`.
 ## Separate components (excluded from the default library)
 
 - `backends/nvidia/`: separate PCI/AD107 boot-register validation library and opt-in, read-only BAR0 kext probe. Disabled by default; no RM/GSP startup, DMA, GPU execution or display support. See [NVIDIA backend boundaries](docs/nvidia-backend.md) (Chinese). `make test-nvidia CONFIG=Release` runs host fixture tests, not hardware tests.
-- `include/vk/`, `src/vk/`: shared hardware Vulkan context, built separately as `libmetalvk-vulkan.a`; requires the Vulkan SDK/loader.
+- `include/vk/`, `src/vk/`: hardware Vulkan context and reusable [offscreen render/readback targets](docs/offscreen-rendering.md) (Chinese), built separately as `libmetalvk-vulkan.a`; requires the Vulkan SDK/loader and a working hardware ICD. Real native pipelines, fences and multi-frame readback have passed on Windows NVIDIA, not on the macOS NVIDIA backend.
 - `kexts/Platform/`: shared PCI snapshot, service lifecycle, read-only UserClient, bounded wired host-memory domains, deferred CPU work and uptime services, built as `libmetalvk-kernel-platform.a` and linked into the diagnostic kext. Memory/work services are not yet bound to RM or exposed to userspace. No GPU execution yet. See [ownership and runtime limits](docs/kernel-runtime.md) (Chinese).
 - `app/`, `include/ipc`, `src/ipc`: a read-only diagnostics app and a separate diagnostics protocol.
 - `validation/vulkan/`: validation tools for real Vulkan ICDs, not the neutral layer or a production backend. Successful compilation does not prove GPU execution or Metal integration.

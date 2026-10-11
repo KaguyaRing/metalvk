@@ -4,4 +4,5 @@
 #define MTVK_VK_INIT_H
 /* Optional SDK-dependent module: excluded from the SDK-free metalvk.h. */
 #include "vk/context.h"
+#include "vk/offscreen.h"
 #endif

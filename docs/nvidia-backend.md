@@ -49,6 +49,8 @@ PCI 校验要求：
 5. 接真实 DDC／AUX、显示链路、寄存器、flip／vblank、HDR 与整卡恢复。
 6. 明确可用的 Darwin Vulkan ICD／编译路线，并接 Metal 翻译与系统呈现。Windows ICD 不能在 macOS 复用；本轮没有自行选用 NVK 或引入其许可依赖。
 
+后续已将真正的离屏资源／提交／fence／回读做成[可调用 Vulkan 库](offscreen-rendering.md)，并在 Windows 官方 NVIDIA ICD 上通过多帧及资源生命周期实测。它提供将来 Darwin ICD 的同一验收入口；不是这里的 RM／GSP／ICD 已完成，不能升级 macOS NVIDIA 支持状态。
+
 ## 验证证据与安全审查
 
 宿主 `make test-nvidia CONFIG=Debug|Release|Alpha`：固定配置／boot tuple **构造夹具**，覆盖 capability 边界／环／PM 重叠、D3／decode disabled／错误 BAR／错误型号、boot identity 不一致、virtual GPU 拒绝、参数／别名、失败输出不变，以及 20,000 次输入变异。它不模拟硬件成功，也不构成 MMIO 实测。

@@ -63,9 +63,15 @@ def main() -> int:
              "-I", str(root / "validation/common")]
 
     context_library = build / "libmetalvk-vulkan.a"
-    subprocess.run([compiler, *flags, "-c", str(root / "src/vk/context.c"),
-                    "-o", str(build / "context.o")], check=True)
-    subprocess.run([archive, "rcs", str(context_library), str(build / "context.o")], check=True)
+    objects = []
+    for unit in ("context", "offscreen"):
+        obj = build / f"{unit}.o"
+        subprocess.run([compiler, *flags, "-c", str(root / f"src/vk/{unit}.c"), "-o", str(obj)], check=True)
+        objects.append(str(obj))
+    temporary = context_library.with_suffix(".a.tmp")
+    temporary.unlink(missing_ok=True)
+    subprocess.run([archive, "rcs", str(temporary), *objects], check=True)
+    temporary.replace(context_library)
 
     compute_exe = build / ("vulkan-compute" + exe_suffix)
     render_exe = build / ("vulkan-render" + exe_suffix)
@@ -81,11 +87,18 @@ def main() -> int:
                     str(root / "validation/vulkan/input.c"), str(root / "validation/common/pattern.c"),
                     str(context_library), *library, "-o", str(render_exe)], check=True)
     faults_exe = build / ("test-vulkan-render-faults" + exe_suffix)
+    offscreen_exe = build / ("test-vulkan-offscreen" + exe_suffix)
+    subprocess.run([compiler, *flags, str(root / "tests/test_vulkan_offscreen.c"),
+                    str(root / "validation/vulkan/input.c"), str(context_library), *library,
+                    "-o", str(offscreen_exe)], check=True)
+    subprocess.run([str(offscreen_exe)], check=True, timeout=60)
     subprocess.run([compiler, *flags, "-Dmain=mtvk_render_cli_main", "-include",
                     str(root / "tests/vulkan_render_faults.h"), "-c",
-                    str(root / "validation/vulkan/render.c"), "-o", str(build / "render-faults.o")], check=True)
+                     str(root / "validation/vulkan/render.c"), "-o", str(build / "render-faults.o")], check=True)
+    subprocess.run([compiler, *flags, "-include", str(root / "tests/vulkan_render_faults.h"),
+                    "-c", str(root / "src/vk/offscreen.c"), "-o", str(build / "offscreen-faults.o")], check=True)
     subprocess.run([compiler, *flags, str(root / "tests/test_vulkan_render_faults.c"),
-                    str(build / "render-faults.o"), str(root / "validation/vulkan/input.c"),
+                    str(build / "render-faults.o"), str(build / "offscreen-faults.o"), str(root / "validation/vulkan/input.c"),
                     str(root / "validation/common/pattern.c"), str(context_library), *library,
                     "-o", str(faults_exe)], check=True)
 
@@ -93,7 +106,9 @@ def main() -> int:
         subprocess.run([str(compute_exe), str(compute_spv), args.vendor], check=True, timeout=60)
     if args.run_render:
         subprocess.run([str(render_exe), str(vert_spv), str(frag_spv), args.vendor], check=True, timeout=60)
-        for fault in ("allocation-failure", "wait-timeout", "drain-failure"):
+        subprocess.run([str(offscreen_exe), args.vendor], check=True, timeout=60)
+        for fault in ("allocation-failure", "wait-timeout", "drain-failure", "submit-failure",
+                      "memory-failure", "map-failure", "invalidate-failure"):
             subprocess.run([str(faults_exe), str(vert_spv), str(frag_spv), args.vendor, fault],
                            check=True, timeout=60)
     return 0

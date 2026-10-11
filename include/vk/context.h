@@ -27,6 +27,7 @@ VkResult mtvk_vk_open_for_queues(uint32_t vendor, bool validation,
 // Caller must complete all submitted work before destroying its child objects.
 // close drains the device; errors (including device loss) are returned.
 // An unexpected drain error preserves ownership; caller may retry close.
+// Live offscreen targets return VK_NOT_READY without draining/destroying context.
 VkResult mtvk_vk_close(mtvk_vk_context *context);
 VkDevice mtvk_vk_device(const mtvk_vk_context *context);
 VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *context);

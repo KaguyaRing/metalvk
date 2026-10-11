@@ -29,7 +29,7 @@ jobs:
           persist-credentials: false
       - name: Vulkan API compile checks (no GPU execution)
         run: |
-          clang -std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan -Ivalidation/common -isystem target/Vulkan-Headers/include -fsyntax-only src/vk/context.c validation/vulkan/compute.c validation/vulkan/render.c
+          clang -std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan -Ivalidation/common -isystem target/Vulkan-Headers/include -fsyntax-only src/vk/context.c src/vk/offscreen.c validation/vulkan/compute.c validation/vulkan/render.c
           clang++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude -isystem target/Vulkan-Headers/include -x c++ -fsyntax-only include/vk/init.h
       - name: Host tests
         run: |

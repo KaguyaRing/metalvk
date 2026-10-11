@@ -15,6 +15,13 @@ VKAPI_ATTR VkResult VKAPI_CALL mtvk_fault_wait(VkDevice device, uint32_t count,
 VKAPI_ATTR VkResult VKAPI_CALL mtvk_fault_drain(VkDevice device);
 VKAPI_ATTR void VKAPI_CALL mtvk_fault_destroy_fence(VkDevice device, VkFence fence,
     const VkAllocationCallbacks *allocator);
+VKAPI_ATTR VkResult VKAPI_CALL mtvk_fault_allocate(VkDevice device,
+    const VkMemoryAllocateInfo *info, const VkAllocationCallbacks *allocator, VkDeviceMemory *out);
+VKAPI_ATTR VkResult VKAPI_CALL mtvk_fault_map(VkDevice device, VkDeviceMemory memory,
+    VkDeviceSize offset, VkDeviceSize size, VkMemoryMapFlags flags, void **out);
+VKAPI_ATTR VkResult VKAPI_CALL mtvk_fault_invalidate(VkDevice device, uint32_t count,
+    const VkMappedMemoryRange *ranges);
+const VkPhysicalDeviceMemoryProperties *mtvk_fault_memory(const mtvk_vk_context *context);
 VkResult mtvk_fault_close(mtvk_vk_context *context);
 VkResult mtvk_fault_open(uint32_t vendor, bool validation, VkQueueFlags required,
                         mtvk_vk_context **out);
@@ -25,4 +32,8 @@ VkResult mtvk_fault_open(uint32_t vendor, bool validation, VkQueueFlags required
 #define vkDestroyFence mtvk_fault_destroy_fence
 #define mtvk_vk_close mtvk_fault_close
 #define mtvk_vk_open_for_queues mtvk_fault_open
+#define vkAllocateMemory mtvk_fault_allocate
+#define vkMapMemory mtvk_fault_map
+#define vkInvalidateMappedMemoryRanges mtvk_fault_invalidate
+#define mtvk_vk_memory mtvk_fault_memory
 #endif

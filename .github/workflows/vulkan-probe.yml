@@ -33,18 +33,23 @@ jobs:
           fi
           CFLAGS="-std=c11 -O2 $FLAGS"
           clang $CFLAGS -c src/vk/context.c -o /tmp/context.o
-          ar rcs /tmp/libmetalvk-vulkan.a /tmp/context.o
+          clang $CFLAGS -c src/vk/offscreen.c -o /tmp/offscreen.o
+          ar rcs /tmp/libmetalvk-vulkan.a /tmp/context.o /tmp/offscreen.o
           for unit in compute render input; do
             clang $CFLAGS -c "validation/vulkan/$unit.c" -o "/tmp/$unit.o"
           done
           clang $CFLAGS -c validation/common/pattern.c -o /tmp/pattern.o
           clang /tmp/compute.o /tmp/input.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-compute
           clang /tmp/render.o /tmp/input.o /tmp/pattern.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-render
+          clang $CFLAGS tests/test_vulkan_offscreen.c /tmp/input.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/test-vulkan-offscreen
+          /tmp/test-vulkan-offscreen
           clang $CFLAGS -Dmain=mtvk_render_cli_main -include tests/vulkan_render_faults.h \
             -c validation/vulkan/render.c -o /tmp/render-faults.o
-          clang $CFLAGS tests/test_vulkan_render_faults.c /tmp/render-faults.o /tmp/input.o /tmp/pattern.o \
+          clang $CFLAGS -include tests/vulkan_render_faults.h -c src/vk/offscreen.c -o /tmp/offscreen-faults.o
+          clang $CFLAGS tests/test_vulkan_render_faults.c /tmp/render-faults.o /tmp/offscreen-faults.o /tmp/input.o /tmp/pattern.o \
             /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/test-vulkan-render-faults
           clang++ $FLAGS -std=c++17 -x c++ -fsyntax-only include/vk/init.h
+          clang --analyze -std=c11 $FLAGS -Xanalyzer -analyzer-output=text src/vk/context.c src/vk/offscreen.c
       - name: Validate the shaders
         run: |
           for shader in readback.comp pattern.vert pattern.frag; do
@@ -59,3 +64,30 @@ jobs:
             tests/test_vulkan_inputs.c validation/vulkan/input.c validation/common/pattern.c \
             -o /tmp/test-vulkan-inputs
           /tmp/test-vulkan-inputs /tmp/readback.comp.spv
+          FLAGS="-Iinclude -Ivalidation/vulkan"
+          LDFLAGS=""
+          if [ "$RUNNER_OS" = "macOS" ]; then
+            FLAGS="$FLAGS -isystem $(brew --prefix vulkan-headers)/include"
+            LDFLAGS="-L$(brew --prefix vulkan-loader)/lib"
+          fi
+          clang -std=c11 -O1 -g -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow \
+            -fsanitize=address,undefined -fno-sanitize-recover=all $FLAGS \
+            tests/test_vulkan_offscreen.c validation/vulkan/input.c src/vk/context.c src/vk/offscreen.c \
+            $LDFLAGS -lvulkan -o /tmp/test-vulkan-offscreen-sanitize
+          /tmp/test-vulkan-offscreen-sanitize
+      - name: Upload buildable rendering library and acceptance client
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: metalvk-vulkan-${{ runner.os }}-${{ matrix.os }}
+          path: |
+            /tmp/libmetalvk-vulkan.a
+            /tmp/vulkan-render
+            /tmp/vulkan-compute
+            /tmp/test-vulkan-offscreen
+            /tmp/pattern.vert.spv
+            /tmp/pattern.frag.spv
+            /tmp/readback.comp.spv
+            include/vk/
+            include/platform.h
+            LICENSE
+          if-no-files-found: error
