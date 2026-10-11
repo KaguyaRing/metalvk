@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 // Integration test against a real hardware Vulkan ICD; no mock or Metal backend.
-#include "context.h"
-#include <errno.h>
+#include "vk/init.h"
+#include "input.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-enum { ELEMENT_CAPACITY = 4097, LOCAL_SIZE = 64, SHADER_LIMIT = 1024 * 1024 };
+enum { ELEMENT_CAPACITY = 4097, LOCAL_SIZE = 64 };
 static const uint64_t FenceTimeout = UINT64_C(5000000000);
 static const uint32_t Sentinel = UINT32_C(0xdeadbeef);
 typedef struct buffer {
@@ -70,24 +70,6 @@ static VkResult cache_operation(VkDevice device, const buffer *b, bool invalidat
     return invalidate ? vkInvalidateMappedMemoryRanges(device, 1, &range) :
                         vkFlushMappedMemoryRanges(device, 1, &range);
 }
-static uint32_t *read_shader(const char *path, size_t *size) {
-    FILE *file = fopen(path, "rb");
-    if (!file) return NULL;
-    uint32_t *words = NULL;
-    if (fseek(file, 0, SEEK_END) != 0) goto done;
-    long length = ftell(file);
-    if (length < 20 || length > SHADER_LIMIT || length % 4 != 0 || fseek(file, 0, SEEK_SET) != 0)
-        goto done;
-    words = malloc((size_t)length);
-    if (!words || fread(words, 1, (size_t)length, file) != (size_t)length ||
-        words[0] != UINT32_C(0x07230203)) {
-        free(words); words = NULL; goto done;
-    }
-    *size = (size_t)length;
-done:
-    if (fclose(file) != 0) { free(words); words = NULL; }
-    return words;
-}
 static VkResult release(resources *r) {
     VkDevice device = mtvk_vk_device(r->context);
     if (device && r->submitted) {
@@ -122,14 +104,11 @@ int main(int argc, char **argv) {
     }
     uint32_t vendor = 0x10de;
     if (argc == 3) {
-        char *end = NULL; errno = 0;
-        unsigned long value = strtoul(argv[2], &end, 0);
-        if (errno || !argv[2][0] || !end || *end || value > UINT32_MAX || argv[2][0] == '-') return 64;
-        vendor = (uint32_t)value;
+        if (!mtvk_probe_parse_vendor(argv[2], &vendor)) return 64;
     }
     resources r = {0};
     size_t shader_size = 0;
-    uint32_t *code = read_shader(argv[1], &shader_size);
+    uint32_t *code = mtvk_probe_read_shader(argv[1], &shader_size);
     if (!code) { fprintf(stderr, "Shader file invalid, unreadable or exceeds the size limit.\n"); return 1; }
     VkResult result = mtvk_vk_open(vendor, true, &r.context);
     bool passed = false;

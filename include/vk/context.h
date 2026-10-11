@@ -19,6 +19,11 @@ MTVK_EXTERN_C_BEGIN
 // This hardware context deliberately rejects CPU/software devices and
 // MoltenVK (avoids a circular Metal -> Vulkan -> Metal execution route).
 VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out);
+/* Hardware-only context with explicit queue requirements. Use vendor=0 for any
+ * supported vendor. Invalid flags are rejected before touching the loader.
+ * Vulkan handles are the execution interface; this is not a custom GPU ABI. */
+VkResult mtvk_vk_open_for_queues(uint32_t vendor, bool validation,
+                               VkQueueFlags required, mtvk_vk_context **out);
 // Caller must complete all submitted work before destroying its child objects.
 // close drains the device; errors (including device loss) are returned.
 // An unexpected drain error preserves ownership; caller may retry close.

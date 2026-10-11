@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
-#include "context.h"
+#include "vk/init.h"
 #include <stdatomic.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -76,8 +76,15 @@ static VkResult dispose(mtvk_vk_context *context) {
     return result;
 }
 VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out) {
+    return mtvk_vk_open_for_queues(vendor, validation, VK_QUEUE_COMPUTE_BIT, out);
+}
+VkResult mtvk_vk_open_for_queues(uint32_t vendor, bool validation,
+                               VkQueueFlags required, mtvk_vk_context **out) {
     if (!out) return VK_ERROR_INITIALIZATION_FAILED;
     *out = NULL;
+    const VkQueueFlags supported = VK_QUEUE_GRAPHICS_BIT | VK_QUEUE_COMPUTE_BIT | VK_QUEUE_TRANSFER_BIT;
+    if (vendor > UINT16_MAX || !required || (required & ~supported))
+        return VK_ERROR_INITIALIZATION_FAILED;
     VkResult result = validation ? require_validation() : VK_SUCCESS;
     if (result != VK_SUCCESS) return result;
     mtvk_vk_context *context = calloc(1, sizeof(*context));
@@ -134,7 +141,7 @@ VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out) {
         VkQueueFamilyProperties queues[MTVK_VK_QUEUE_LIMIT];
         vkGetPhysicalDeviceQueueFamilyProperties(devices[i], &families, queues);
         for (uint32_t j = 0; j < families; ++j) {
-            if (queues[j].queueCount && (queues[j].queueFlags & VK_QUEUE_COMPUTE_BIT)) {
+            if (queues[j].queueCount && (queues[j].queueFlags & required) == required) {
                 context->physical = devices[i]; context->family = j;
                 context->properties = properties; break;
             }
