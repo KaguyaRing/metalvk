@@ -71,6 +71,14 @@ def catalog(header: pathlib.Path, source: pathlib.Path) -> tuple[set[str], dict[
     return names, classes
 
 
+def transport_version(header: pathlib.Path) -> int:
+    definitions = re.findall(r"^\s*#define\s+MTVK_NV_TRANSPORT_VERSION\s+([0-9]+)[uU]?\s*$",
+                             header.read_text(encoding="utf-8"), re.MULTILINE)
+    if len(definitions) != 1 or not 0 < int(definitions[0]) <= 0xffffffff:
+        fail("transport header must declare exactly one positive u32 version")
+    return int(definitions[0])
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--manifest", required=True, type=pathlib.Path)
@@ -81,7 +89,8 @@ def main() -> int:
     args = parser.parse_args()
 
     manifest = json.loads(args.manifest.read_text(encoding="utf-8"))
-    if str(manifest.get("transport_version")) != "1":
+    if (type(manifest.get("transport_version")) is not int or
+            manifest["transport_version"] != transport_version(args.transport_header)):
         fail("manifest transport_version must match MTVK_NV_TRANSPORT_VERSION")
     if manifest.get("mesa_version") != args.mesa_version:
         fail(f"manifest pins Mesa {manifest.get('mesa_version')}, expected {args.mesa_version}")

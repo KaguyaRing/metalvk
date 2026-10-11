@@ -14,6 +14,23 @@ SPEC.loader.exec_module(ALIGNMENT)
 
 
 class CatalogTests(unittest.TestCase):
+    def test_transport_version_is_read_from_header(self):
+        with tempfile.TemporaryDirectory(prefix="metalvk-catalog-") as directory:
+            header = pathlib.Path(directory) / "transport.h"
+            for version in (1, 2, 17):
+                header.write_text(f"#define MTVK_NV_TRANSPORT_VERSION {version}u\n", encoding="utf-8")
+                self.assertEqual(ALIGNMENT.transport_version(header), version)
+
+    def test_missing_duplicate_or_invalid_version_is_rejected(self):
+        with tempfile.TemporaryDirectory(prefix="metalvk-catalog-") as directory:
+            header = pathlib.Path(directory) / "transport.h"
+            for text in ("", "#define MTVK_NV_TRANSPORT_VERSION 0u\n",
+                         "#define MTVK_NV_TRANSPORT_VERSION 4294967296u\n",
+                         "#define MTVK_NV_TRANSPORT_VERSION 2u\n" * 2):
+                header.write_text(text, encoding="utf-8")
+                with self.assertRaises(SystemExit):
+                    ALIGNMENT.transport_version(header)
+
     def test_helpers_outside_enum_are_not_operations(self):
         with tempfile.TemporaryDirectory(prefix="metalvk-catalog-") as directory:
             header = pathlib.Path(directory) / "transport.h"
