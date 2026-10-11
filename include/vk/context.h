@@ -28,6 +28,9 @@ VkResult mtvk_vk_open_for_queues(uint32_t vendor, bool validation,
 // close drains the device; errors (including device loss) are returned.
 // An unexpected drain error preserves ownership; caller may retry close.
 // Live offscreen targets return VK_NOT_READY without draining/destroying context.
+// VK_SUCCESS or VK_ERROR_DEVICE_LOST consumes the context: never retry or access
+// that pointer afterward. A dispose-time messenger invariant error also consumes
+// it. Other device-drain errors leave the context alive; preserve its children.
 VkResult mtvk_vk_close(mtvk_vk_context *context);
 VkDevice mtvk_vk_device(const mtvk_vk_context *context);
 VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *context);

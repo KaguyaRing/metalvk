@@ -56,7 +56,35 @@ static void displayid(uint8_t *p, bool type7) {
     le16(t + 12, 2159); le16(t + 14, 89); le16(t + 16, 0x8000u | 7u); le16(t + 18, 9);
     checksum(p + 1, 28); checksum(p, 128);
 }
+static int native_and_extended_vics_do_not_alias(void) {
+    const uint8_t svds[] = {144u, 192u, 193u, 225u};
+    for (size_t index = 0; index < sizeof(svds); ++index) {
+        uint8_t bytes[256];
+        base(bytes, 1);
+        /* No base timing/preference may hide the CTA native selection. */
+        memset(bytes + 54, 0, 18);
+        bytes[24] = 0;
+        checksum(bytes, 128);
+        uint8_t *extension = bytes + 128;
+        memset(extension, 0, 128);
+        extension[0] = 2; extension[1] = 3; extension[2] = 6;
+        extension[4] = 0x41; extension[5] = svds[index];
+        checksum(extension, 128);
+        mtvk_edid_info info;
+        CHECK(mtvk_edid_parse(bytes, sizeof(bytes), &info) == MTVK_OK);
+        if (index < 2u) {
+            CHECK(info.mode_count == 1u && info.preferred_mode_id == info.modes[0].id);
+            CHECK(info.modes[0].width == 1920u && info.modes[0].height == 1080u);
+            CHECK(info.modes[0].pixel_clock_khz == (index == 0u ? 148500u : 297000u));
+        } else {
+            CHECK(info.mode_count == 0u && info.preferred_mode_id == 0u);
+            CHECK(info.omitted_timings == 1u);
+        }
+    }
+    return 0;
+}
 int main(void) {
+    CHECK(native_and_extended_vics_do_not_alias() == 0);
     uint8_t bytes[384]; memset(bytes, 0, sizeof(bytes));
     base(bytes, 1); cta(bytes + 128);
     mtvk_edid_info info, before;

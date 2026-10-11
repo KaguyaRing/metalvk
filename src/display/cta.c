@@ -27,6 +27,8 @@ static const vic_timing vic_modes[] = {
 static mtvk_status video(mtvk_edid_info *info, const uint8_t *p, size_t size) {
     if (!size) return MTVK_INVALID_ARGUMENT;
     for (size_t i = 0; i < size; ++i) {
+        /* CTA SVD 129..192 encodes native VIC 1..64. Values >=193 are
+         * extended VICs, not native flags; stripping bit 7 would alias them. */
         const unsigned vic = p[i] >= 193u ? p[i] : p[i] & 127u;
         bool matched = false;
         for (size_t j = 0; j < sizeof(vic_modes) / sizeof(vic_modes[0]); ++j) {
