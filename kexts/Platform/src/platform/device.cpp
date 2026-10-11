@@ -40,12 +40,20 @@ void MetalVKPlatformDevice::free() {
 IOReturn MetalVKPlatformDevice::copyDiagnostics(void *out, size_t size) {
     if (!out || size != MTVK_DIAG_RESPONSE_SIZE || !lock_) return kIOReturnBadArgument;
     mtvk_diag_snapshot snapshot {};
+    const IOReturn result = copySnapshot(&snapshot);
+    if (result != kIOReturnSuccess) return result;
+    return mtvk_diag_encode(&snapshot, out, size) == MTVK_OK ? kIOReturnSuccess : kIOReturnError;
+}
+IOReturn MetalVKPlatformDevice::copySnapshot(mtvk_diag_snapshot *out) {
+    if (!out || !lock_) return kIOReturnBadArgument;
+    mtvk_diag_snapshot snapshot {};
     IOLockLock(lock_);
     const bool ready = ready_;
     if (ready) snapshot = snapshot_;
     IOLockUnlock(lock_);
     if (!ready || isInactive()) return kIOReturnOffline;
-    return mtvk_diag_encode(&snapshot, out, size) == MTVK_OK ? kIOReturnSuccess : kIOReturnError;
+    *out = snapshot;
+    return kIOReturnSuccess;
 }
 IOReturn MetalVKPlatformDevice::newUserClient(task_t task, void *security, UInt32 type,
                                              IOUserClient **out) {

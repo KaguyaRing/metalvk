@@ -15,6 +15,8 @@ class MetalVKPlatformDevice : public IOService {
     IOLock *lock_ = nullptr;
     mtvk_diag_snapshot snapshot_ {};
     bool ready_ = false;
+protected:
+    IOReturn copySnapshot(mtvk_diag_snapshot *out);
 public:
     bool init(OSDictionary *dictionary = nullptr) override;
     bool start(IOService *provider) override;

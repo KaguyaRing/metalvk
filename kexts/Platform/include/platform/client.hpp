@@ -3,6 +3,9 @@
 #ifndef MTVK_KERNEL_PLATFORM_CLIENT_HPP
 #define MTVK_KERNEL_PLATFORM_CLIENT_HPP
 #include <IOKit/IOUserClient.h>
+namespace metalvk { namespace platform {
+bool configureReadOnlyClient(IOUserClient *client);
+} }
 class MetalVKPlatformDevice;
 class MetalVKDiagnosticClient : public IOUserClient {
     OSDeclareDefaultStructors(MetalVKDiagnosticClient)

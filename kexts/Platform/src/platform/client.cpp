@@ -9,13 +9,16 @@ constexpr const char *SetPropertiesLocking = "IOUserClientDefaultLockingSetPrope
 constexpr const char *SingleThreadMethods = "IOUserClientDefaultLockingSingleThreadExternalMethod";
 }
 OSDefineMetaClassAndStructors(MetalVKDiagnosticClient, IOUserClient)
+bool metalvk::platform::configureReadOnlyClient(IOUserClient *client) {
+    return client && client->setProperty(DefaultLocking, kOSBooleanTrue) &&
+        client->setProperty(SetPropertiesLocking, kOSBooleanTrue) &&
+        client->setProperty(SingleThreadMethods, kOSBooleanTrue);
+}
 bool MetalVKDiagnosticClient::initWithTask(task_t task, void *security, UInt32 type) {
     if (!task || type != MTVK_DIAG_CONNECT_TYPE ||
         clientHasPrivilege(task, kIOClientPrivilegeLocalUser) != kIOReturnSuccess ||
         !IOUserClient::initWithTask(task, security, type)) return false;
-    return setProperty(DefaultLocking, kOSBooleanTrue) &&
-        setProperty(SetPropertiesLocking, kOSBooleanTrue) &&
-        setProperty(SingleThreadMethods, kOSBooleanTrue);
+    return metalvk::platform::configureReadOnlyClient(this);
 }
 bool MetalVKDiagnosticClient::start(IOService *provider) {
     auto *device = OSDynamicCast(MetalVKPlatformDevice, provider);
