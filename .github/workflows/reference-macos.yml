@@ -127,7 +127,7 @@ jobs:
               'Ad-hoc signed; not notarized. No automatic install or load.\n'
               'NVIDIA 10de:28e0 only; read-only BAR0 probe disabled by default.\n'
               'No verified macOS GPU execution, Metal acceleration or display support.\n', encoding='utf-8')
-          output = pathlib.Path('target/release')
+          output = pathlib.Path('target/release-packages')
           output.mkdir()
           archive = output / f'MetalVK-{tag}-development-{host}.zip'
           subprocess.run(['ditto', '-c', '-k', '--sequesterRsrc', '--keepParent', str(stage), str(archive)], check=True)
@@ -140,5 +140,5 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
           name: metalvk-release-${{ matrix.os }}
-          path: target/release/*
+          path: target/release-packages/*
           if-no-files-found: error
