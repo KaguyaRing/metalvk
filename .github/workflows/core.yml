@@ -17,6 +17,8 @@ jobs:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
       - name: SDK-free core and contract tests
         run: |
+          python3 tests/test_development_release.py
+          python3 tests/test_nvkmd_catalog.py
           python3 tools/check_core_boundary.py
           make test CONFIG=Debug
           make test CONFIG=Release
@@ -36,7 +38,7 @@ jobs:
       - name: Static analysis
         run: |
           clang --analyze -std=c11 -Iinclude -Xanalyzer -analyzer-output=text src/base/status.c src/memory/budget.c src/runtime/work.c src/runtime/time.c src/display/*.c tools/edid-inspect.c
-          clang --analyze -std=c11 -Iinclude -Ibackends/nvidia/include -Xanalyzer -analyzer-output=text backends/nvidia/src/boot.c
+          clang --analyze -std=c11 -Iinclude -Ibackends/nvidia/include -Xanalyzer -analyzer-output=text backends/nvidia/src/*.c
       - name: Upload generic library and public headers
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:

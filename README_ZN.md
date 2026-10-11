@@ -91,7 +91,8 @@ Windows 使用 `mingw32-make` 与 `AR=llvm-ar`。
 - `kexts/Platform/`：共享 PCI 快照、生命周期、只读 UserClient、受预算约束的 wired 宿主内存域、延后 CPU 工作与 uptime 服务，构建为 `libmetalvk-kernel-platform.a` 并链接进诊断 kext；内存／工作服务尚未绑定 RM 或暴露给用户态，尚无 GPU 执行能力。详见[所有权与执行限制](docs/kernel-runtime.md)。
 - `app/`、`include/ipc`、`src/ipc`：只读诊断 App 与独立诊断协议。
 - `validation/vulkan/`：真实 Vulkan ICD 的验证工具，不是通用层或生产后端。编译成功不证明 GPU 执行或 Metal 接入成功。
-- `.github/workflows/reference-macos.yml`：仅手动执行的平台参考构建。用法见 [独立组件](docs/reference-components.md)。
+- `.github/workflows/reference-macos.yml`：可手动执行或由发布流程复用的平台参考构建。用法见 [独立组件](docs/reference-components.md)。
+- `.github/workflows/release.yml`：按不可变标签在 macOS 15／26 Intel 构建，并发布仅供诊断的 GitHub prerelease。压缩包保留 bundle 权限，附构建信息、警告、许可证与校验和；不自动安装或加载 kext。详见[开发产物发布](docs/development-releases.md)。
 
 RTX 4060 Laptop GPU 已在 Windows 上通过真实计算回读与 64×64 离屏图形测试，4096 像素全部校验，验证层错误／警告均为零。这不证明 macOS 或系统 Metal 支持。详见 [完整渲染计划与验收门槛](docs/rendering-plan.md)。
 

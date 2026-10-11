@@ -1,34 +1,35 @@
 # Unreleased
 
-## Removed
+## NVIDIA transport and module maintenance
 
-- The home-grown `mtvk_gpu_*` backend registration/dispatch ABI (`include/gpu/`,
-  `src/gpu/`) and its contract, plugin and legacy host tests. The neutral
-  interface is the Vulkan specification; a self-made GPU ABI duplicated it.
-- `include/base/limits.h`: its remaining contents were the removed ABI's limits.
+- Separate discovery initialization/capability projection from session dispatch;
+  update host, Mesa and native kernel build graphs to compile the shared module.
+  Explicit portable discovery payload encoding is still pending.
+- Reject unknown response capability bits and incompatible/corrupted session
+  state; require both import/export operations for dma-buf advertisement.
+- Add malformed-session, forged-response and catalog-parser regressions.
+  Operation-name/category mapping is not complete RM semantic alignment.
+- Record fixed Apple/NVIDIA lifecycle research: provider ownership, PM,
+  termination, DMA and RM integration prerequisites. No hardware writes added.
 
-## Added
+## Corrections and verification
 
-- Versioned vendor-neutral runtime ABI with platform-supplied allocation and locking.
-- Backend replacement, capability enumeration, dispatch forwarding, opaque lifetime-safe handles and rollback/quarantine for backend failures.
-- Concurrent lifecycle and independently compiled binary-provider integration tests.
-- SDK-free core CI and explicit source/archive dependency boundary checks.
+- Clarify Vulkan close ownership: live targets and unexpected drain failures
+  retain the context; device loss destroys it and must not be retried.
+- Add native CTA VIC 16/64 and extended VIC 193/225 regressions. Extended VICs
+  must not be folded into low VICs by stripping bit 7.
+- Keep NVIDIA/AMD/Intel Metal rendering as a per-device/per-OS coverage target,
+  not an existing support claim. Windows NVIDIA, offline NAK, Apple Paravirtual
+  and kext build results remain independent evidence.
 
-## Changed
+## Development release automation
 
-- Default `libmetalvk.a` now contains only the base implementation.
-- Diagnostic protocol is a separate archive.
-- Vendor kext prototype moved to `backends/`; Vulkan probes moved to `validation/`.
-- App/kext reference workflow is manual-only and excluded from generic acceptance.
+- Build immutable tag source on macOS 15/26 Intel before publishing diagnostic
+  packages as GitHub prereleases. Include source/build metadata, license,
+  development warnings and SHA-256 checksums; preserve bundle permissions.
+- Packages are ad-hoc signed, not notarized, and do not install/load a kext.
+- Preserve historical v0.1.0 at 318d24a. Subsequent development tags use
+  vMAJOR.MINOR.PATCH-<last-pushed-short-sha>; no existing tag is moved.
 
-## Earlier development components
-
-- Vendor-neutral C11 backend registration and host tests.
-- Versioned, little-endian PCI diagnostic protocol with exact-size and semantic validation.
-- IOKit diagnostic kext matching NVIDIA 10DE:28E0 without programming the GPU.
-- AppKit diagnostic App with asynchronous reads, error reporting and atomic report export.
-- Native macOS CI, ad-hoc signing verification and development DMG generation.
-- Real Vulkan 1.2 context integration using official Vulkan handles and a hardware ICD.
-- SPIR-V compute readback integration test with Khronos and synchronization validation, hardware-only selection and untouched-tail checks.
-
-The Windows Vulkan compute path has been verified on NVIDIA and AMD hardware. macOS GPU execution, display management, system Metal integration, Metal-to-SPIR-V conversion and privileged installation are not implemented. No 0.1.0 release has been published.
+See [v0.1.0](0.1.0.md) for the tagged milestone. Entries above describe later
+development and do not retroactively become part of v0.1.0.

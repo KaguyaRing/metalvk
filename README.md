@@ -91,7 +91,8 @@ On Windows, use `mingw32-make` and `AR=llvm-ar`.
 - `kexts/Platform/`: shared PCI snapshot, service lifecycle, read-only UserClient, bounded wired host-memory domains, deferred CPU work and uptime services, built as `libmetalvk-kernel-platform.a` and linked into the diagnostic kext. Memory/work services are not yet bound to RM or exposed to userspace. No GPU execution yet. See [ownership and runtime limits](docs/kernel-runtime.md) (Chinese).
 - `app/`, `include/ipc`, `src/ipc`: a read-only diagnostics app and a separate diagnostics protocol.
 - `validation/vulkan/`: validation tools for real Vulkan ICDs, not the neutral layer or a production backend. Successful compilation does not prove GPU execution or Metal integration.
-- `.github/workflows/reference-macos.yml`: a manually triggered platform reference build. See [separate components](docs/reference-components.md) (Chinese).
+- `.github/workflows/reference-macos.yml`: a manually triggered/reusable platform reference build. See [separate components](docs/reference-components.md) (Chinese).
+- `.github/workflows/release.yml`: immutable-tag macOS 15/26 Intel builds and diagnostic-only GitHub prereleases. Archives preserve bundle permissions and include metadata, warnings, license and checksums. No automatic installation or kext loading. See [development publishing](docs/development-releases.md) (Chinese).
 
 The RTX 4060 Laptop GPU has passed real compute readback and a 64×64 offscreen graphics test with all 4096 pixels checked, with zero validation errors/warnings on Windows. This is not evidence of macOS or system Metal support. See the [rendering plan and acceptance gates](docs/rendering-plan.md) (Chinese).
 
