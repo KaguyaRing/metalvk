@@ -1,0 +1,9 @@
+# Appended to the pinned Mesa compiler meson.build by the baseline CI.
+# No upstream implementation is replaced; this is an offline acceptance client.
+executable(
+  'metalvk-nak-pattern',
+  'metalvk-nak-pattern.c',
+  include_directories: [inc_include, inc_src],
+  dependencies: [idep_nak, idep_nir, idep_mesautil, idep_nvidia_headers],
+  c_args: ['-Werror'],
+)
