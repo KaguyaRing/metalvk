@@ -196,7 +196,7 @@ static void fixture(mtvk_nv_device_info *info) {
     info->has_dma_buf = 1u;
 }
 
-static void fixtures_agree(struct nvkmd_pdev *pdev, const mtvk_nv_device_info *info) {
+static int fixtures_agree(struct nvkmd_pdev *pdev, const mtvk_nv_device_info *info) {
     const struct mtvk_nvkmd_pdev *private_pdev = container_of(pdev, struct mtvk_nvkmd_pdev, base);
     CHECK(pdev->dev_info.device_id == info->device_id && pdev->dev_info.chipset == info->chipset);
     CHECK(pdev->dev_info.sm == info->sm && pdev->dev_info.cls_eng3d == info->cls_eng3d);
@@ -204,6 +204,7 @@ static void fixtures_agree(struct nvkmd_pdev *pdev, const mtvk_nv_device_info *i
     CHECK(strcmp(pdev->dev_info.device_name, info->device_name) == 0);
     CHECK(pdev->bind_align_B == info->bind_align_B);
     CHECK(private_pdev->info.va_start == info->va_start && private_pdev->info.va_end == info->va_end);
+    return 0;
 }
 
 int main(void) {
@@ -225,7 +226,7 @@ int main(void) {
     /* User side: consume the very bytes the kernel path produced. */
     struct nvkmd_pdev *pdev = NULL;
     CHECK(mtvk_nvkmd_open(response, response_written, no_sync_types, &pdev) == VK_SUCCESS && pdev != NULL);
-    fixtures_agree(pdev, &info);
+    CHECK(fixtures_agree(pdev, &info) == 0);
     /* Only DEVICE_QUERY is backed, so nothing else may leak through. */
     CHECK(!pdev->kmd_info.has_alloc_tiled && !pdev->kmd_info.has_map_fixed);
     CHECK(!pdev->kmd_info.has_overmap && !pdev->kmd_info.has_compression && !pdev->kmd_info.has_dma_buf);
