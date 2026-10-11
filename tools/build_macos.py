@@ -52,9 +52,9 @@ def main() -> int:
         "-o", str(app / "MacOS/MetalVK"))
     # Independent system Metal acceptance client; never selects an unrelated
     # default device to claim metalvk works. No GPU execution in the build step.
-    probe_include = ["-I", str(root / "validation/vulkan")]
+    probe_include = ["-I", str(root / "validation/common")]
     run("xcrun", "clang", "-std=c11", *user, "-Wpedantic", *probe_include, "-c",
-        str(root / "validation/vulkan/pattern.c"), "-o", str(build / "pattern-user.o"))
+        str(root / "validation/common/pattern.c"), "-o", str(build / "pattern-user.o"))
     run("xcrun", "clang++", "-std=c++17", "-fobjc-arc", *user, "-Wpedantic", *probe_include,
         str(root / "validation/metal/render.mm"), str(build / "pattern-user.o"),
         "-framework", "Foundation", "-framework", "Metal", "-o", str(build / "metal-render"))

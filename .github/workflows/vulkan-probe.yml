@@ -25,7 +25,7 @@ jobs:
         run: brew install vulkan-headers vulkan-loader glslang spirv-tools
       - name: Compile the hardware probes (no GPU required)
         run: |
-          FLAGS="-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan"
+          FLAGS="-Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -Iinclude -Ivalidation/vulkan -Ivalidation/common"
           LDFLAGS=""
           if [ "$RUNNER_OS" = "macOS" ]; then
             FLAGS="$FLAGS -isystem $(brew --prefix vulkan-headers)/include"
@@ -34,9 +34,10 @@ jobs:
           CFLAGS="-std=c11 -O2 $FLAGS"
           clang $CFLAGS -c src/vk/context.c -o /tmp/context.o
           ar rcs /tmp/libmetalvk-vulkan.a /tmp/context.o
-          for unit in compute render input pattern; do
+          for unit in compute render input; do
             clang $CFLAGS -c "validation/vulkan/$unit.c" -o "/tmp/$unit.o"
           done
+          clang $CFLAGS -c validation/common/pattern.c -o /tmp/pattern.o
           clang /tmp/compute.o /tmp/input.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-compute
           clang /tmp/render.o /tmp/input.o /tmp/pattern.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-render
           clang++ $FLAGS -std=c++17 -x c++ -fsyntax-only include/vk/init.h
@@ -50,7 +51,7 @@ jobs:
       - name: Input and pixel regression tests (no GPU required)
         run: |
           clang -std=c11 -O1 -g -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow \
-            -fsanitize=address,undefined -fno-sanitize-recover=all -Ivalidation/vulkan \
-            tests/test_vulkan_inputs.c validation/vulkan/input.c validation/vulkan/pattern.c \
+            -fsanitize=address,undefined -fno-sanitize-recover=all -Ivalidation/vulkan -Ivalidation/common \
+            tests/test_vulkan_inputs.c validation/vulkan/input.c validation/common/pattern.c \
             -o /tmp/test-vulkan-inputs
           /tmp/test-vulkan-inputs /tmp/readback.comp.spv

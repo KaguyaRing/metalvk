@@ -59,7 +59,8 @@ def main() -> int:
     library = [str(lib / "vulkan-1.lib")] if sys.platform == "win32" else ["-L", str(lib), "-lvulkan"]
     flags = ["-std=c11", "-O2", "-Wall", "-Wextra", "-Wpedantic", "-Werror",
              "-Wconversion", "-Wshadow", "-isystem", str(include),
-             "-I", str(root / "include"), "-I", str(root / "validation/vulkan")]
+             "-I", str(root / "include"), "-I", str(root / "validation/vulkan"),
+             "-I", str(root / "validation/common")]
 
     context_library = build / "libmetalvk-vulkan.a"
     subprocess.run([compiler, *flags, "-c", str(root / "src/vk/context.c"),
@@ -70,14 +71,14 @@ def main() -> int:
     render_exe = build / ("vulkan-render" + exe_suffix)
     test_exe = build / ("test-vulkan-inputs" + exe_suffix)
     subprocess.run([compiler, *flags, str(root / "tests/test_vulkan_inputs.c"),
-                    str(root / "validation/vulkan/input.c"), str(root / "validation/vulkan/pattern.c"),
+                    str(root / "validation/vulkan/input.c"), str(root / "validation/common/pattern.c"),
                     "-o", str(test_exe)], check=True)
     subprocess.run([str(test_exe), str(compute_spv)], check=True, timeout=60)
     subprocess.run([compiler, *flags, str(root / "validation/vulkan/compute.c"),
                     str(root / "validation/vulkan/input.c"),
                     str(context_library), *library, "-o", str(compute_exe)], check=True)
     subprocess.run([compiler, *flags, str(root / "validation/vulkan/render.c"),
-                    str(root / "validation/vulkan/input.c"), str(root / "validation/vulkan/pattern.c"),
+                    str(root / "validation/vulkan/input.c"), str(root / "validation/common/pattern.c"),
                     str(context_library), *library, "-o", str(render_exe)], check=True)
 
     if args.run:

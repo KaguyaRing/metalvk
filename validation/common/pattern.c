@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 #include "pattern.h"
+/* Shared oracle for the independent Vulkan and system Metal clients. */
 bool mtvk_probe_check_pattern(const uint8_t *rgba, size_t bytes, uint32_t width,
                              uint32_t height, size_t *mismatch) {
     if (mismatch) *mismatch = SIZE_MAX;

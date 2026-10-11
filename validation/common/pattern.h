@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
-#ifndef MTVK_PROBE_PATTERN_H
-#define MTVK_PROBE_PATTERN_H
+#ifndef MTVK_VALIDATION_PATTERN_H
+#define MTVK_VALIDATION_PATTERN_H
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
