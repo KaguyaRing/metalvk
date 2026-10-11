@@ -47,7 +47,7 @@ PCI 校验要求：
 3. 接 IODMACommand／IOMMU 的设备地址映射、显存与 GPU VA；不能把 CPU pointer 或物理地址直接当 GPU DMA 地址。
 4. 启动匹配的 RM／GSP，实现队列、提交、fence、超时与排空；在 NVIDIA 真机完成首个回读闭环。
 5. 接真实 DDC／AUX、显示链路、寄存器、flip／vblank、HDR 与整卡恢复。
-6. 明确可用的 Darwin Vulkan ICD／编译路线，并接 Metal 翻译与系统呈现。Windows ICD 不能在 macOS 复用；本轮没有自行选用 NVK 或引入其许可依赖。
+6. 按已获用户授权的 [Mesa NVK／NAK 路线](nvidia-nvk.md)推进 Darwin Vulkan ICD／图形编译，再接 Metal 翻译与系统呈现。Windows ICD 不能在 macOS 复用；NVK 的 Linux 构建也不是 Darwin ICD。
 
 后续已将真正的离屏资源／提交／fence／回读做成[可调用 Vulkan 库](offscreen-rendering.md)，并在 Windows 官方 NVIDIA ICD 上通过多帧及资源生命周期实测。它提供将来 Darwin ICD 的同一验收入口；不是这里的 RM／GSP／ICD 已完成，不能升级 macOS NVIDIA 支持状态。
 

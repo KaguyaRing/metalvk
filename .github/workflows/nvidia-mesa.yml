@@ -45,7 +45,7 @@ jobs:
           if digest != lock['sha256']:
               raise SystemExit('Mesa archive checksum mismatch; refusing extraction')
           subprocess.run(['tar', '-xJf', str(archive), '-C', 'target/mesa'], check=True)
-          compiler = pathlib.Path('target/mesa') / ('mesa-' + lock['version']) / 'src/nouveau/compiler'
+          compiler = pathlib.Path('target/mesa') / ('mesa-' + lock['version']) / 'src/nouveau/vulkan'
           import shutil
           shutil.copyfile('validation/nvidia/nak-pattern.c', compiler / 'metalvk-nak-pattern.c')
           with (compiler / 'meson.build').open('a') as stream:
@@ -87,7 +87,7 @@ jobs:
               -o "target/mesa/build/pattern.$stage.spv" "validation/vulkan/shaders/pattern.$stage"
             spirv-val --target-env vulkan1.2 "target/mesa/build/pattern.$stage.spv"
           done
-          timeout 60 target/mesa/build/src/nouveau/compiler/metalvk-nak-pattern \
+          timeout 60 target/mesa/build/src/nouveau/vulkan/metalvk-nak-pattern \
             target/mesa/build/pattern.vert.spv target/mesa/build/pattern.frag.spv \
             | tee target/mesa/build/nak-pattern.log
       - name: Preserve baseline diagnostics
@@ -103,4 +103,6 @@ jobs:
             target/mesa/build/nak-pattern.log
             target/mesa/build/pattern.*.spv
             target/mesa/mesa-26.2.4/docs/license*
+            target/mesa/source.tar.xz
+            target/mesa/mesa-26.2.4/subprojects/
           if-no-files-found: warn

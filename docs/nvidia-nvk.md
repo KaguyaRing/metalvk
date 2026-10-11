@@ -1,0 +1,54 @@
+# NVK／NAK 接入：构建基线与 Darwin 边界
+
+用户已授权评估并引入 Mesa NVK／NAK。中立核心仍保持 MIT、SDK-free，不把 Mesa、Vulkan Loader 或 compiler 链接到 kext。当前新增的是可复现的上游 Linux 构建与离线 shader 验收，不是已实现的 Darwin ICD。
+
+## 固定来源与独立构建
+
+`backends/nvidia/mesa-source.json` 固定 Mesa **26.2.4**，官方 release archive 的 SHA-256 为 `bce5f7fbebb934373b86c999a064d52fb5065878dc57f287f95346648ec832e9`。下载要求 HTTPS、禁用代理、最多 128 MiB、180 秒；hash 不一致立即终止，不解包或编译。hash 固定保证取到相同 archive，不等于额外完成了发布者 PGP 签名认证。
+
+`.github/workflows/nvidia-mesa.yml` 独立构建完整 `libvulkan_nouveau.so`、NAK／NIL／NIR、内部 shader 生成器与 CPU 测试。当前目标为 Ubuntu 24.04；Rust 1.90.0、Meson 1.9.1、bindgen-cli 0.72.1、cbindgen 0.29.0 固定，LLVM／Clang 18 及发行版依赖由 apt 提供。Mesa 自带 wrap 固定其 Rust source 与 hash。**发行版 package 的 patch 版本尚未做完整供应链锁定，不宣称 bit-identical reproducible binaries。**
+
+完整依赖不能省略：NVK 内部 OpenCL kernels 需要 mesa-clc／LLVM／SPIRV-LLVM-Translator，NAK 与 NIL 使用 Rust 和 C binding 生成器。GL／Gallium／EGL／GLX 不启用；没有借 llvmpipe 或 MoltenVK 代替 NVIDIA 执行。
+
+构建验收检查真正的共享库与 `vk_icdGetInstanceProcAddr` 导出，并记录动态依赖。CPU 测试套件包括 `nak`、`nil`、`nvk_mme`、`mme_builder`；NAK 默认跳过需要实际 GPU／nvdisasm 的测试，不能把它们计入硬件覆盖。第一次配置因缺少 cbindgen 失败，已补齐；完整基线 CI `38144597556` 随后通过四个 suite。其日志还暴露 bindgen 调用缺失 rustfmt 的非阻塞错误，现已安装 rustfmt，不能仅凭绿色状态声称零诊断。
+
+## 项目 shader 的离线验收
+
+`validation/nvidia/nak-pattern.c` 是自有离线验收客户端；CI 将其附加到**独立解包的 Mesa build graph**，不替换任何上游 implementation。Meson overlay 位于 `validation/nvidia/nak-pattern.meson`，不进入中立库、内核库或生产驱动。
+
+路径为仓库 GLSL → glslang Vulkan 1.2 SPIR-V → spirv-val → Mesa SPIR-V-to-NIR → NAK preprocessing／SM89 machine-code encoding。编译目标的 SM89 与 48 warps/MP 是显式 offline target 参数，不伪称从 PCI／RM 查询到的设备属性。输入按 repository shader 验收使用，最多 1 MiB；CLI 不作为接受任意不可信 shader 的服务或安全沙箱，执行由 CI 的 timeout 限制。
+
+目标是取得两个非空、16-byte instruction-aligned 的 native stage binaries 与 NAK IR dump。该 dump 不是独立 nvdisasm 反汇编／指令差分证明。离线编译成功不证明 varying linkage、实际引擎 class、GPU VA、pushbuffer、渲染正确性或 NVIDIA macOS 可执行；它只填补图形编译路线的一项实证。
+
+## 实际 Darwin 接入点
+
+固定源码中 `src/nouveau/vulkan/nvkmd/nvkmd.h` 已提供抽象对象，但 `nvkmd.c:nvkmd_try_create_pdev_for_drm` 目前直接调用 Nouveau 实现。不能把 `/dev/dri` ioctl 翻译成空 UserClient 成功返回，更不能认为 NVK 可直接使用官方 NVIDIA RM。
+
+| 上游边界 | Darwin 实际需要 | 当前状态 |
+|---|---|---|
+| instance／physical discovery | IORegistry 枚举、只匹配已授权设备、可信内核身份与真实能力 | 只有只读 PCI／boot probe；无 NVK 枚举 |
+| `nvkmd_pdev`／`create_dev`／`sync_types` | 每 client 设备会话、RM 资源 ownership、原生 Vulkan sync implementation | 未接入 |
+| `nvkmd_dev:alloc_mem/alloc_tiled_mem` | GART／VRAM、DMA／IOMMU、真实 PTE kind 与 tile mode、预算及回滚 | wired CPU memory 不能替代 GPU BO |
+| `nvkmd_mem:map/unmap/sync_*` | 用户映射、缓存一致性、不可伪造的对象引用与 map 生命周期 | 未接入 |
+| `nvkmd_va:bind_mem/unbind` | GPU VA 范围、对齐／overflow 检查、页表与多资源事务 | 未接入 |
+| `nvkmd_ctx:wait/exec/bind/signal/flush/sync` | 真实 GPFIFO／pushbuffer 提交、engine classes、fence、超时与设备丢失 | 未接入 |
+| timestamp／VRAM usage | 真实计数器与内存使用量，不用 host time 或常数冒充 | 未接入 |
+| dma-buf／DRM fd／WSI | 不提供 Linux-only external memory／sync 扩展；后续分别实现 macOS handle／IOSurface／present | 未接入；离屏首验不需要显示 |
+
+路线为 **NVK／NAK 用户态 → Darwin nvkmd 实现 → NVIDIA 设备专用 UserClient → RM／GSP／DMA／GPU VA／提交**。这里的 transport 是 NVIDIA 后端私有实现，不恢复跨厂商 `mtvk_gpu_*` 提交 ABI；跨厂商应用接口仍为 Vulkan。硬件资源层必须先能运行，才发布 physical device／扩展／queue 能力。尚未实现的发现路径应拒绝设备，而不是注册一个“看起来可用”的 Vulkan GPU。
+
+Darwin 编译还必须替换／隔离 libdrm、ELF build-id、DRM sync、POSIX/Linux-only 调用与 WSI 依赖。Linux `.so`、manifest 和 CPU test 不能部署为 macOS `.dylib`；当前没有提交伪 Darwin adapter。
+
+## 许可与发布限制
+
+Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NIL 使用 MIT notices；NVIDIA headers、NIR、util、Vulkan runtime 等有相当数量的完整传统 notice、但没有 SPDX。**没有 SPDX 不等于无许可，更不能直接添加 metalvk 的 MIT 头覆盖。** 上游 Rust wraps 与 LLVM／libdrm 等还需各自 notice／dependency 审查。
+
+当前通过官方 archive 在构建目录取源码，不把整库重新冠以 metalvk MIT。CI 保存原始 source archive 与源码 subprojects 以保留原始 notices；artifact 是开发基线，仍不是经过完整 binary redistribution 审查的正式 release。发布 Darwin ICD 前必须逐文件核对最终 link closure、汇集 notices、记录动态与静态依赖以及各自义务。不得删除上游版权或复制 NVIDIA 闭源用户态实现。
+
+## 后续首个真实 draw 的验收顺序
+
+1. 完成项目 vertex／fragment 的离线 NAK 编译与 IR／binary 记录。
+2. 核验 RM 能提供与 NVK pushbuffer／engine class／page mapping 兼容的设备资源；实现电源／终止协调、可信匹配固件与 DMA，然后进入 GPU VA／queue／fence。
+3. 在独立 Darwin build graph 编译 NVK／NAK 及真实 nvkmd adapter，禁用尚不可用的扩展。不得把 Linux 构建通过标记为此步通过。
+4. 同一 `vulkan-render` 客户端通过明确 NVIDIA ICD 运行 draw → fence → 回读，验证全部像素与零验证诊断；需要隔离 macOS 真机。Windows 官方 ICD 结果只作 oracle，不作新后端结果。
+5. 之后再推进 Metal 翻译、目标 registry ID 与系统呈现。当前没有“完整 macOS 渲染管线已跑通”的证据。
