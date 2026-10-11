@@ -45,6 +45,14 @@ def main() -> int:
         "-o", str(build / "diagnostics-user.o"))
     run("xcrun", "clang", "-std=c11", *user, "-c", str(root / "src/base/status.c"),
         "-o", str(build / "status-user.o"))
+    display_units = ("control", "validation", "edid", "cta", "displayid", "edid-capabilities")
+    display_user_objects = []
+    for unit in display_units:
+        obj = build / f"display-{unit}-user.o"
+        run("xcrun", "clang", "-std=c11", *user, "-Wpedantic", "-c", str(root / f"src/display/{unit}.c"), "-o", str(obj))
+        display_user_objects.append(obj)
+    run("xcrun", "clang", "-std=c11", *user, "-Wpedantic", str(root / "tools/edid-inspect.c"),
+        *(str(obj) for obj in display_user_objects), str(build / "status-user.o"), "-o", str(build / "edid-inspect"))
     run("xcrun", "clang++", "-std=c++17", "-fobjc-arc", *user,
         str(root / "app/main.mm"), str(root / "app/Diagnostics.mm"),
         str(build / "diagnostics-user.o"), str(build / "status-user.o"),
@@ -80,7 +88,7 @@ def main() -> int:
         obj = build / f"runtime-{unit}-kernel.o"
         run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / f"src/runtime/{unit}.c"), "-o", str(obj))
         platform_objects.append(obj)
-    for unit in ("control", "validation"):
+    for unit in display_units:
         obj = build / f"display-{unit}-kernel.o"
         run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / f"src/display/{unit}.c"), "-o", str(obj))
         platform_objects.append(obj)
@@ -119,7 +127,8 @@ def main() -> int:
     for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci",
                  "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve",
                   "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push",
-                  "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover"):
+                  "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover",
+                  "mtvk_edid_parse", "mtvk_edid_select_capabilities"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")

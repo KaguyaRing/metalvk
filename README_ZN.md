@@ -12,6 +12,8 @@
 
 还已实现[显示后端控制 API](docs/display-backend.md)：模式／HDR 校验与传递、显示复位／配置恢复、运行时信号及失败关闭状态管理。硬件回调必须由厂商后端提供，没有默认模拟成功路径；目前不宣称物理显示／HDR 已支持。
 
+已增加[真实 EDID／CTA／DisplayID 字节解析](docs/edid.md)，并与后端核验的模式／HDR／位深能力取交集。支持的格式有明确边界，未处理特性会报告，不伪造数据；已测试 Windows 真实屏幕缓存，不等于硬件链路控制。
+
 ```text
 include/                     src/                      （模块布局镜像）
   platform.h                   base/status.c
@@ -19,7 +21,7 @@ include/                     src/                      （模块布局镜像）
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
   runtime/ init.h work.h time.h runtime/work.c time.c
-  display/ init.h control.h     display/control.c validation.c
+  display/ init.h control.h edid.h display/control.c validation.c edid.c cta.c displayid.c edid-capabilities.c
   ipc/   init.h diagnostics.h
 ```
 

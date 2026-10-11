@@ -12,6 +12,8 @@
 #define MTVK_DISPLAY_DEPTH_MIN 8u
 #define MTVK_DISPLAY_DEPTH_MAX 16u
 #define MTVK_DISPLAY_HDR_DEPTH_MIN 10u
+#define MTVK_DISPLAY_DEPTH_BIT(depth) (UINT32_C(1) << (depth))
+#define MTVK_DISPLAY_DEPTHS_ALL UINT32_C(0x1ff00)
 typedef enum mtvk_display_transfer {
     MTVK_DISPLAY_SDR = 0, MTVK_DISPLAY_PQ, MTVK_DISPLAY_HLG
 } mtvk_display_transfer;
@@ -31,6 +33,10 @@ typedef struct mtvk_display_capabilities {
     uint32_t mode_count, transfers, gamuts;
     uint8_t min_depth, max_depth;
     bool static_metadata;
+    /* Zero retains legacy min/max policy. Nonzero constrains exact allowed
+     * depths (bit N = N bpc), in addition to min/max; no invented intermediate
+     * deep-color depths when capabilities came from EDID. */
+    uint32_t depth_mask;
     mtvk_display_mode modes[MTVK_DISPLAY_MAX_MODES];
 } mtvk_display_capabilities;
 /* CTA static metadata semantics, NOT an HDMI/DP wire packet. xy units 1/50000;

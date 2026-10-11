@@ -6,7 +6,9 @@
 
 **已实现**：完整 progressive RGB 时序与刷新率运算、能力校验、SDR／PQ／HLG 与位深约束、PQ 静态 HDR 元数据校验及传递、厂商回调调用、配置事务状态、显示复位与配置恢复、热拔插／链路丢失／挂起通知、并发失效与关闭门槛。不是只有声明，也没有内建“模拟硬件成功”的后端。
 
-**未实现**：EDID／DisplayID 原始字节解析、HDMI／DP 数据包编码或实际链路训练、动态 HDR、YCbCr／色度抽样、交错扫描、VRR、vblank／page flip、IOSurface／WindowServer／IOFramebuffer／AGDC 接线、实际显示寄存器写入、整 GPU reset／DMA 生命周期。这些不能由本接口单独完成。本轮不宣称屏幕或 HDR 已在真机可用。
+后续已加入[EDID／CTA／DisplayID 字节解析及能力交集](edid.md)，包含真实缓存实测与明确的格式覆盖限制。
+
+**未实现**：HDMI／DP 数据包编码或实际链路训练、动态 HDR、YCbCr／色度抽样、交错扫描、VRR、vblank／page flip、IOSurface／WindowServer／IOFramebuffer／AGDC 接线、实际显示寄存器写入、整 GPU reset／DMA 生命周期。这些不能由本接口单独完成。本轮不宣称屏幕或 HDR 已在真机可用。
 
 ## 接口与数据方向
 

@@ -12,6 +12,8 @@ The default artifact, `libmetalvk.a`, contains the base layer, pure host-memory 
 
 It also implements a [display backend control API](docs/display-backend.md) (Chinese): mode/HDR validation and forwarding, display reset/replay, runtime signals and fail-closed state management. Hardware callbacks must be supplied by a vendor backend; none is silently simulated. No physical display/HDR support is claimed yet.
 
+[EDID/CTA/DisplayID parsing](docs/edid.md) (Chinese) now decodes actual byte snapshots and intersects identified timings/HDR/depth with backend-verified capabilities. Supported formats are bounded and explicitly listed; omitted features are reported, not fabricated. Windows monitor-cache samples have been tested, not hardware link control.
+
 ```text
 include/                     src/                      (mirrored module layout)
   platform.h                   base/status.c
@@ -19,7 +21,7 @@ include/                     src/                      (mirrored module layout)
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
   runtime/ init.h work.h time.h runtime/work.c time.c
-  display/ init.h control.h     display/control.c validation.c
+  display/ init.h control.h edid.h display/control.c validation.c edid.c cta.c displayid.c edid-capabilities.c
   ipc/   init.h diagnostics.h
 ```
 

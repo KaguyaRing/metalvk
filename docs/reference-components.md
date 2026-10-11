@@ -23,6 +23,8 @@ CLI 状态为 0：连接成功；1：错误；2：没有服务。输出 App/kext
 
 后续加入[通用显示后端控制 API](display-backend.md)，同一纯 C 实现进入 SDK-free 库和共享内核平台库，检查其已链接定义符号。可以让厂商提供模式／HDR、disable／reset 回调并报告运行时信号；诊断 kext 尚未绑定这些硬件回调，编译／链接不代表显示硬件可用。
 
+还已加入[EDID／CTA／DisplayID 解析与能力交集](edid.md)。原生构建提供 `target/macos/edid-inspect`，共享内核库使用相同解析代码，并核验已链接的 parser／selection 定义；没有执行真实 DDC／AUX 或模式切换。
+
 ## Vulkan 验证工具
 
 `include/vk`／`src/vk` 的可选共享上下文库使用官方 Vulkan API 与系统 Loader/ICD；默认基础库不依赖它。`validation/vulkan` 是此库的验证客户端。需要 Vulkan SDK（含头文件、Loader import library、glslangValidator、spirv-val、Khronos Validation Layer）、Clang、llvm-ar/ar。

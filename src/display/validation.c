@@ -22,9 +22,17 @@ mtvk_status mtvk_display_validate_capabilities(const mtvk_display_capabilities *
         !caps->gamuts || (caps->gamuts & ~MTVK_DISPLAY_GAMUTS_ALL) ||
         caps->min_depth < MTVK_DISPLAY_DEPTH_MIN || caps->min_depth > caps->max_depth ||
         caps->max_depth > MTVK_DISPLAY_DEPTH_MAX) return MTVK_INVALID_ARGUMENT;
+    if (caps->depth_mask) {
+        const uint32_t range = ((UINT32_C(1) << (caps->max_depth + 1u)) - 1u) &
+            ~((UINT32_C(1) << caps->min_depth) - 1u);
+        if (caps->depth_mask & ~range) return MTVK_INVALID_ARGUMENT;
+    }
     const uint32_t hdr = MTVK_DISPLAY_TRANSFER_BIT(MTVK_DISPLAY_PQ) | MTVK_DISPLAY_TRANSFER_BIT(MTVK_DISPLAY_HLG);
     if ((caps->transfers & hdr) && (caps->max_depth < MTVK_DISPLAY_HDR_DEPTH_MIN ||
-        !(caps->gamuts & MTVK_DISPLAY_GAMUT_BIT(MTVK_DISPLAY_BT2020)))) return MTVK_INVALID_ARGUMENT;
+        !(caps->gamuts & MTVK_DISPLAY_GAMUT_BIT(MTVK_DISPLAY_BT2020)) ||
+        (caps->depth_mask && !(caps->depth_mask &
+            (MTVK_DISPLAY_DEPTHS_ALL & ~((UINT32_C(1) << MTVK_DISPLAY_HDR_DEPTH_MIN) - 1u))))))
+        return MTVK_INVALID_ARGUMENT;
     if (caps->static_metadata && !(caps->transfers & MTVK_DISPLAY_TRANSFER_BIT(MTVK_DISPLAY_PQ)))
         return MTVK_INVALID_ARGUMENT;
     for (uint32_t i = 0; i < caps->mode_count; ++i) {
@@ -51,7 +59,9 @@ mtvk_status mtvk_display_validate_config(const mtvk_display_capabilities *caps,
         return MTVK_INVALID_ARGUMENT;
     if (!(caps->transfers & MTVK_DISPLAY_TRANSFER_BIT(config->transfer)) ||
         !(caps->gamuts & MTVK_DISPLAY_GAMUT_BIT(config->gamut)) ||
-        config->depth < caps->min_depth || config->depth > caps->max_depth) return MTVK_NOT_SUPPORTED;
+        config->depth < caps->min_depth || config->depth > caps->max_depth ||
+        (caps->depth_mask && !(caps->depth_mask & MTVK_DISPLAY_DEPTH_BIT(config->depth))))
+        return MTVK_NOT_SUPPORTED;
     bool found = false;
     for (uint32_t i = 0; i < caps->mode_count; ++i) if (caps->modes[i].id == config->mode_id) found = true;
     if (!found) return MTVK_NOT_SUPPORTED;

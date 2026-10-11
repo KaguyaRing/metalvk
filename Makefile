@@ -23,7 +23,7 @@ $(error CONFIG must be Release, Debug or Alpha)
 endif
 
 BUILD := target/$(CONFIG)
-SOURCES := src/base/status.c src/memory/budget.c src/runtime/work.c src/runtime/time.c src/display/validation.c src/display/control.c
+SOURCES := src/base/status.c src/memory/budget.c src/runtime/work.c src/runtime/time.c src/display/validation.c src/display/control.c src/display/edid.c src/display/cta.c src/display/displayid.c src/display/edid-capabilities.c
 OBJECTS := $(patsubst %.c,$(BUILD)/%.o,$(SOURCES))
 DIAG_OBJECT := $(BUILD)/src/ipc/diagnostics.o
 DIAG_TEST_OBJECT := $(BUILD)/tests/test_diagnostics.o
@@ -33,6 +33,8 @@ WORK_TEST_OBJECT := $(BUILD)/tests/test_work_queue.o
 WORK_THREAD_OBJECT := $(BUILD)/tests/test_work_threads.o
 DISPLAY_TEST_OBJECT := $(BUILD)/tests/test_display.o
 DISPLAY_THREAD_OBJECT := $(BUILD)/tests/test_display_threads.o
+EDID_TEST_OBJECT := $(BUILD)/tests/test_edid.o
+EDID_TOOL_OBJECT := $(BUILD)/tools/edid-inspect.o
 DIAG_LIBRARY := $(BUILD)/libmetalvk-diagnostics.a
 LIBRARY := $(BUILD)/libmetalvk.a
 
@@ -47,6 +49,7 @@ RUN_WORK_TEST = $(subst /,\,$(BUILD)/test-work-queue$(EXE))
 RUN_WORK_THREADS = $(subst /,\,$(BUILD)/test-work-threads$(EXE))
 RUN_DISPLAY_TEST = $(subst /,\,$(BUILD)/test-display$(EXE))
 RUN_DISPLAY_THREADS = $(subst /,\,$(BUILD)/test-display-threads$(EXE))
+RUN_EDID_TEST = $(subst /,\,$(BUILD)/test-edid$(EXE))
 THREAD_FLAGS :=
 remove_temporary = if exist "$(subst /,\,$@).tmp" del "$(subst /,\,$@).tmp"
 replace_archive = move /Y "$(subst /,\,$@).tmp" "$(subst /,\,$@)" >nul
@@ -59,6 +62,7 @@ RUN_WORK_TEST = ./$(BUILD)/test-work-queue
 RUN_WORK_THREADS = ./$(BUILD)/test-work-threads
 RUN_DISPLAY_TEST = ./$(BUILD)/test-display
 RUN_DISPLAY_THREADS = ./$(BUILD)/test-display-threads
+RUN_EDID_TEST = ./$(BUILD)/test-edid
 THREAD_FLAGS := -pthread
 remove_temporary = rm -f "$@.tmp"
 replace_archive = mv -f "$@.tmp" "$@"
@@ -106,7 +110,13 @@ $(BUILD)/test-display$(EXE): $(DISPLAY_TEST_OBJECT) $(LIBRARY)
 $(BUILD)/test-display-threads$(EXE): $(DISPLAY_THREAD_OBJECT) $(LIBRARY)
 	$(CXX) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 $(THREAD_FLAGS) $(LDFLAGS) $(DISPLAY_THREAD_OBJECT) $(LIBRARY) -o "$@"
 
-test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE) $(BUILD)/test-work-queue$(EXE) $(BUILD)/test-work-threads$(EXE) $(BUILD)/test-display$(EXE) $(BUILD)/test-display-threads$(EXE)
+$(BUILD)/test-edid$(EXE): $(EDID_TEST_OBJECT) $(LIBRARY)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(EDID_TEST_OBJECT) $(LIBRARY) -o "$@"
+
+$(BUILD)/edid-inspect$(EXE): $(EDID_TOOL_OBJECT) $(LIBRARY)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(EDID_TOOL_OBJECT) $(LIBRARY) -o "$@"
+
+test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE) $(BUILD)/test-work-queue$(EXE) $(BUILD)/test-work-threads$(EXE) $(BUILD)/test-display$(EXE) $(BUILD)/test-display-threads$(EXE) $(BUILD)/test-edid$(EXE) $(BUILD)/edid-inspect$(EXE)
 	$(RUN_DIAG_TEST)
 	$(RUN_MEMORY_TEST)
 	$(RUN_MEMORY_THREADS)
@@ -114,6 +124,7 @@ test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)
 	$(RUN_WORK_THREADS)
 	$(RUN_DISPLAY_TEST)
 	$(RUN_DISPLAY_THREADS)
+	$(RUN_EDID_TEST)
 
 clean:
 ifeq ($(OS),Windows_NT)
@@ -122,4 +133,4 @@ else
 	rm -rf target
 endif
 
--include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d)
+-include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d) $(EDID_TEST_OBJECT:.o=.d) $(EDID_TOOL_OBJECT:.o=.d)

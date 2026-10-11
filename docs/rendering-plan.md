@@ -51,7 +51,7 @@
 | R3 | Metal 离屏闭环 | 经 Metal API 创建资源与着色器，真实 draw/readback；不 CPU 伪造，不绕回 MoltenVK | 未实现 |
 | R4 | 系统设备发现／跨进程资源 | 未修改应用能发现设备；权限隔离、IOSurface 共享与同步验收 | 未实现 |
 | R5 | 可见呈现与显示管道 | WindowServer／framebuffer 呈现、模式协商、vblank、热插拔、睡眠唤醒 | 通用参数／事件状态管理已实现；硬件呈现及系统接线未实现 |
-| R6 | HDR／DisplayID／刷新率与故障恢复 | 元数据方向与格式有证据；模式切换、高刷、GPU hang/reset、恢复测试 | 通用 HDR／显示复位 API 已实现；DisplayID 解析、硬件 HDR 和整 GPU 恢复未实现 |
+| R6 | HDR／DisplayID／刷新率与故障恢复 | 元数据方向与格式有证据；模式切换、高刷、GPU hang/reset、恢复测试 | 通用 HDR／显示复位 API 与首批 EDID／CTA／DisplayID 解析已实现；硬件 HDR 和整 GPU 恢复未实现 |
 | R7 | macOS 15/26 与多厂商覆盖 | 逐 OS build／GPU／驱动组合真机记录 | 未验收 |
 
 R2 必须先明确厂商 ICD 在 macOS 上的可用执行后端、固件依赖、许可证与 OS 适配边界。
@@ -67,6 +67,8 @@ MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，�
 ## 系统 Metal 验收门
 
 显示后端现在可接入[模式／HDR、运行时信号与显示复位控制 API](display-backend.md)。生产库执行真实校验、事务状态与厂商回调，不包含模拟成功后端；缺失硬件回调拒绝操作。测试替身仅验证 API 契约，不升级 R5／R6 的硬件验收状态，也不说明 Apple 私有 HDR 接口已核验。
+
+首批[EDID／CTA／DisplayID 字节解析](edid.md)已接入同一通用／内核库，使用真实 Windows 屏幕缓存解析高刷时序和 HDR 能力，并拒绝截断／额外块。能力结果必须与厂商核验结果取交集；不把 sink EDID 的 desired luminance 当作内容 mastering metadata，不提供默认屏幕或猜测时序。尚需完整标准时序覆盖、flip／vblank 通用完成管理，再进入厂商实际读取／链路／扫描输出阶段。
 
 独立客户端 `validation/metal/render.mm` 已实现显式 registry ID 选择、MSL 运行时编译、真实 Metal render/blit、限时完成等待与全图校验；使用方法见 [独立组件](reference-components.md)。它不是 Metal → Vulkan 翻译器，也不注册设备。后续 R3/R4 必须以自己的 accelerator registry ID 运行，不准回落到系统默认 GPU。
 
