@@ -32,6 +32,10 @@ int main(void) {
     CHECK(mtvk_work_init(&queue) == MTVK_OK);
     CHECK(mtvk_work_push(&queue, (mtvk_work_item){0}) == MTVK_INVALID_ARGUMENT);
     CHECK(mtvk_work_take(&queue, NULL) == MTVK_INVALID_ARGUMENT);
+    // Start at a nonzero head so full rounds wrap their tail across index zero.
+    CHECK(mtvk_work_push(&queue, item) == MTVK_OK);
+    CHECK(mtvk_work_take(&queue, &taken) == MTVK_OK);
+    CHECK(mtvk_work_finish(&queue) == MTVK_OK);
     unsigned counters[MTVK_WORK_CAPACITY] = {0};
     for (unsigned round = 0; round < 20; ++round) {
         for (unsigned i = 0; i < MTVK_WORK_CAPACITY; ++i)

@@ -9,8 +9,9 @@
 class MetalVKMemoryDomain;
 class MetalVKWorkQueue;
 /* Wired host memory only: not contiguous physical memory, DMA or GPU VA.
- * One owned OSObject reference is returned. All methods and the final release
- * require sleepable thread context, outside interrupt/spinlock/gated callbacks.
+ * One owned OSObject reference is returned. Allocation and the final release
+ * require sleepable thread context, outside interrupt/spinlock/gated callbacks;
+ * deferRelease is the explicit IRQ-safe transfer of an existing reference.
  * The byte pointer is borrowed until the buffer's final release; callers must
  * serialize access to its payload. Never export it through a UserClient. */
 class MetalVKWiredBuffer final : public OSObject {

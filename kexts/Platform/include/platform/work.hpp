@@ -19,7 +19,9 @@ struct MetalVKWorkStats {
  * Callers hold a queue reference through each call. Callback code/context must
  * remain alive until execution. A successful enqueue transfers task ownership;
  * rejection leaves it with the caller. No callbacks run while our locks are held.
- * close drains, never cancels accepted jobs. Timeout preserves call/anchor refs. */
+ * close drains, never cancels accepted jobs. Timeout preserves call/anchor refs.
+ * Success is not a module-unload barrier: stop IRQ/producers and establish
+ * module-level call quiescence before unloading callback code. */
 class MetalVKWorkQueue final : public OSObject {
     OSDeclareDefaultStructors(MetalVKWorkQueue)
     IOSimpleLock *lock_ = nullptr;
