@@ -37,6 +37,9 @@ EDID_TEST_OBJECT := $(BUILD)/tests/test_edid.o
 EDID_TOOL_OBJECT := $(BUILD)/tools/edid-inspect.o
 DIAG_LIBRARY := $(BUILD)/libmetalvk-diagnostics.a
 LIBRARY := $(BUILD)/libmetalvk.a
+NVIDIA_OBJECT := $(BUILD)/backends/nvidia/src/boot.o
+NVIDIA_TEST_OBJECT := $(BUILD)/tests/test_nvidia_boot.o
+NVIDIA_LIBRARY := $(BUILD)/libmetalvk-nvidia.a
 
 ifeq ($(OS),Windows_NT)
 SHELL := cmd.exe
@@ -50,6 +53,7 @@ RUN_WORK_THREADS = $(subst /,\,$(BUILD)/test-work-threads$(EXE))
 RUN_DISPLAY_TEST = $(subst /,\,$(BUILD)/test-display$(EXE))
 RUN_DISPLAY_THREADS = $(subst /,\,$(BUILD)/test-display-threads$(EXE))
 RUN_EDID_TEST = $(subst /,\,$(BUILD)/test-edid$(EXE))
+RUN_NVIDIA_TEST = $(subst /,\,$(BUILD)/test-nvidia-boot$(EXE))
 THREAD_FLAGS :=
 remove_temporary = if exist "$(subst /,\,$@).tmp" del "$(subst /,\,$@).tmp"
 replace_archive = move /Y "$(subst /,\,$@).tmp" "$(subst /,\,$@)" >nul
@@ -63,12 +67,13 @@ RUN_WORK_THREADS = ./$(BUILD)/test-work-threads
 RUN_DISPLAY_TEST = ./$(BUILD)/test-display
 RUN_DISPLAY_THREADS = ./$(BUILD)/test-display-threads
 RUN_EDID_TEST = ./$(BUILD)/test-edid
+RUN_NVIDIA_TEST = ./$(BUILD)/test-nvidia-boot
 THREAD_FLAGS := -pthread
 remove_temporary = rm -f "$@.tmp"
 replace_archive = mv -f "$@.tmp" "$@"
 endif
 
-.PHONY: all test clean
+.PHONY: all test test-nvidia clean
 all: $(LIBRARY)
 
 $(LIBRARY): $(OBJECTS)
@@ -116,6 +121,19 @@ $(BUILD)/test-edid$(EXE): $(EDID_TEST_OBJECT) $(LIBRARY)
 $(BUILD)/edid-inspect$(EXE): $(EDID_TOOL_OBJECT) $(LIBRARY)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(EDID_TOOL_OBJECT) $(LIBRARY) -o "$@"
 
+$(NVIDIA_OBJECT) $(NVIDIA_TEST_OBJECT): CPPFLAGS += -Ibackends/nvidia/include
+
+$(NVIDIA_LIBRARY): $(NVIDIA_OBJECT)
+	@$(remove_temporary)
+	$(AR) rcs "$@.tmp" $(NVIDIA_OBJECT)
+	@$(replace_archive)
+
+$(BUILD)/test-nvidia-boot$(EXE): $(NVIDIA_TEST_OBJECT) $(NVIDIA_LIBRARY)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(NVIDIA_TEST_OBJECT) $(NVIDIA_LIBRARY) -o "$@"
+
+test-nvidia: $(BUILD)/test-nvidia-boot$(EXE)
+	$(RUN_NVIDIA_TEST)
+
 test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE) $(BUILD)/test-work-queue$(EXE) $(BUILD)/test-work-threads$(EXE) $(BUILD)/test-display$(EXE) $(BUILD)/test-display-threads$(EXE) $(BUILD)/test-edid$(EXE) $(BUILD)/edid-inspect$(EXE)
 	$(RUN_DIAG_TEST)
 	$(RUN_MEMORY_TEST)
@@ -133,4 +151,4 @@ else
 	rm -rf target
 endif
 
--include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d) $(EDID_TEST_OBJECT:.o=.d) $(EDID_TOOL_OBJECT:.o=.d)
+-include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d) $(EDID_TEST_OBJECT:.o=.d) $(EDID_TOOL_OBJECT:.o=.d) $(NVIDIA_OBJECT:.o=.d) $(NVIDIA_TEST_OBJECT:.o=.d)

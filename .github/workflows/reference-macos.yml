@@ -36,6 +36,9 @@ jobs:
           make test CONFIG=Debug
           make test CONFIG=Release
           make test CONFIG=Alpha
+          make test-nvidia CONFIG=Debug
+          make test-nvidia CONFIG=Release
+          make test-nvidia CONFIG=Alpha
       - name: Native App and kext
         run: |
           sw_vers

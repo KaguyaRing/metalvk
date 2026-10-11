@@ -51,7 +51,7 @@ Windows 使用 `mingw32-make` 与 `AR=llvm-ar`。
 
 ## 独立组件（不进入默认库）
 
-- `backends/`：厂商 kext 原型目录，尚未接入。
+- `backends/nvidia/`：独立 PCI／AD107 boot register 校验库及可显式启用的只读 BAR0 kext probe；默认关闭，尚无 RM／GSP 启动、DMA、GPU 执行或显示支持。详见 [NVIDIA 后端边界](docs/nvidia-backend.md)。`make test-nvidia CONFIG=Release` 运行宿主夹具测试，不是硬件测试。
 - `include/vk/`、`src/vk/`：共享硬件 Vulkan 上下文，独立构建为 `libmetalvk-vulkan.a`，需要 Vulkan SDK／Loader。
 - `kexts/Platform/`：共享 PCI 快照、生命周期、只读 UserClient、受预算约束的 wired 宿主内存域、延后 CPU 工作与 uptime 服务，构建为 `libmetalvk-kernel-platform.a` 并链接进诊断 kext；内存／工作服务尚未绑定 RM 或暴露给用户态，尚无 GPU 执行能力。详见[所有权与执行限制](docs/kernel-runtime.md)。
 - `app/`、`include/ipc`、`src/ipc`：只读诊断 App 与独立诊断协议。

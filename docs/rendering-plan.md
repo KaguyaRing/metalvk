@@ -39,6 +39,7 @@
 - `libmetalvk-vulkan.a`：可选用户态 Vulkan 上下文，按真实队列能力选设备；不进入内核。
 - `libmetalvk-kernel-platform.a`：原生内核公共模块；包含 PCI 快照、生命周期、只读诊断 UserClient，以及独立的 wired 宿主内存域、CPU 工作队列与 uptime。厂商子类保留精确匹配。内存／工作服务尚未绑定 RM／用户态入口。静态链接进 kext，不是独立加载的驱动。
 - `libmetalvk-diagnostics.a`：独立线协议；诊断可用不代表 Metal 可用。
+- `libmetalvk-nvidia.a`／`libmetalvk-nvidia-kernel.a`：独立 NVIDIA PCI／boot 身份验证与原生只读硬件入口，后者链接进 kext；不进入中立核心，默认关闭 MMIO probe。详见 [NVIDIA 后端](nvidia-backend.md)，尚未启动 RM／GSP／DMA 或通过 NVIDIA 真机加载。
 - 后续采用平台管理器协调内存、提交、同步、显示、恢复子管理器；实现具体功能时才增加模块，不增加假成功入口。
 
 ## 按依赖推进的门槛

@@ -51,7 +51,7 @@ On Windows, use `mingw32-make` and `AR=llvm-ar`.
 
 ## Separate components (excluded from the default library)
 
-- `backends/`: vendor kext prototype directories; not yet integrated.
+- `backends/nvidia/`: separate PCI/AD107 boot-register validation library and opt-in, read-only BAR0 kext probe. Disabled by default; no RM/GSP startup, DMA, GPU execution or display support. See [NVIDIA backend boundaries](docs/nvidia-backend.md) (Chinese). `make test-nvidia CONFIG=Release` runs host fixture tests, not hardware tests.
 - `include/vk/`, `src/vk/`: shared hardware Vulkan context, built separately as `libmetalvk-vulkan.a`; requires the Vulkan SDK/loader.
 - `kexts/Platform/`: shared PCI snapshot, service lifecycle, read-only UserClient, bounded wired host-memory domains, deferred CPU work and uptime services, built as `libmetalvk-kernel-platform.a` and linked into the diagnostic kext. Memory/work services are not yet bound to RM or exposed to userspace. No GPU execution yet. See [ownership and runtime limits](docs/kernel-runtime.md) (Chinese).
 - `app/`, `include/ipc`, `src/ipc`: a read-only diagnostics app and a separate diagnostics protocol.
