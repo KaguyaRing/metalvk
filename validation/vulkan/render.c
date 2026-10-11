@@ -18,6 +18,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+extern VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out);
+extern VkResult mtvk_vk_close(mtvk_vk_context *context);
+extern VkDevice mtvk_vk_device(const mtvk_vk_context *context);
+extern VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *context);
+extern VkQueue mtvk_vk_queue(const mtvk_vk_context *context);
+extern uint32_t mtvk_vk_queue_family(const mtvk_vk_context *context);
+extern const VkPhysicalDeviceProperties *mtvk_vk_properties(const mtvk_vk_context *context);
+extern const VkPhysicalDeviceDriverProperties *mtvk_vk_driver(const mtvk_vk_context *context);
+extern const VkPhysicalDeviceMemoryProperties *mtvk_vk_memory(const mtvk_vk_context *context);
+
 #define MTVK_RENDER_EXTENT 64u
 #define MTVK_RENDER_FORMAT VK_FORMAT_R8G8B8A8_UNORM
 #define MTVK_RENDER_FENCE_NS UINT64_C(5000000000)
