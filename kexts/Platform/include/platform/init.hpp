@@ -6,4 +6,6 @@
 #include "platform/client.hpp"
 #include "platform/pci.hpp"
 #include "platform/memory.hpp"
+#include "platform/context.hpp"
+#include "platform/work.hpp"
 #endif

@@ -5,4 +5,5 @@
 #define METALVK_H
 #include "base/init.h"
 #include "memory/init.h"
+#include "runtime/init.h"
 #endif

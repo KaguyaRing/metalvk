@@ -1,14 +1,12 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 #include "platform/memory.hpp"
+#include "platform/context.hpp"
+#include "platform/work.hpp"
 #include <mach/vm_param.h>
-#include <machine/machine_routines.h>
-#include <kern/sched_prim.h>
 #include <libkern/libkern.h>
 namespace {
-bool sleepable() {
-    return !ml_at_interrupt_context() && preemption_enabled() && ml_get_interrupts_enabled();
-}
+void releaseBuffer(void *context) { static_cast<MetalVKWiredBuffer *>(context)->release(); }
 IOReturn translate(mtvk_status status) {
     switch (status) {
         case MTVK_OK: return kIOReturnSuccess;
@@ -25,7 +23,7 @@ OSDefineMetaClassAndStructors(MetalVKWiredBuffer, OSObject)
 IOReturn MetalVKMemoryDomain::create(const mtvk_memory_limits *limits, MetalVKMemoryDomain **out) {
     if (!out) return kIOReturnBadArgument;
     *out = nullptr;
-    if (!sleepable()) return kIOReturnCannotLock;
+    if (!metalvk::platform::sleepable()) return kIOReturnCannotLock;
     mtvk_memory_budget budget {};
     const mtvk_status status = mtvk_memory_budget_init(&budget, limits);
     if (status != MTVK_OK) return translate(status);
@@ -44,7 +42,7 @@ bool MetalVKMemoryDomain::initWithBudget(const mtvk_memory_budget &budget) {
 IOReturn MetalVKMemoryDomain::allocate(uint64_t length, MetalVKWiredBuffer **out) {
     if (!out) return kIOReturnBadArgument;
     *out = nullptr;
-    if (!sleepable()) return kIOReturnCannotLock;
+    if (!metalvk::platform::sleepable()) return kIOReturnCannotLock;
     if (!lock_) return kIOReturnNotReady;
     uint64_t charge = 0;
     mtvk_status status = mtvk_memory_charge(length, PAGE_SIZE, &charge);
@@ -93,7 +91,7 @@ IOReturn MetalVKMemoryDomain::finishReservation(uint64_t charge) {
     return kIOReturnSuccess;
 }
 IOReturn MetalVKMemoryDomain::close() {
-    if (!sleepable()) return kIOReturnCannotLock;
+    if (!metalvk::platform::sleepable()) return kIOReturnCannotLock;
     if (!lock_) return kIOReturnNotReady;
     IOLockLock(lock_);
     const mtvk_status status = mtvk_memory_budget_close(&budget_);
@@ -102,7 +100,7 @@ IOReturn MetalVKMemoryDomain::close() {
 }
 IOReturn MetalVKMemoryDomain::copyBudget(mtvk_memory_budget *out) {
     if (!out) return kIOReturnBadArgument;
-    if (!sleepable()) return kIOReturnCannotLock;
+    if (!metalvk::platform::sleepable()) return kIOReturnCannotLock;
     if (!lock_) return kIOReturnNotReady;
     IOLockLock(lock_);
     *out = budget_;
@@ -125,4 +123,8 @@ void MetalVKWiredBuffer::free() {
         (void)owner->finishReservation(charge_);
     }
     OSObject::free();
+}
+IOReturn MetalVKWiredBuffer::deferRelease(MetalVKWorkQueue *queue) {
+    if (!queue) return kIOReturnBadArgument;
+    return queue->enqueue(releaseBuffer, this);
 }

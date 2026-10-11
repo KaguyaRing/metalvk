@@ -7,6 +7,7 @@
 #include <libkern/c++/OSObject.h>
 #include "memory/init.h"
 class MetalVKMemoryDomain;
+class MetalVKWorkQueue;
 /* Wired host memory only: not contiguous physical memory, DMA or GPU VA.
  * One owned OSObject reference is returned. All methods and the final release
  * require sleepable thread context, outside interrupt/spinlock/gated callbacks.
@@ -23,6 +24,9 @@ class MetalVKWiredBuffer final : public OSObject {
 public:
     void *bytes() const { return bytes_; }
     uint64_t length() const { return length_; }
+    /* IRQ-safe enqueue of one OWNED buffer reference. On success the caller
+     * must not release that reference; on full/offline it still owns it. */
+    IOReturn deferRelease(MetalVKWorkQueue *queue);
 };
 /* A parent domain owns the immutable policy and serializes quota/state. Each
  * reservation retains the domain until allocation rollback or buffer release.

@@ -76,13 +76,18 @@ def main() -> int:
     run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / "src/memory/budget.c"),
         "-o", str(build / "budget-kernel.o"))
     platform_objects.append(build / "budget-kernel.o")
-    for unit in ("pci", "device", "client", "memory"):
+    for unit in ("work", "time"):
+        obj = build / f"runtime-{unit}-kernel.o"
+        run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / f"src/runtime/{unit}.c"), "-o", str(obj))
+        platform_objects.append(obj)
+    for unit in ("pci", "device", "client", "memory", "context", "work"):
         obj = build / f"platform-{unit}.o"
         run("xcrun", "clang++", *kernel_cpp, "-c",
             str(root / f"kexts/Platform/src/platform/{unit}.cpp"), "-o", str(obj))
         platform_objects.append(obj)
-    run("xcrun", "clang++", *kernel_cpp, "--analyze", "-Xanalyzer", "-analyzer-output=text",
-        str(root / "kexts/Platform/src/platform/memory.cpp"))
+    for unit in ("memory", "context", "work"):
+        run("xcrun", "clang++", *kernel_cpp, "--analyze", "-Xanalyzer", "-analyzer-output=text",
+            str(root / f"kexts/Platform/src/platform/{unit}.cpp"))
     platform_library = build / "libmetalvk-kernel-platform.a"
     # libtool replaces the archive, avoiding stale members from previous builds.
     run("xcrun", "libtool", "-static", "-o", str(platform_library),
@@ -101,12 +106,13 @@ def main() -> int:
                  "_malloc", "_calloc", "_realloc", "_free", "_pthread", "_objc")
     for line in imports.splitlines():
         symbol = line.split()[-1] if line.split() else ""
-        if symbol.startswith(forbidden):
+        if symbol.startswith(forbidden) or symbol in ("_thread_call_cancel_wait", "_thread_call_allocate_with_priority"):
             raise ValueError(f"Kernel binary imports a user/runtime symbol: {symbol}")
     symbols = subprocess.check_output(
         ["xcrun", "nm", "-g", str(kext / "MacOS/MetalVK")], text=True)
     for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci",
-                 "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve"):
+                 "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve",
+                 "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")
