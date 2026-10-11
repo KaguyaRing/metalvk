@@ -35,9 +35,9 @@
   → IOFramebuffer／显示协商／显示硬件
 ```
 
-- `libmetalvk.a`：SDK-free 基础层与纯宿主内存配额逻辑；仍无平台／厂商依赖。
+- `libmetalvk.a`：SDK-free 基础层、宿主内存配额、CPU 工作记账与 deadline 运算；仍无平台／厂商依赖。
 - `libmetalvk-vulkan.a`：可选用户态 Vulkan 上下文，按真实队列能力选设备；不进入内核。
-- `libmetalvk-kernel-platform.a`：原生内核公共模块；包含 PCI 快照、生命周期、只读诊断 UserClient，以及独立的 wired 宿主内存域。厂商子类保留精确匹配。内存域尚未绑定 RM／用户态入口。静态链接进 kext，不是独立加载的驱动。
+- `libmetalvk-kernel-platform.a`：原生内核公共模块；包含 PCI 快照、生命周期、只读诊断 UserClient，以及独立的 wired 宿主内存域、CPU 工作队列与 uptime。厂商子类保留精确匹配。内存／工作服务尚未绑定 RM／用户态入口。静态链接进 kext，不是独立加载的驱动。
 - `libmetalvk-diagnostics.a`：独立线协议；诊断可用不代表 Metal 可用。
 - 后续采用平台管理器协调内存、提交、同步、显示、恢复子管理器；实现具体功能时才增加模块，不增加假成功入口。
 
@@ -61,6 +61,8 @@ MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，�
 ### R2 前置：宿主内存
 
 已加入独立的纯 C 预算／关闭状态与原生 wired 内存域，详见 [宿主内存模块](kernel-memory.md)。域关闭与待发布分配同锁核验，失败回滚、不释放仍被引用的 backing；没有将 CPU 指针当作 DMA 地址，也未声称已绑定官方 RM 回调。原生编译／符号检查通过不等于已经在目标内核中执行这些分配／释放方法。
+
+后续已加入[有界工作队列、延后释放与 uptime](kernel-runtime.md)。回调锁外执行，停止接受与投递同锁，close 超时保留在途资源；未实现 IRQ 分配池或驱动卸载的模块级静止屏障，也未启用 DMA／GSP／GPU 命令。
 
 ## 系统 Metal 验收门
 

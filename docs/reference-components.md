@@ -19,6 +19,8 @@ CLI 状态为 0：连接成功；1：错误；2：没有服务。输出 App/kext
 
 共享库还包含 [wired 宿主内存域](kernel-memory.md)，由纯 C 配额逻辑与 IOBufferMemoryDescriptor 实现。它是后续 RM 平台服务的前置模块，尚未被诊断设备或用户态入口调用；不具备 DMA 或 GPU 提交功能。
 
+后续增加[有界 CPU 工作队列与 uptime](kernel-runtime.md)，允许普通 IRQ 投递已有缓冲区引用并在线程回调释放。关闭排空任务，超时保留在途资源；不提供完整 kext 卸载屏障，也未建立 IRQ 内存池或 RM 等待／锁回调。
+
 ## Vulkan 验证工具
 
 `include/vk`／`src/vk` 的可选共享上下文库使用官方 Vulkan API 与系统 Loader/ICD；默认基础库不依赖它。`validation/vulkan` 是此库的验证客户端。需要 Vulkan SDK（含头文件、Loader import library、glslangValidator、spirv-val、Khronos Validation Layer）、Clang、llvm-ar/ar。

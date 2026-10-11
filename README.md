@@ -8,7 +8,7 @@ The neutral execution interface is the **Vulkan specification**, not a custom GP
 
 ## Current status
 
-The default artifact, `libmetalvk.a`, contains the base layer and pure host-memory quota accounting, using standard C headers. It does not include vendor SDKs, hardware drivers, kernel code, private ioctls, a Vulkan implementation, or a shader compiler. The diagnostics protocol is built separately as `libmetalvk-diagnostics.a`.
+The default artifact, `libmetalvk.a`, contains the base layer, pure host-memory quota accounting, bounded CPU work accounting and deadline arithmetic, using standard C headers. It does not include vendor SDKs, hardware drivers, kernel code, private ioctls, a Vulkan implementation, or a shader compiler. The diagnostics protocol is built separately as `libmetalvk-diagnostics.a`.
 
 ```text
 include/                     src/                      (mirrored module layout)
@@ -16,6 +16,7 @@ include/                     src/                      (mirrored module layout)
   metalvk.h                    ipc/diagnostics.c
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
+  runtime/ init.h work.h time.h runtime/work.c time.c
   ipc/   init.h diagnostics.h
 ```
 
@@ -47,7 +48,7 @@ On Windows, use `mingw32-make` and `AR=llvm-ar`.
 
 - `backends/`: vendor kext prototype directories; not yet integrated.
 - `include/vk/`, `src/vk/`: shared hardware Vulkan context, built separately as `libmetalvk-vulkan.a`; requires the Vulkan SDK/loader.
-- `kexts/Platform/`: shared PCI snapshot, service lifecycle, read-only UserClient, and bounded wired host-memory domains, built as `libmetalvk-kernel-platform.a` and linked into the diagnostic kext. The memory service is not yet bound to RM or exposed to userspace. No GPU execution yet.
+- `kexts/Platform/`: shared PCI snapshot, service lifecycle, read-only UserClient, bounded wired host-memory domains, deferred CPU work and uptime services, built as `libmetalvk-kernel-platform.a` and linked into the diagnostic kext. Memory/work services are not yet bound to RM or exposed to userspace. No GPU execution yet. See [ownership and runtime limits](docs/kernel-runtime.md) (Chinese).
 - `app/`, `include/ipc`, `src/ipc`: a read-only diagnostics app and a separate diagnostics protocol.
 - `validation/vulkan/`: validation tools for real Vulkan ICDs, not the neutral layer or a production backend. Successful compilation does not prove GPU execution or Metal integration.
 - `.github/workflows/reference-macos.yml`: a manually triggered platform reference build. See [separate components](docs/reference-components.md) (Chinese).

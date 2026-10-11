@@ -8,7 +8,7 @@
 
 ## 当前状态
 
-默认产物 `libmetalvk.a` 编译基础层及纯宿主内存配额逻辑，只使用标准 C 头文件；不含厂商 SDK、硬件驱动、内核代码、私有 ioctl、Vulkan 实现或着色器编译器。诊断协议是独立产物 `libmetalvk-diagnostics.a`。
+默认产物 `libmetalvk.a` 编译基础层、纯宿主内存配额、有界 CPU 工作记账与 deadline 运算，只使用标准 C 头文件；不含厂商 SDK、硬件驱动、内核代码、私有 ioctl、Vulkan 实现或着色器编译器。诊断协议是独立产物 `libmetalvk-diagnostics.a`。
 
 ```text
 include/                     src/                      （模块布局镜像）
@@ -16,6 +16,7 @@ include/                     src/                      （模块布局镜像）
   metalvk.h                    ipc/diagnostics.c
   base/  init.h status.h span.h
   memory/ init.h budget.h       memory/budget.c
+  runtime/ init.h work.h time.h runtime/work.c time.c
   ipc/   init.h diagnostics.h
 ```
 
@@ -47,7 +48,7 @@ Windows 使用 `mingw32-make` 与 `AR=llvm-ar`。
 
 - `backends/`：厂商 kext 原型目录，尚未接入。
 - `include/vk/`、`src/vk/`：共享硬件 Vulkan 上下文，独立构建为 `libmetalvk-vulkan.a`，需要 Vulkan SDK／Loader。
-- `kexts/Platform/`：共享 PCI 快照、生命周期、只读 UserClient 和受预算约束的 wired 宿主内存域，构建为 `libmetalvk-kernel-platform.a` 并链接进诊断 kext；内存服务尚未绑定 RM 或暴露给用户态，尚无 GPU 执行能力。
+- `kexts/Platform/`：共享 PCI 快照、生命周期、只读 UserClient、受预算约束的 wired 宿主内存域、延后 CPU 工作与 uptime 服务，构建为 `libmetalvk-kernel-platform.a` 并链接进诊断 kext；内存／工作服务尚未绑定 RM 或暴露给用户态，尚无 GPU 执行能力。详见[所有权与执行限制](docs/kernel-runtime.md)。
 - `app/`、`include/ipc`、`src/ipc`：只读诊断 App 与独立诊断协议。
 - `validation/vulkan/`：真实 Vulkan ICD 的验证工具，不是通用层或生产后端。编译成功不证明 GPU 执行或 Metal 接入成功。
 - `.github/workflows/reference-macos.yml`：仅手动执行的平台参考构建。用法见 [独立组件](docs/reference-components.md)。
