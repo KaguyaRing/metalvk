@@ -37,9 +37,10 @@ EDID_TEST_OBJECT := $(BUILD)/tests/test_edid.o
 EDID_TOOL_OBJECT := $(BUILD)/tools/edid-inspect.o
 DIAG_LIBRARY := $(BUILD)/libmetalvk-diagnostics.a
 LIBRARY := $(BUILD)/libmetalvk.a
-NVIDIA_OBJECTS := $(BUILD)/backends/nvidia/src/boot.o $(BUILD)/backends/nvidia/src/transport.o
+NVIDIA_OBJECTS := $(BUILD)/backends/nvidia/src/boot.o $(BUILD)/backends/nvidia/src/transport.o $(BUILD)/backends/nvidia/src/session.o
 NVIDIA_TEST_OBJECT := $(BUILD)/tests/test_nvidia_boot.o
 NVIDIA_TRANSPORT_TEST_OBJECT := $(BUILD)/tests/test_nvidia_transport.o
+NVIDIA_SESSION_TEST_OBJECT := $(BUILD)/tests/test_nvidia_session.o
 NVIDIA_LIBRARY := $(BUILD)/libmetalvk-nvidia.a
 
 ifeq ($(OS),Windows_NT)
@@ -56,6 +57,7 @@ RUN_DISPLAY_THREADS = $(subst /,\,$(BUILD)/test-display-threads$(EXE))
 RUN_EDID_TEST = $(subst /,\,$(BUILD)/test-edid$(EXE))
 RUN_NVIDIA_TEST = $(subst /,\,$(BUILD)/test-nvidia-boot$(EXE))
 RUN_NVIDIA_TRANSPORT_TEST = $(subst /,\,$(BUILD)/test-nvidia-transport$(EXE))
+RUN_NVIDIA_SESSION_TEST = $(subst /,\,$(BUILD)/test-nvidia-session$(EXE))
 THREAD_FLAGS :=
 remove_temporary = if exist "$(subst /,\,$@).tmp" del "$(subst /,\,$@).tmp"
 replace_archive = move /Y "$(subst /,\,$@).tmp" "$(subst /,\,$@)" >nul
@@ -71,6 +73,7 @@ RUN_DISPLAY_THREADS = ./$(BUILD)/test-display-threads
 RUN_EDID_TEST = ./$(BUILD)/test-edid
 RUN_NVIDIA_TEST = ./$(BUILD)/test-nvidia-boot
 RUN_NVIDIA_TRANSPORT_TEST = ./$(BUILD)/test-nvidia-transport
+RUN_NVIDIA_SESSION_TEST = ./$(BUILD)/test-nvidia-session
 THREAD_FLAGS := -pthread
 remove_temporary = rm -f "$@.tmp"
 replace_archive = mv -f "$@.tmp" "$@"
@@ -124,7 +127,7 @@ $(BUILD)/test-edid$(EXE): $(EDID_TEST_OBJECT) $(LIBRARY)
 $(BUILD)/edid-inspect$(EXE): $(EDID_TOOL_OBJECT) $(LIBRARY)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(EDID_TOOL_OBJECT) $(LIBRARY) -o "$@"
 
-$(NVIDIA_OBJECTS) $(NVIDIA_TEST_OBJECT) $(NVIDIA_TRANSPORT_TEST_OBJECT): CPPFLAGS += -Ibackends/nvidia/include
+$(NVIDIA_OBJECTS) $(NVIDIA_TEST_OBJECT) $(NVIDIA_TRANSPORT_TEST_OBJECT) $(NVIDIA_SESSION_TEST_OBJECT): CPPFLAGS += -Ibackends/nvidia/include
 
 $(NVIDIA_LIBRARY): $(NVIDIA_OBJECTS)
 	@$(remove_temporary)
@@ -137,9 +140,13 @@ $(BUILD)/test-nvidia-boot$(EXE): $(NVIDIA_TEST_OBJECT) $(NVIDIA_LIBRARY)
 $(BUILD)/test-nvidia-transport$(EXE): $(NVIDIA_TRANSPORT_TEST_OBJECT) $(NVIDIA_LIBRARY)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(NVIDIA_TRANSPORT_TEST_OBJECT) $(NVIDIA_LIBRARY) -o "$@"
 
-test-nvidia: $(BUILD)/test-nvidia-boot$(EXE) $(BUILD)/test-nvidia-transport$(EXE)
+$(BUILD)/test-nvidia-session$(EXE): $(NVIDIA_SESSION_TEST_OBJECT) $(NVIDIA_LIBRARY)
+	$(CC) $(CFLAGS) $(LDFLAGS) $(NVIDIA_SESSION_TEST_OBJECT) $(NVIDIA_LIBRARY) -o "$@"
+
+test-nvidia: $(BUILD)/test-nvidia-boot$(EXE) $(BUILD)/test-nvidia-transport$(EXE) $(BUILD)/test-nvidia-session$(EXE)
 	$(RUN_NVIDIA_TEST)
 	$(RUN_NVIDIA_TRANSPORT_TEST)
+	$(RUN_NVIDIA_SESSION_TEST)
 
 test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE) $(BUILD)/test-work-queue$(EXE) $(BUILD)/test-work-threads$(EXE) $(BUILD)/test-display$(EXE) $(BUILD)/test-display-threads$(EXE) $(BUILD)/test-edid$(EXE) $(BUILD)/edid-inspect$(EXE)
 	$(RUN_DIAG_TEST)
@@ -158,4 +165,4 @@ else
 	rm -rf target
 endif
 
--include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d) $(EDID_TEST_OBJECT:.o=.d) $(EDID_TOOL_OBJECT:.o=.d) $(NVIDIA_OBJECTS:.o=.d) $(NVIDIA_TEST_OBJECT:.o=.d) $(NVIDIA_TRANSPORT_TEST_OBJECT:.o=.d)
+-include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d) $(WORK_TEST_OBJECT:.o=.d) $(WORK_THREAD_OBJECT:.o=.d) $(DISPLAY_TEST_OBJECT:.o=.d) $(DISPLAY_THREAD_OBJECT:.o=.d) $(EDID_TEST_OBJECT:.o=.d) $(EDID_TOOL_OBJECT:.o=.d) $(NVIDIA_OBJECTS:.o=.d) $(NVIDIA_TEST_OBJECT:.o=.d) $(NVIDIA_TRANSPORT_TEST_OBJECT:.o=.d) $(NVIDIA_SESSION_TEST_OBJECT:.o=.d)

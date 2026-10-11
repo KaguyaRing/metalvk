@@ -88,6 +88,38 @@ typedef struct mtvk_nv_request_view {
     size_t raw_bytes;
 } mtvk_nv_request_view;
 
+/* Response envelope. Same fixed size as the request header so both directions
+ * share one little-endian message shape. backed_op_mask is the executable form
+ * of the alignment matrix: bit i set means op i is genuinely backed by the
+ * endpoint that wrote this response. */
+typedef struct mtvk_nv_response {
+    uint32_t header_bytes;
+    uint32_t version;
+    uint32_t op;
+    uint32_t status;
+    uint32_t payload_bytes;
+    uint32_t backed_op_mask;
+} mtvk_nv_response;
+
+typedef struct mtvk_nv_response_view {
+    mtvk_nv_response header;
+    const uint8_t *payload;
+    uint32_t payload_bytes;
+    const uint8_t *raw;
+    size_t raw_bytes;
+} mtvk_nv_response_view;
+
+/* Fills a little-endian response header. written receives the full envelope size
+ * (header plus payload reservation); the caller writes payload afterwards. */
+mtvk_status mtvk_nv_response_init(void *out, size_t capacity, uint32_t op, uint32_t status,
+                                  uint32_t payload_bytes, uint32_t backed_op_mask,
+                                  size_t *written);
+
+/* Validates a response envelope. Rejects a wrong version, unknown op, unknown
+ * status, size overflow, missing or surplus bytes and non-4-byte alignment. */
+mtvk_status mtvk_nv_transport_validate_response(const void *bytes, size_t size,
+                                                mtvk_nv_response_view *view);
+
 /* Fills a little-endian request header. written receives the full envelope size
  * (header plus payload reservation); the caller writes payload afterwards.
  * capacity must cover the payload reservation. */
@@ -107,3 +139,4 @@ mtvk_nv_op_class mtvk_nv_op_class_of(uint32_t op);
 
 MTVK_EXTERN_C_END
 #endif
+

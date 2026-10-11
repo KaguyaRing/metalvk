@@ -4,5 +4,6 @@
 #define MTVK_NVIDIA_INIT_H
 #include "nvidia/boot.h"
 #include "nvidia/discovery.h"
+#include "nvidia/session.h"
 #include "nvidia/transport.h"
 #endif

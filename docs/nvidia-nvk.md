@@ -52,9 +52,10 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 对齐不是让两侧各自“看起来能编过”，而是让用户态 NVK／nvkmd 与 Darwin 内核端点共享同一份可机器核验的标准。当前已落实的部分：
 
 1. **一份共享源码。** `backends/nvidia/include/nvidia/transport.h` 定义分帧标准（版本、op 目录、类别、请求信封与校验 API），`backends/nvidia/include/nvidia/discovery.h` 定义 `DEVICE_QUERY` 载荷（对齐上游 `nv_device_info` 的固定布局）。`backends/nvidia/src/transport.c` 是唯一的编解码实现。内核库 `libmetalvk-nvidia-kernel.a` 与 Mesa 内的用户态适配器都编译这一个 `.c`，因此两侧不可能各自漂移。
-2. **可机器核验的映射。** `backends/nvidia/nvkmd-alignment.json` 逐项记录固定上游每个 `nvkmd` 操作到传输 op 的映射、类别与内核状态。`tools/check_nvkmd_alignment.py` 从固定的 `nvkmd.h` 解析出真实操作集，与清单、`transport.h` 目录、`transport.c` 类别表三方比对。本地与 CI `38146889949` 均已通过：**30 个上游操作、28 个传输操作、无缺漏、无多余、类别一致**。
-3. **用户态适配器。** `validation/nvidia/nvkmd-metalvk.c` 在固定 Mesa 树内编译（不是上游文件），把通过校验的 `DEVICE_QUERY` 映射为真实 `nvkmd_pdev`，并对全部执行类别 `create_dev` 返回 `VK_ERROR_INCOMPATIBLE_DRIVER`。链路标准面因此是“可对接但拒绝放行”，不是伪造可用 GPU。
-4. **多对一是被允许的。** 例如 `DRM_FD` 同时覆盖 `pdev.get_drm_primary_fd` 与 `dev.get_drm_fd`，以及 `pdev.destroy`、`mem.log_handle` 属于本地处理、无传输 op。检查器要求每个传输 op 至少被覆盖一次，不强制一对一。
+2. **双向且受能力门控。** `backends/nvidia/include/nvidia/session.h` 与 `src/session.c` 是内核端点的分发核心：`mtvk_nv_session_dispatch` 校验请求、写回响应，并在响应里附带 `backed_op_mask`（第 i 位表示第 i 个 op 真正有实现）。任何不在 `MTVK_NV_IMPLEMENTED_OPS` 里的 op 一律以 `MTVK_NOT_SUPPORTED` 拒绝，绝不复用成功路径。`mtvk_nv_effective_device_info` 会把未被支持的能力位裁掉；内核在构造响应时裁一次，用户态在读响应时再裁一次（纵深防御），因此任一侧出错都无法对外宣称未实现的能力。
+3. **可机器核验的映射。** `backends/nvidia/nvkmd-alignment.json` 逐项记录固定上游每个 `nvkmd` 操作到传输 op 的映射、类别与内核状态。`tools/check_nvkmd_alignment.py` 从固定的 `nvkmd.h` 解析出真实操作集，与清单、`transport.h` 目录、`transport.c` 类别表三方比对。本地与 CI `38152949000` 均已通过：**30 个上游操作、28 个传输操作、无缺漏、无多余、类别一致**。
+4. **用户态适配器。** `validation/nvidia/nvkmd-metalvk.c` 在固定 Mesa 树内编译（不是上游文件）。它的自测是**真正的双向回路**：先用内核侧共享代码 `mtvk_nv_session_dispatch` 生成响应字节，再把同一批字节交给用户侧 `mtvk_nvkmd_open` 消费。它还额外验证一条伪造响应（声称有能力但 `backed_op_mask=0`）也会被客户端裁掉。全部执行类别 `create_dev` 返回 `VK_ERROR_INCOMPATIBLE_DRIVER`。
+5. **多对一是被允许的。** 例如 `DRM_FD` 同时覆盖 `pdev.get_drm_primary_fd` 与 `dev.get_drm_fd`，以及 `pdev.destroy`、`mem.log_handle` 属于本地处理、无传输 op。检查器要求每个传输 op 至少被覆盖一次，不强制一对一。
 
 **对齐验证不等于执行验证。** 上述全部是标准面一致性证据：它们证明两侧对同一份消息布局、op 目录、类别和错误路径达成一致，并证明用户态在缺执行能力时正确拒绝。它们不使用 GPU、不产生像素，也不升级任何硬件支持状态。
 
@@ -62,14 +63,14 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 
 | 传输类别 | 需要的内核能力 | 用户态已对齐 | 内核已实现 |
 |---|---|---|---|
-| discovery | 只读身份、boot register | 通过（映射 + 拒绝执行） | 只有只读 probe |
+| discovery | 只读身份、boot register | 通过（映射 + 拒绝执行） | `DEVICE_QUERY` 已由只读 probe 支撑；其余 discovery op 未实现 |
 | memory | GART／VRAM、DMA／IOMMU、预算与回滚 | 通过 | 无（仅 wired CPU 内存，不能替代 GPU BO） |
 | address | GPU VA、页表、对齐与溢出检查 | 通过 | 无 |
 | execution | GPFIFO／pushbuffer、引擎 class、fence、超时 | 通过 | 无 |
 | sync | fence／semaphore 等待与信号 | 通过 | 无 |
 | replaced | Linux fd／dma-buf → macOS 原生句柄 | 通过（明确不支持） | 无 |
 
-结论：**标准已对齐并可机器验证；执行层仍未对齐。** 首个真实 draw 被 memory／address／execution 三类尚未实现所阻塞，而不是被接口不一致所阻塞。下一阶段必须在内核侧把这三类接到真实 RM／GSP／DMA，然后由同一 `vulkan-render` 客户端通过明确的 NVIDIA ICD 验收。
+结论：**标准已对齐并可机器验证，能力门控已成为可执行代码；执行层仍未对齐。** 首个真实 draw 被 memory／address／execution 三类尚未实现所阻塞，而不是被接口不一致所阻塞。把某一类接到真实 RM／GSP／DMA 后，只需把对应位加入 `MTVK_NV_IMPLEMENTED_OPS` 并更新 `nvkmd-alignment.json` 的 `kernel` 状态，同一响应即会把该能力带给用户态适配器。
 
 ## 后续首个真实 draw 的验收顺序
 

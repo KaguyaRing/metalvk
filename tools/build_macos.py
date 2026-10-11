@@ -113,15 +113,19 @@ def main() -> int:
     # adapter compiles, so both sides cannot drift apart.
     run("xcrun", "clang", "-std=c11", *kernel, *nvidia_includes, "-c",
         str(root / "backends/nvidia/src/transport.c"), "-o", str(build / "nvidia-transport.o"))
+    run("xcrun", "clang", "-std=c11", *kernel, *nvidia_includes, "-c",
+        str(root / "backends/nvidia/src/session.c"), "-o", str(build / "nvidia-session.o"))
     run("xcrun", "clang++", *kernel_cpp, *nvidia_includes, "-c",
         str(root / "backends/nvidia/kext/Probe.cpp"), "-o", str(build / "nvidia-probe.o"))
-    for source, language in (("src/boot.c", "c"), ("src/transport.c", "c"), ("kext/Probe.cpp", "c++")):
+    for source, language in (("src/boot.c", "c"), ("src/transport.c", "c"), ("src/session.c", "c"),
+                             ("kext/Probe.cpp", "c++")):
         flags = ["-std=c11", *kernel] if language == "c" else kernel_cpp
         run("xcrun", "clang" if language == "c" else "clang++", *flags, *nvidia_includes,
             "--analyze", "-Xanalyzer", "-analyzer-output=text", str(root / f"backends/nvidia/{source}"))
     nvidia_library = build / "libmetalvk-nvidia-kernel.a"
     run("xcrun", "libtool", "-static", "-o", str(nvidia_library),
-        str(build / "nvidia-boot.o"), str(build / "nvidia-transport.o"), str(build / "nvidia-probe.o"))
+        str(build / "nvidia-boot.o"), str(build / "nvidia-transport.o"),
+        str(build / "nvidia-session.o"), str(build / "nvidia-probe.o"))
     run("xcrun", "clang++", *kernel_cpp, *nvidia_includes, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
         "-o", str(build / "Driver.o"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
@@ -145,7 +149,7 @@ def main() -> int:
                   "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push",
                   "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover",
                   "mtvk_edid_parse", "mtvk_edid_select_capabilities", "probeBoot", "mtvk_nv_identify",
-                  "mtvk_nv_transport_validate"):
+                  "mtvk_nv_transport_validate", "mtvk_nv_session_dispatch"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")

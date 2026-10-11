@@ -9,6 +9,7 @@
 #include "nvidia/transport.h"
 
 _Static_assert(sizeof(mtvk_nv_request) == 24u, "transport header must stay 6 dwords");
+_Static_assert(sizeof(mtvk_nv_response) == 24u, "transport response must stay 6 dwords");
 
 static uint32_t load_le32(const uint8_t *bytes) {
     return (uint32_t)bytes[0] | ((uint32_t)bytes[1] << 8) |
@@ -143,4 +144,53 @@ const char *mtvk_nv_op_name(uint32_t op) {
 mtvk_nv_op_class mtvk_nv_op_class_of(uint32_t op) {
     if (op >= (uint32_t)MTVK_NV_OP_COUNT) return MTVK_NV_CLASS_NONE;
     return op_classes[op];
+}
+
+mtvk_status mtvk_nv_response_init(void *out, size_t capacity, uint32_t op, uint32_t status,
+                                  uint32_t payload_bytes, uint32_t backed_op_mask,
+                                  size_t *written) {
+    if (!out || !written) return MTVK_INVALID_ARGUMENT;
+    if (op >= (uint32_t)MTVK_NV_OP_COUNT) return MTVK_INVALID_ARGUMENT;
+    if (status > (uint32_t)MTVK_CLEANUP_REQUIRED) return MTVK_INVALID_ARGUMENT;
+    if (payload_bytes > MTVK_NV_TRANSPORT_MAX_RESPONSE_BYTES) return MTVK_LIMIT_EXCEEDED;
+    if (payload_bytes % 4u != 0u) return MTVK_INVALID_ARGUMENT;
+    const size_t total = sizeof(mtvk_nv_response) + (size_t)payload_bytes;
+    if (capacity < total) return MTVK_BUFFER_TOO_SMALL;
+    uint8_t *bytes = out;
+    store_le32(bytes, (uint32_t)sizeof(mtvk_nv_response));
+    store_le32(bytes + 4, MTVK_NV_TRANSPORT_VERSION);
+    store_le32(bytes + 8, op);
+    store_le32(bytes + 12, status);
+    store_le32(bytes + 16, payload_bytes);
+    store_le32(bytes + 20, backed_op_mask);
+    *written = total;
+    return MTVK_OK;
+}
+
+mtvk_status mtvk_nv_transport_validate_response(const void *bytes, size_t size,
+                                                mtvk_nv_response_view *view) {
+    if (!bytes || !view) return MTVK_INVALID_ARGUMENT;
+    const uint8_t *raw = bytes;
+    if (size < sizeof(mtvk_nv_response)) return MTVK_BUFFER_TOO_SMALL;
+    mtvk_nv_response header;
+    header.header_bytes = load_le32(raw);
+    header.version = load_le32(raw + 4);
+    header.op = load_le32(raw + 8);
+    header.status = load_le32(raw + 12);
+    header.payload_bytes = load_le32(raw + 16);
+    header.backed_op_mask = load_le32(raw + 20);
+    if (header.header_bytes != (uint32_t)sizeof(mtvk_nv_response)) return MTVK_INVALID_ARGUMENT;
+    if (header.version != MTVK_NV_TRANSPORT_VERSION) return MTVK_INCOMPATIBLE_VERSION;
+    if (header.op >= (uint32_t)MTVK_NV_OP_COUNT) return MTVK_INVALID_ARGUMENT;
+    if (header.status > (uint32_t)MTVK_CLEANUP_REQUIRED) return MTVK_INVALID_ARGUMENT;
+    if (header.payload_bytes > MTVK_NV_TRANSPORT_MAX_RESPONSE_BYTES) return MTVK_LIMIT_EXCEEDED;
+    if (header.payload_bytes % 4u != 0u) return MTVK_INVALID_ARGUMENT;
+    const size_t expected = sizeof(mtvk_nv_response) + (size_t)header.payload_bytes;
+    if (size != expected) return MTVK_INVALID_ARGUMENT;
+    view->header = header;
+    view->payload = raw + sizeof(mtvk_nv_response);
+    view->payload_bytes = header.payload_bytes;
+    view->raw = raw;
+    view->raw_bytes = size;
+    return MTVK_OK;
 }

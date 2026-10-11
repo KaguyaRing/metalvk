@@ -3,8 +3,9 @@
   "source_file": "src/nouveau/vulkan/nvkmd/nvkmd.h",
   "discovery_entry": "nvkmd_try_create_pdev_for_drm",
   "transport_version": 1,
+  "capability_gating": "The endpoint advertises backed ops in every response's backed_op_mask; ops outside MTVK_NV_IMPLEMENTED_OPS are refused with NOT_SUPPORTED and capabilities are clipped on both sides.",
   "operations": [
-    { "upstream": "nvkmd_try_create_pdev_for_drm", "kind": "entry", "transport": "DEVICE_QUERY", "class": "discovery", "kernel": "read-only-probe-only" },
+    { "upstream": "nvkmd_try_create_pdev_for_drm", "kind": "entry", "transport": "DEVICE_QUERY", "class": "discovery", "kernel": "device-query-from-read-only-probe" },
     { "upstream": "pdev.get_vram_used", "kind": "op", "transport": "DEVICE_VRAM_USED", "class": "discovery", "kernel": "not-implemented" },
     { "upstream": "pdev.get_drm_primary_fd", "kind": "op", "transport": "DRM_FD", "class": "replaced", "kernel": "replaced-by-native-handle" },
     { "upstream": "pdev.create_dev", "kind": "op", "transport": "SESSION_CREATE", "class": "discovery", "kernel": "not-implemented" },

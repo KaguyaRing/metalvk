@@ -52,6 +52,7 @@ jobs:
           # Build the metalvk side of the shared standard inside the pinned tree.
           shutil.copyfile('validation/nvidia/nvkmd-metalvk.c', compiler / 'metalvk-nvkmd-adapter.c')
           shutil.copyfile('backends/nvidia/src/transport.c', compiler / 'metalvk-transport.c')
+          shutil.copyfile('backends/nvidia/src/session.c', compiler / 'metalvk-session.c')
           root = os.environ['GITHUB_WORKSPACE']
           overlay = pathlib.Path('validation/nvidia/nvkmd-metalvk.meson').read_text().replace('@METALVK_ROOT@', root)
           with (compiler / 'meson.build').open('a') as stream:

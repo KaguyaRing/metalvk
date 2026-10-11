@@ -69,5 +69,13 @@ typedef struct mtvk_nv_device_info {
     uint64_t va_end;
 } mtvk_nv_device_info;
 
+/* Zero-initializes a device info record. Required before populating one that
+ * crosses the transport boundary: the record is copied by value, so any
+ * uninitialized padding would otherwise leak into the message payload. */
+static inline void mtvk_nv_device_info_init(mtvk_nv_device_info *info) {
+    uint8_t *bytes = (uint8_t *)info;
+    for (size_t index = 0; index < sizeof(*info); ++index) bytes[index] = 0;
+}
+
 MTVK_EXTERN_C_END
 #endif
