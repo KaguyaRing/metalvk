@@ -21,6 +21,9 @@
 
 struct mtvk_nvkmd_pdev {
     struct nvkmd_pdev base;
+    /* Retained so create_dev can apply the VA range once the kernel endpoint
+     * backs GPU VA; nvkmd_pdev itself has no place to publish it. */
+    mtvk_nv_device_info info;
 };
 
 VkResult mtvk_nvkmd_open(const void *message, size_t size,
@@ -52,7 +55,7 @@ static void fill_device_info(const mtvk_nv_device_info *in, struct nv_device_inf
     out->tpc_count = in->tpc_count;
     out->mp_per_tpc = in->mp_per_tpc;
     out->max_warps_per_mp = in->max_warps_per_mp;
-    out->has_transfer_queue = in->has_transfer_queue != 0u;
+    out->has_transfer_queue = in->has_transfer_queue != 0;
     out->nc_atom_size_B = in->nc_atom_size_B;
     out->cls_copy = in->cls_copy;
     out->cls_eng2d = in->cls_eng2d;
@@ -78,7 +81,7 @@ static void fill_device_info(const mtvk_nv_device_info *in, struct nv_device_inf
     out->zcull_info.subregion_height_align_pixels = in->zcull_info[9];
     out->zcull_info.ctxsw_size = in->zcull_info[10];
     out->zcull_info.ctxsw_align = in->zcull_info[11];
-    out->has_zcull_info = in->has_zcull_info != 0u;
+    out->has_zcull_info = in->has_zcull_info != 0;
 }
 
 static void pdev_destroy(struct nvkmd_pdev *pdev) {
@@ -130,17 +133,18 @@ VkResult mtvk_nvkmd_open(const void *message, size_t size,
     if (!pdev) return VK_ERROR_OUT_OF_HOST_MEMORY;
     mtvk_nv_device_info info;
     memcpy(&info, view.payload, sizeof(info));
+    pdev->info = info;
     fill_device_info(&info, &pdev->base.dev_info);
     pdev->base.ops = &metalvk_pdev_ops;
     /* Capabilities are passed through from the kernel; it must clear the
      * Linux-only fd/compression flags until the matching op is actually backed. */
     pdev->base.kmd_info = (struct nvkmd_info) {
-        .has_dma_buf = info.has_dma_buf != 0u,
+        .has_dma_buf = info.has_dma_buf != 0,
         .has_get_vram_used = false,
-        .has_alloc_tiled = info.has_alloc_tiled != 0u,
-        .has_map_fixed = info.has_map_fixed != 0u,
-        .has_overmap = info.has_overmap != 0u,
-        .has_compression = info.has_compression != 0u,
+        .has_alloc_tiled = info.has_alloc_tiled != 0,
+        .has_map_fixed = info.has_map_fixed != 0,
+        .has_overmap = info.has_overmap != 0,
+        .has_compression = info.has_compression != 0,
     };
     pdev->base.bind_align_B = info.bind_align_B;
     pdev->base.sync_types = sync_types ? sync_types : no_sync_types;
@@ -213,10 +217,12 @@ int main(void) {
     CHECK(pdev->dev_info.sm == info.sm && pdev->dev_info.gpc_count == info.gpc_count &&
           pdev->dev_info.tpc_count == info.tpc_count && pdev->dev_info.cls_eng3d == info.cls_eng3d);
     CHECK(pdev->dev_info.vram_size_B == info.vram_size_B && pdev->dev_info.bar_size_B == info.bar_size_B);
-    CHECK(pdev->dev_info.pci_revision == info.pci_revision && pdev->dev_info.sm_smem_size_count == 2u);
+    CHECK(pdev->dev_info.pci.revision_id == info.pci_revision && pdev->dev_info.sm_smem_size_count == 2);
     CHECK(strcmp(pdev->dev_info.device_name, info.device_name) == 0);
     CHECK(strcmp(pdev->dev_info.chipset_name, info.chipset_name) == 0);
-    CHECK(pdev->bind_align_B == info.bind_align_B && pdev->va_start == info.va_start);
+    CHECK(pdev->bind_align_B == info.bind_align_B);
+    struct mtvk_nvkmd_pdev *private_pdev = container_of(pdev, struct mtvk_nvkmd_pdev, base);
+    CHECK(private_pdev->info.va_start == info.va_start && private_pdev->info.va_end == info.va_end);
     CHECK(pdev->sync_types == no_sync_types);
     CHECK(!pdev->kmd_info.has_get_vram_used && !pdev->kmd_info.has_dma_buf);
     struct nvkmd_dev *dev = NULL;
