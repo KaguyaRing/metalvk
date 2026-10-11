@@ -53,19 +53,31 @@ def main() -> int:
     kernel = ["-arch", "x86_64", "-mmacosx-version-min=13.0", "-O2",
               "-ffreestanding", "-fno-builtin", "-fno-stack-protector",
               "-mno-red-zone", "-mno-sse", "-mno-sse2", "-mno-mmx",
-              "-DKERNEL", "-DKERNEL_PRIVATE", *warnings, *includes,
-              "-isystem", str(sdk / "Headers")]
+               "-DKERNEL", "-DKERNEL_PRIVATE", *warnings, *includes,
+               "-I", str(root / "kexts/Platform/include"),
+               "-isystem", str(sdk / "Headers")]
     run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / "src/ipc/diagnostics.c"),
         "-o", str(build / "diagnostics-kernel.o"))
     # IOPCIDevice is deprecated in Apple's newer SDK, but needed for the selected
     # IOKit graphics-driver route. Suppression is limited to this native target;
     # upstream SDK headers are system headers, project warnings remain errors.
-    run("xcrun", "clang++", "-std=c++14", "-mkernel", "-fapple-kext",
+    kernel_cpp = ["-std=c++17", "-mkernel", "-fapple-kext",
         "-fno-exceptions", "-fno-rtti", "-fno-use-cxa-atexit", "-Wno-deprecated-declarations",
-        "-Wno-unused-parameter", *kernel, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
+        "-Wno-unused-parameter", *kernel]
+    platform_objects = [build / "diagnostics-kernel.o"]
+    for unit in ("pci", "device", "client"):
+        obj = build / f"platform-{unit}.o"
+        run("xcrun", "clang++", *kernel_cpp, "-c",
+            str(root / f"kexts/Platform/src/platform/{unit}.cpp"), "-o", str(obj))
+        platform_objects.append(obj)
+    platform_library = build / "libmetalvk-kernel-platform.a"
+    # libtool replaces the archive, avoiding stale members from previous builds.
+    run("xcrun", "libtool", "-static", "-o", str(platform_library),
+        *(str(obj) for obj in platform_objects))
+    run("xcrun", "clang++", *kernel_cpp, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
         "-o", str(build / "Driver.o"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
-        str(build / "Driver.o"), str(build / "diagnostics-kernel.o"),
+        str(build / "Driver.o"), str(platform_library),
         "-o", str(kext / "MacOS/MetalVK"))
     imports = subprocess.check_output(
         ["xcrun", "nm", "-u", str(kext / "MacOS/MetalVK")], text=True)
@@ -78,6 +90,12 @@ def main() -> int:
         symbol = line.split()[-1] if line.split() else ""
         if symbol.startswith(forbidden):
             raise ValueError(f"Kernel binary imports a user/runtime symbol: {symbol}")
+    symbols = subprocess.check_output(
+        ["xcrun", "nm", "-g", str(kext / "MacOS/MetalVK")], text=True)
+    for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci"):
+        definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
+        if not definitions:
+            raise ValueError(f"Shared kernel module was not linked: {name}")
     for bundle in (kext.parent, app.parent):
         run("codesign", "--force", "--sign", "-", str(bundle))
         run("codesign", "--verify", "--strict", "--verbose=2", str(bundle))
