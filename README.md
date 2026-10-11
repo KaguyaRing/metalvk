@@ -112,7 +112,7 @@ kexts/Platform/   Further kernel resource and recovery services
 kexts/Display/    framebuffer / accelerator / agdc
 ```
 
-Hardware support still requires vendor-specific kexts, shared platform integration, and real-device testing for each supported combination. **There is no usable driver yet, and `0.1.0` has not been released.**
+Hardware support still requires vendor-specific kexts, shared platform integration, and real-device testing for each supported combination. **`v0.1.0` marks a development milestone, not a usable GPU driver or a verified end-to-end Metal rendering release.**
 
 ## Module and kext development rules
 
