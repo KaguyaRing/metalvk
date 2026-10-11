@@ -18,7 +18,9 @@
 
 路径为仓库 GLSL → glslang Vulkan 1.2 SPIR-V → spirv-val → Mesa SPIR-V-to-NIR → NAK preprocessing／SM89 machine-code encoding。编译目标的 SM89 与 48 warps/MP 是显式 offline target 参数，不伪称从 PCI／RM 查询到的设备属性。输入按 repository shader 验收使用，最多 1 MiB；CLI 不作为接受任意不可信 shader 的服务或安全沙箱，执行由 CI 的 timeout 限制。
 
-目标是取得两个非空、16-byte instruction-aligned 的 native stage binaries 与 NAK IR dump。该 dump 不是独立 nvdisasm 反汇编／指令差分证明。离线编译成功不证明 varying linkage、实际引擎 class、GPU VA、pushbuffer、渲染正确性或 NVIDIA macOS 可执行；它只填补图形编译路线的一项实证。
+CI `38146109946` 已取得两个非空、16-byte instruction-aligned 的 native stage binaries 与 NAK IR dump：顶点与片元各 **272 字节**，四组 Nouveau CPU suite 全部通过，编译日志无实际 warning／error（Meson 的 `-Wno-error: YES` 参数探测不算诊断）。缺少 rustfmt 的错误已消除。链接失败时发现 NAK 的 graphics constant offsets 由 NVK shader runtime 定义，已通过实际 libnvk 与 idep_vtn 依赖接通，没有自造零值常量消除链接错误。
+
+该 dump 不是独立 nvdisasm 反汇编／指令差分证明。离线编译成功不证明 varying linkage、实际引擎 class、GPU VA、pushbuffer、渲染正确性或 NVIDIA macOS 可执行；它只填补图形编译路线的一项实证。另有参数错误、文件缺失、空／截断／错误 magic／超长输入的失败回归；全部在限时独立进程中执行，不对真实 GPU 做故障操作。
 
 ## 实际 Darwin 接入点
 
