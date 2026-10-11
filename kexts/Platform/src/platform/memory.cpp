@@ -6,7 +6,9 @@
 #include <kern/sched_prim.h>
 #include <libkern/libkern.h>
 namespace {
-bool sleepable() { return !ml_at_interrupt_context() && preemption_enabled(); }
+bool sleepable() {
+    return !ml_at_interrupt_context() && preemption_enabled() && ml_get_interrupts_enabled();
+}
 IOReturn translate(mtvk_status status) {
     switch (status) {
         case MTVK_OK: return kIOReturnSuccess;
@@ -20,15 +22,22 @@ IOReturn translate(mtvk_status status) {
 }
 OSDefineMetaClassAndStructors(MetalVKMemoryDomain, OSObject)
 OSDefineMetaClassAndStructors(MetalVKWiredBuffer, OSObject)
-MetalVKMemoryDomain *MetalVKMemoryDomain::create(const mtvk_memory_limits *limits) {
-    if (!sleepable()) return nullptr;
+IOReturn MetalVKMemoryDomain::create(const mtvk_memory_limits *limits, MetalVKMemoryDomain **out) {
+    if (!out) return kIOReturnBadArgument;
+    *out = nullptr;
+    if (!sleepable()) return kIOReturnCannotLock;
+    mtvk_memory_budget budget {};
+    const mtvk_status status = mtvk_memory_budget_init(&budget, limits);
+    if (status != MTVK_OK) return translate(status);
     auto *domain = new MetalVKMemoryDomain;
-    if (!domain) return nullptr;
-    if (!domain->initWithLimits(limits)) { domain->release(); return nullptr; }
-    return domain;
+    if (!domain) return kIOReturnNoMemory;
+    if (!domain->initWithBudget(budget)) { domain->release(); return kIOReturnNoMemory; }
+    *out = domain;
+    return kIOReturnSuccess;
 }
-bool MetalVKMemoryDomain::initWithLimits(const mtvk_memory_limits *limits) {
-    if (!OSObject::init() || mtvk_memory_budget_init(&budget_, limits) != MTVK_OK) return false;
+bool MetalVKMemoryDomain::initWithBudget(const mtvk_memory_budget &budget) {
+    if (!OSObject::init()) return false;
+    budget_ = budget;
     lock_ = IOLockAlloc();
     return lock_ != nullptr;
 }

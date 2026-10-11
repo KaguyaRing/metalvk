@@ -12,7 +12,7 @@ class MetalVKMemoryDomain;
  * require sleepable thread context, outside interrupt/spinlock/gated callbacks.
  * The byte pointer is borrowed until the buffer's final release; callers must
  * serialize access to its payload. Never export it through a UserClient. */
-class MetalVKWiredBuffer : public OSObject {
+class MetalVKWiredBuffer final : public OSObject {
     OSDeclareDefaultStructors(MetalVKWiredBuffer)
     friend class MetalVKMemoryDomain;
     MetalVKMemoryDomain *owner_ = nullptr;
@@ -27,16 +27,18 @@ public:
 /* A parent domain owns the immutable policy and serializes quota/state. Each
  * reservation retains the domain until allocation rollback or buffer release.
  * The domain does not retain buffers, so there is no reference cycle. */
-class MetalVKMemoryDomain : public OSObject {
+class MetalVKMemoryDomain final : public OSObject {
     OSDeclareDefaultStructors(MetalVKMemoryDomain)
     friend class MetalVKWiredBuffer;
     IOLock *lock_ = nullptr;
     mtvk_memory_budget budget_ {};
-    bool initWithLimits(const mtvk_memory_limits *limits);
+    bool initWithBudget(const mtvk_memory_budget &budget);
     IOReturn finishReservation(uint64_t charge);
     void free() override;
 public:
-    static MetalVKMemoryDomain *create(const mtvk_memory_limits *limits = nullptr);
+    /* NULL limits selects documented defaults; invalid explicit policy fails
+     * with BadArgument rather than being silently replaced. Output cleared. */
+    static IOReturn create(const mtvk_memory_limits *limits, MetalVKMemoryDomain **out);
     IOReturn allocate(uint64_t bytes, MetalVKWiredBuffer **out);
     /* Rejects new reservations and returns busy while buffers/pending allocation
      * remain. Caller keeps its reference and retries after draining users. */

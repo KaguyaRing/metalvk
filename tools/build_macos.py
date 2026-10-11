@@ -81,6 +81,8 @@ def main() -> int:
         run("xcrun", "clang++", *kernel_cpp, "-c",
             str(root / f"kexts/Platform/src/platform/{unit}.cpp"), "-o", str(obj))
         platform_objects.append(obj)
+    run("xcrun", "clang++", *kernel_cpp, "--analyze", "-Xanalyzer", "-analyzer-output=text",
+        str(root / "kexts/Platform/src/platform/memory.cpp"))
     platform_library = build / "libmetalvk-kernel-platform.a"
     # libtool replaces the archive, avoiding stale members from previous builds.
     run("xcrun", "libtool", "-static", "-o", str(platform_library),

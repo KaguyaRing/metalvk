@@ -6,6 +6,7 @@
 .DEFAULT_GOAL := all
 CONFIG ?= Debug
 CC = clang
+CXX = clang++
 AR = ar
 CPPFLAGS += -Iinclude
 CFLAGS += -std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow
@@ -27,6 +28,7 @@ OBJECTS := $(patsubst %.c,$(BUILD)/%.o,$(SOURCES))
 DIAG_OBJECT := $(BUILD)/src/ipc/diagnostics.o
 DIAG_TEST_OBJECT := $(BUILD)/tests/test_diagnostics.o
 MEMORY_TEST_OBJECT := $(BUILD)/tests/test_memory_budget.o
+MEMORY_THREAD_OBJECT := $(BUILD)/tests/test_memory_threads.o
 DIAG_LIBRARY := $(BUILD)/libmetalvk-diagnostics.a
 LIBRARY := $(BUILD)/libmetalvk.a
 
@@ -36,12 +38,16 @@ EXE := .exe
 mkdir_parent = if not exist "$(subst /,\,$(@D))" mkdir "$(subst /,\,$(@D))"
 RUN_DIAG_TEST = $(subst /,\,$(BUILD)/test-diagnostics$(EXE))
 RUN_MEMORY_TEST = $(subst /,\,$(BUILD)/test-memory-budget$(EXE))
+RUN_MEMORY_THREADS = $(subst /,\,$(BUILD)/test-memory-threads$(EXE))
+THREAD_FLAGS :=
 remove_temporary = if exist "$(subst /,\,$@).tmp" del "$(subst /,\,$@).tmp"
 replace_archive = move /Y "$(subst /,\,$@).tmp" "$(subst /,\,$@)" >nul
 else
 mkdir_parent = mkdir -p "$(@D)"
 RUN_DIAG_TEST = ./$(BUILD)/test-diagnostics
 RUN_MEMORY_TEST = ./$(BUILD)/test-memory-budget
+RUN_MEMORY_THREADS = ./$(BUILD)/test-memory-threads
+THREAD_FLAGS := -pthread
 remove_temporary = rm -f "$@.tmp"
 replace_archive = mv -f "$@.tmp" "$@"
 endif
@@ -69,9 +75,17 @@ $(BUILD)/test-diagnostics$(EXE): $(DIAG_TEST_OBJECT) $(DIAG_LIBRARY) $(LIBRARY)
 $(BUILD)/test-memory-budget$(EXE): $(MEMORY_TEST_OBJECT) $(LIBRARY)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(MEMORY_TEST_OBJECT) $(LIBRARY) -o "$@"
 
-test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE)
+$(MEMORY_THREAD_OBJECT): tests/test_memory_threads.cpp
+	@$(mkdir_parent)
+	$(CXX) $(CPPFLAGS) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 $(THREAD_FLAGS) -MMD -MP -c "$<" -o "$@"
+
+$(BUILD)/test-memory-threads$(EXE): $(MEMORY_THREAD_OBJECT) $(LIBRARY)
+	$(CXX) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 $(THREAD_FLAGS) $(LDFLAGS) $(MEMORY_THREAD_OBJECT) $(LIBRARY) -o "$@"
+
+test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE)
 	$(RUN_DIAG_TEST)
 	$(RUN_MEMORY_TEST)
+	$(RUN_MEMORY_THREADS)
 
 clean:
 ifeq ($(OS),Windows_NT)
@@ -80,4 +94,4 @@ else
 	rm -rf target
 endif
 
--include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d)
+-include $(OBJECTS:.o=.d) $(DIAG_OBJECT:.o=.d) $(DIAG_TEST_OBJECT:.o=.d) $(MEMORY_TEST_OBJECT:.o=.d) $(MEMORY_THREAD_OBJECT:.o=.d)

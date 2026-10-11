@@ -29,6 +29,8 @@ static bool valid(const mtvk_memory_budget *budget) {
         budget->limits.buffers <= MTVK_MEMORY_MAX_BUFFERS &&
         budget->reserved_bytes <= budget->limits.total_bytes &&
         budget->reserved_buffers <= budget->limits.buffers &&
+        budget->reserved_bytes >= budget->reserved_buffers &&
+        budget->reserved_bytes <= (uint64_t)budget->reserved_buffers * budget->limits.allocation_bytes &&
         ((budget->reserved_bytes == 0) == (budget->reserved_buffers == 0)) &&
         budget->phase >= MTVK_MEMORY_OPEN && budget->phase <= MTVK_MEMORY_CLOSED &&
         (budget->phase != MTVK_MEMORY_CLOSED || budget->reserved_buffers == 0);
@@ -44,10 +46,15 @@ mtvk_status mtvk_memory_budget_reserve(mtvk_memory_budget *budget, uint64_t char
     return MTVK_OK;
 }
 mtvk_status mtvk_memory_budget_release(mtvk_memory_budget *budget, uint64_t charge) {
-    if (!charge || !valid(budget) || !budget->reserved_buffers || charge > budget->reserved_bytes)
+    if (!charge || !valid(budget) || !budget->reserved_buffers || charge > budget->reserved_bytes ||
+        charge > budget->limits.allocation_bytes)
         return MTVK_INVALID_ARGUMENT;
     // The last release must leave zero bytes, and earlier releases must not.
     if ((budget->reserved_buffers == 1) != (charge == budget->reserved_bytes))
+        return MTVK_INVALID_ARGUMENT;
+    const uint64_t remaining = budget->reserved_bytes - charge;
+    const uint32_t buffers = budget->reserved_buffers - 1;
+    if (remaining < buffers || remaining > (uint64_t)buffers * budget->limits.allocation_bytes)
         return MTVK_INVALID_ARGUMENT;
     budget->reserved_bytes -= charge;
     --budget->reserved_buffers;

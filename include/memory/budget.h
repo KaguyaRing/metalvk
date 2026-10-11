@@ -27,6 +27,9 @@ MTVK_EXTERN_C_BEGIN
 /* Pure accounting, not an allocation registry or GPU command ABI. The owner
  * serializes all access, including validation + reservation + shutdown, with
  * one lock. Each successful reserve has exactly one matching release. */
+/* init requires unpublished storage or a closed, quiescent owner; never resets
+ * a live budget. NULL limits selects the bounded defaults and reports it in
+ * default_limits. Invalid explicit policy leaves output unchanged. */
 mtvk_status mtvk_memory_budget_init(mtvk_memory_budget *out, const mtvk_memory_limits *limits);
 mtvk_status mtvk_memory_budget_reserve(mtvk_memory_budget *budget, uint64_t charge);
 mtvk_status mtvk_memory_budget_release(mtvk_memory_budget *budget, uint64_t charge);
