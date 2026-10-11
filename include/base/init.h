@@ -5,6 +5,5 @@
 #define MTVK_BASE_INIT_H
 #include "platform.h"
 #include "base/status.h"
-#include "base/limits.h"
 #include "base/span.h"
 #endif

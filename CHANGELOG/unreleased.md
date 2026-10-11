@@ -1,5 +1,12 @@
 # Unreleased
 
+## Removed
+
+- The home-grown `mtvk_gpu_*` backend registration/dispatch ABI (`include/gpu/`,
+  `src/gpu/`) and its contract, plugin and legacy host tests. The neutral
+  interface is the Vulkan specification; a self-made GPU ABI duplicated it.
+- `include/base/limits.h`: its remaining contents were the removed ABI's limits.
+
 ## Added
 
 - Versioned vendor-neutral runtime ABI with platform-supplied allocation and locking.
@@ -9,8 +16,8 @@
 
 ## Changed
 
-- Default `libmetalvk.a` now contains only the generic runtime and status implementation.
-- Diagnostic protocol is a separate archive; legacy G0 API is optional compatibility code.
+- Default `libmetalvk.a` now contains only the base implementation.
+- Diagnostic protocol is a separate archive.
 - Vendor kext prototype moved to `backends/`; Vulkan probes moved to `validation/`.
 - App/kext reference workflow is manual-only and excluded from generic acceptance.
 

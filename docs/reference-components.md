@@ -4,7 +4,7 @@
 
 ## 旧诊断 App 与 kext
 
-`backends/nvidia/kext` 是限定匹配 `10DE:28E0` 的只读 PCI 诊断原型，尚未接入新版通用后端注册，也没有 GPU 执行／显示功能。AppKit App 提供后台诊断、错误展示与报告导出。
+`backends/nvidia/kext` 是限定匹配 `10DE:28E0` 的只读 PCI 诊断原型，尚未接入通用层，也没有 GPU 执行／显示功能。AppKit App 提供后台诊断、错误展示与报告导出。
 
 在 macOS 上，使用 Xcode 命令行工具、Python 3 和 MacKernelSDK：
 
