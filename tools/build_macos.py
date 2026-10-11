@@ -99,7 +99,7 @@ def main() -> int:
         run("xcrun", "clang++", *kernel_cpp, "-c",
             str(root / f"kexts/Platform/src/platform/{unit}.cpp"), "-o", str(obj))
         platform_objects.append(obj)
-    for unit in ("memory", "context", "work"):
+    for unit in ("device", "client", "memory", "context", "work"):
         run("xcrun", "clang++", *kernel_cpp, "--analyze", "-Xanalyzer", "-analyzer-output=text",
             str(root / f"kexts/Platform/src/platform/{unit}.cpp"))
     platform_library = build / "libmetalvk-kernel-platform.a"
@@ -107,7 +107,7 @@ def main() -> int:
     run("xcrun", "libtool", "-static", "-o", str(platform_library),
         *(str(obj) for obj in platform_objects))
     nvidia_includes = ["-I", str(root / "backends/nvidia/include")]
-    nvidia_units = ("boot", "transport", "discovery", "session")
+    nvidia_units = ("boot", "transport", "discovery", "session", "endpoint")
     nvidia_objects = []
     for unit in nvidia_units:
         source = root / f"backends/nvidia/src/{unit}.c"
@@ -116,15 +116,20 @@ def main() -> int:
         run("xcrun", "clang", "-std=c11", *kernel, *nvidia_includes,
             "--analyze", "-Xanalyzer", "-analyzer-output=text", str(source))
         nvidia_objects.append(obj)
-    run("xcrun", "clang++", *kernel_cpp, *nvidia_includes, "-c",
-        str(root / "backends/nvidia/kext/Probe.cpp"), "-o", str(build / "nvidia-probe.o"))
-    run("xcrun", "clang++", *kernel_cpp, *nvidia_includes,
-        "--analyze", "-Xanalyzer", "-analyzer-output=text", str(root / "backends/nvidia/kext/Probe.cpp"))
+    for unit in ("Probe", "Client"):
+        source = root / f"backends/nvidia/kext/{unit}.cpp"
+        obj = build / f"nvidia-{unit.lower()}.o"
+        run("xcrun", "clang++", *kernel_cpp, *nvidia_includes, "-c", str(source), "-o", str(obj))
+        run("xcrun", "clang++", *kernel_cpp, *nvidia_includes,
+            "--analyze", "-Xanalyzer", "-analyzer-output=text", str(source))
+        nvidia_objects.append(obj)
     nvidia_library = build / "libmetalvk-nvidia-kernel.a"
     run("xcrun", "libtool", "-static", "-o", str(nvidia_library),
-        *(str(obj) for obj in nvidia_objects), str(build / "nvidia-probe.o"))
+        *(str(obj) for obj in nvidia_objects))
     run("xcrun", "clang++", *kernel_cpp, *nvidia_includes, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
         "-o", str(build / "Driver.o"))
+    run("xcrun", "clang++", *kernel_cpp, *nvidia_includes,
+        "--analyze", "-Xanalyzer", "-analyzer-output=text", str(root / "backends/nvidia/kext/Driver.cpp"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
         str(build / "Driver.o"), "-force_load", str(nvidia_library), "-force_load", str(platform_library),
         "-o", str(kext / "MacOS/MetalVK"))
@@ -141,17 +146,31 @@ def main() -> int:
             raise ValueError(f"Kernel binary imports a user/runtime symbol: {symbol}")
     symbols = subprocess.check_output(
         ["xcrun", "nm", "-g", str(kext / "MacOS/MetalVK")], text=True)
-    for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci",
+    for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "MetalVKNvidiaClient", "copyDiscovery", "capturePci",
                  "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve",
                   "MetalVKWorkQueue", "uptimeNanoseconds", "mtvk_work_push",
                   "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover",
                   "mtvk_edid_parse", "mtvk_edid_select_capabilities", "probeBoot", "mtvk_nv_identify",
                    "mtvk_nv_transport_validate", "mtvk_nv_device_info_init",
                    "mtvk_nv_effective_device_info", "mtvk_nv_device_info_encode",
-                   "mtvk_nv_device_info_decode", "mtvk_nv_session_dispatch"):
+                   "mtvk_nv_device_info_decode", "mtvk_nv_discovery_from_pci", "mtvk_nv_session_dispatch"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")
+    query_objects = []
+    for unit in nvidia_units:
+        obj = build / f"nvidia-{unit}-user.o"
+        run("xcrun", "clang", "-std=c11", *user, *nvidia_includes, "-Wpedantic", "-c",
+            str(root / f"backends/nvidia/src/{unit}.c"), "-o", str(obj))
+        query_objects.append(obj)
+    discovery_client = app / "MacOS/metalvk-nvidia-discovery"
+    run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes, "-Wpedantic",
+        str(root / "validation/nvidia/discovery.cpp"), *(str(obj) for obj in query_objects),
+        "-framework", "IOKit", "-framework", "CoreFoundation", "-o", str(discovery_client))
+    run("codesign", "--force", "--sign", "-", str(discovery_client))
+    run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes,
+        "--analyze", "-Xanalyzer", "-analyzer-output=text", str(root / "validation/nvidia/discovery.cpp"))
+    run("codesign", "--verify", "--strict", str(discovery_client))
     for bundle in (kext.parent, app.parent):
         run("codesign", "--force", "--sign", "-", str(bundle))
         run("codesign", "--verify", "--strict", "--verbose=2", str(bundle))

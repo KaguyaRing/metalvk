@@ -70,6 +70,19 @@ jobs:
           code=$?
           set -e
           test "$code" -eq 64
+      - name: NVIDIA real IPC client no-service and argument checks
+        run: |
+          client=target/macos/MetalVK.app/Contents/MacOS/metalvk-nvidia-discovery
+          set +e
+          "$client" --list-services
+          code=$?
+          set -e
+          test "$code" -eq 2
+          set +e
+          "$client" --registry-id invalid
+          code=$?
+          set -e
+          test "$code" -eq 64
       - name: Apple virtual Metal reference render (not metalvk support)
         run: |
           registry=$(target/macos/metal-render --list-devices | sed -n 's/^Metal device: Apple Paravirtual device registry-id=\(0x[0-9a-f]*\)$/\1/p')

@@ -61,7 +61,8 @@ has_zcull_info、nc_atom_size_B、cls_copy、cls_eng2d、cls_eng3d、cls_m2mf、
 - codec 拒绝输入／输出重叠；session 拒绝 reply 与 request／session 重叠，及 written 与上述
   缓冲区重叠。重叠错误不写 written；普通分发失败将 written 清零或返回已写错误信封长度。
 - 指针可表示性检查不是访问权验证；调用者必须提供有效可访问内存。未来 UserClient 需使用
-  IOKit 受控拷贝和权限校验，不能把用户指针直接传给共享函数。
+  IOKit 受控拷贝和权限校验，不能把用户指针直接传给共享函数。现有专用端点使用固定大小
+  synchronous struct method，并拒绝 descriptor／async，详见[接线标准](nvidia-userclient.md)。
 - session 不自带锁，必须由拥有者串行访问；禁止在 codec 执行中并发修改输入，
   OS 同步由后续端点管理。初始化先快照，允许以自身 device 重新初始化。
 
@@ -69,6 +70,6 @@ has_zcull_info、nc_atom_size_B、cls_copy、cls_eng2d、cls_eng3d、cls_m2mf、
 高位收窄／错误布尔／非法 PCI／数组／VA／对齐、输出不变、预算和缓冲区 alias；
 20,000 次有界载荷变异要求每个成功解码可原样再编码，每个失败保留输出。
 
-残余风险：尚无真实 probe→UserClient→Mesa 往返；未在 big-endian 硬件运行，
+残余风险：UserClient→真实 IOKit 工具已有源码接线，但尚无加载或真实 probe→UserClient→Mesa 往返证据；未在 big-endian 硬件运行，
 字节序正确性依据显式 byte 操作和独立黄金字节。名称 ASCII 是此私有 schema 的限制。
 engine class、拓扑、VA 与 RM 的对应仍需真实设备来源逐项核验；本轮不启用 GPU 执行能力。

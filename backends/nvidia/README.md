@@ -7,6 +7,8 @@
 - `include/nvidia/boot.h` / `src/boot.c`：PCI／D0／capability 校验与 AD107 boot register 解码。
 - `include/nvidia/transport.h`：用户态 nvkmd 适配器与 Darwin 内核端点共用的传输分帧标准（版本、op 目录、类别、请求／响应信封与校验 API）。
 - `include/nvidia/discovery.h` / `src/discovery.c`：discovery 数据模型、初始化、能力裁剪与固定小端编码；不负责 session 分发。传输版本 2 拒绝旧主机结构载荷，详见[字节标准](../../docs/nvidia-discovery-wire.md)。
+- `include/nvidia/endpoint.h` / `src/endpoint.c`：已采集 PCI 快照到 discovery 的保守字段投影；不按 PCI ID 猜测 SM、chipset、VRAM 或 RM class。
+- `kext/Client.hpp/.cpp`：独立 NVIDIA 只读 UserClient（connect type 1）；公共 PCI 诊断仍使用 type 0。`validation/nvidia/discovery.cpp` 是真实 IOKit 查询工具，不是 loopback。
 - `include/nvidia/session.h` / `src/session.c`：内核端点的能力门控分发核心；响应携带 `backed_op_mask`，未实现的 op 一律拒绝，两侧各自裁剪未被支持的能力位。
 - `src/transport.c`：请求／响应信封编解码与操作目录校验；内核库与 Mesa 内适配器编译同一份源码，减少重复实现，不代表运行时或 RM 字段语义已完全对齐。
 - `include/nvidia/init.h`：聚合本模块全部公共头。

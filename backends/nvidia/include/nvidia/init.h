@@ -6,4 +6,5 @@
 #include "nvidia/discovery.h"
 #include "nvidia/session.h"
 #include "nvidia/transport.h"
+#include "nvidia/endpoint.h"
 #endif

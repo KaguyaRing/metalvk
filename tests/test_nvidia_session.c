@@ -451,6 +451,52 @@ static int mutation_invariant(void) {
 }
 
 int main(void) {
+    /* Real snapshot projection fixture. No PCI/MMIO access in host tests. */
+    mtvk_diag_snapshot snapshot = {0};
+    snapshot.vendor_id = MTVK_NV_VENDOR_ID; snapshot.device_id = MTVK_NV_INITIAL_DEVICE_ID;
+    snapshot.class_revision = UINT32_C(0x030000a1); snapshot.pci_address = UINT32_C(0x021907);
+    snapshot.phase = MTVK_DIAG_PCI_READY; snapshot.capabilities = MTVK_DIAG_CAP_PCI;
+    snapshot.registry_id = 42u;
+    mtvk_nv_device_info projected;
+    CHECK(mtvk_nv_discovery_from_pci(&snapshot, &projected) == MTVK_OK);
+    CHECK(projected.device_id == snapshot.device_id && projected.pci_bus == 2u &&
+          projected.pci_device == 25u && projected.pci_function == 7u && projected.pci_revision == 0xa1u);
+    CHECK(projected.vram_size_B == 0u && projected.sm == 0u && projected.chipset == 0u &&
+          projected.cls_eng3d == 0u && projected.has_dma_buf == 0u && projected.device_name[0] == '\0');
+    mtvk_nv_session projectedSession;
+    mtvk_nv_session_init(&projectedSession, 0u, &projected);
+    uint8_t queryRequest[MTVK_NV_QUERY_REQUEST_BYTES], queryResponse[MTVK_NV_QUERY_RESPONSE_BYTES];
+    size_t queryWritten = 0;
+    CHECK(mtvk_nv_request_init(queryRequest, sizeof(queryRequest), MTVK_NV_OP_DEVICE_QUERY,
+                               0u, MTVK_NV_DEVICE_WIRE_BYTES, &queryWritten) == MTVK_OK);
+    CHECK(mtvk_nv_session_dispatch(&projectedSession, queryRequest, sizeof(queryRequest),
+                                   queryResponse, sizeof(queryResponse), &queryWritten) == MTVK_OK);
+    mtvk_nv_response_view projectedView;
+    CHECK(mtvk_nv_transport_validate_response(queryResponse, queryWritten, &projectedView) == MTVK_OK);
+    mtvk_nv_device_info projectedDecoded;
+    CHECK(mtvk_nv_device_info_decode(projectedView.payload, projectedView.payload_bytes, &projectedDecoded) == MTVK_OK);
+    CHECK(projectedDecoded.device_id == projected.device_id && projectedDecoded.pci_device == 25u &&
+          projectedView.header.backed_op_mask == MTVK_NV_IMPLEMENTED_OPS);
+    const mtvk_diag_snapshot valid = snapshot;
+    for (unsigned fault = 0; fault < 8u; ++fault) {
+        snapshot = valid;
+        switch (fault) {
+        case 0: snapshot.vendor_id = 0x1002u; break;
+        case 1: snapshot.device_id++; break;
+        case 2: snapshot.registry_id = 0u; break;
+        case 3: snapshot.phase = MTVK_DIAG_OFFLINE; break;
+        case 4: snapshot.capabilities |= 2u; break;
+        case 5: snapshot.class_revision = 0u; break;
+        case 6: snapshot.pci_address = UINT32_C(0x020008); break;
+        default: snapshot.pci_address = UINT32_C(0x022000); break;
+        }
+        uint8_t before[sizeof(projected)];
+        memcpy(before, &projected, sizeof(before));
+        CHECK(mtvk_nv_discovery_from_pci(&snapshot, &projected) == (fault < 2u ? MTVK_NOT_SUPPORTED : MTVK_INVALID_ARGUMENT));
+        CHECK(memcmp(before, &projected, sizeof(before)) == 0);
+    }
+    CHECK(mtvk_nv_discovery_from_pci(NULL, &projected) == MTVK_INVALID_ARGUMENT);
+    CHECK(mtvk_nv_discovery_from_pci(&valid, NULL) == MTVK_INVALID_ARGUMENT);
     CHECK(discovery_wire_golden_and_failures() == 0);
     CHECK(session_budget_alias_and_invalid_device() == 0);
     CHECK(sizeof(mtvk_nv_response) == 24u);

@@ -2,6 +2,16 @@
 
 ## NVIDIA transport and module maintenance
 
+- Wire a dedicated NVIDIA read-only UserClient (connect type 1) to the captured
+  PCI snapshot, private transport session and versioned discovery codec.
+  Existing generic diagnostic connect type 0 remains unchanged.
+- Add the real IOKit `metalvk-nvidia-discovery` client to the App bundle. It
+  requires an explicit registry ID; no default GPU, privileged install or
+  loopback fallback. Native CI checks argument and no-service failure paths.
+- Share read-only IOKit locking policy and snapshot-copy lifecycle checks.
+  Export only observed PCI identity/address/revision, leaving RM fields unknown.
+  Hardware loading and a real UserClient round-trip still require target testing.
+
 - Separate discovery initialization/capability projection from session dispatch;
   update host, Mesa and native kernel build graphs to compile the shared module.
   Portable discovery payloads now use a fixed 328-byte little-endian codec.

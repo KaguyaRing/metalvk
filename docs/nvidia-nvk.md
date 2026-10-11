@@ -75,7 +75,7 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 ## 后续首个真实 draw 的验收顺序
 
 1. 完成项目 vertex／fragment 的离线 NAK 编译与 IR／binary 记录。（已完成）
-2. 固定并核验两侧标准：操作目录映射与显式 discovery 载荷编码已有主机回归；真实硬件字段来源、RM 语义与 UserClient 双端接线未完成。
+2. 固定并核验两侧标准：操作目录映射与显式 discovery 载荷编码已有主机回归；[专用 UserClient 与真实 IOKit 客户端](nvidia-userclient.md) 已在源码接线，但加载和真实往返尚未验收。RM 硬件字段来源与语义仍未完成。
 3. 在 Darwin 内核侧实现 discovery／memory／address／execution／sync：可信匹配固件、RM／GSP、DMA／IOMMU、GPU VA、queue／fence，并让 `nvkmd-alignment.json` 中对应条目的 `kernel` 状态从 `not-implemented` 变为已实现。
 4. 在独立 Darwin build graph 编译 NVK／NAK 及真实 nvkmd adapter，禁用尚不可用的扩展。不得把 Linux 构建通过标记为此步通过。
 5. 同一 `vulkan-render` 客户端通过明确 NVIDIA ICD 运行 draw → fence → 回读，验证全部像素与零验证诊断；需要隔离 macOS 真机。Windows 官方 ICD 结果只作 oracle，不作新后端结果。
