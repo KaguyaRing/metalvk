@@ -1,0 +1,86 @@
+name: NVIDIA upstream NVK and NAK baseline
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/nvidia-mesa.yml'
+      - 'backends/nvidia/mesa-source.json'
+permissions:
+  contents: read
+jobs:
+  linux-baseline:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09
+      - name: Install native NVK build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential ninja-build pkg-config cmake \
+            python3-venv python3-mako python3-yaml python3-ply \
+            clang-18 llvm-18-dev libclang-18-dev libclc-18-dev \
+            libllvmspirvlib-18-dev libdrm-dev libelf-dev libexpat1-dev \
+            libzstd-dev zlib1g-dev libvulkan-dev glslang-tools spirv-tools
+          python3 -m venv --system-site-packages target/mesa-tools
+          target/mesa-tools/bin/pip install meson==1.9.1
+          rustup toolchain install 1.90.0 --profile minimal
+          cargo +1.90.0 install bindgen-cli --version 0.72.1 --locked
+      - name: Fetch fixed official source and verify before extraction
+        run: |
+          mkdir -p target/mesa
+          python3 - <<'PY'
+          import json, pathlib, subprocess
+          lock = json.loads(pathlib.Path('backends/nvidia/mesa-source.json').read_text())
+          archive = pathlib.Path('target/mesa/source.tar.xz')
+          subprocess.run(['curl', '--fail', '--location', '--proto', '=https',
+                          '--proto-redir', '=https', '--max-time', '180',
+                          '--max-filesize', '134217728', '--noproxy', '*',
+                          '--output', str(archive), lock['url']], check=True)
+          import hashlib
+          with archive.open('rb') as stream:
+              digest = hashlib.file_digest(stream, 'sha256').hexdigest()
+          if digest != lock['sha256']:
+              raise SystemExit('Mesa archive checksum mismatch; refusing extraction')
+          subprocess.run(['tar', '-xJf', str(archive), '-C', 'target/mesa'], check=True)
+          PY
+      - name: Configure complete Linux NVK, not a Darwin substitute
+        env:
+          RUSTUP_TOOLCHAIN: '1.90.0'
+          LLVM_CONFIG: llvm-config-18
+          LIBCLANG_PATH: /usr/lib/llvm-18/lib
+          CC: clang-18
+          CXX: clang++-18
+        run: |
+          target/mesa-tools/bin/meson setup target/mesa/build target/mesa/mesa-26.2.4 \
+            --buildtype=release -Dplatforms=[] -Dgallium-drivers=[] \
+            -Dvulkan-drivers=nouveau -Dglx=disabled -Degl=disabled \
+            -Dopengl=false -Dgles1=disabled -Dgles2=disabled \
+            -Dvideo-codecs=[] -Dbuild-tests=true -Dllvm=enabled \
+            -Dshared-llvm=enabled -Dmesa-clc=enabled
+      - name: Build full ICD and compiler test executables
+        env:
+          RUSTUP_TOOLCHAIN: '1.90.0'
+          LIBCLANG_PATH: /usr/lib/llvm-18/lib
+        run: target/mesa-tools/bin/meson compile -C target/mesa/build -j 4
+      - name: Run CPU-only Nouveau compiler and command tests
+        env:
+          RUSTUP_TOOLCHAIN: '1.90.0'
+        run: target/mesa-tools/bin/meson test -C target/mesa/build --suite nouveau --print-errorlogs
+      - name: Verify actual ICD symbols and dependencies
+        run: |
+          test -s target/mesa/build/src/nouveau/vulkan/libvulkan_nouveau.so
+          nm -D target/mesa/build/src/nouveau/vulkan/libvulkan_nouveau.so | grep vk_icdGetInstanceProcAddr
+          ldd target/mesa/build/src/nouveau/vulkan/libvulkan_nouveau.so
+          cp backends/nvidia/mesa-source.json target/mesa/build/
+      - name: Preserve baseline diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
+        with:
+          name: nvidia-mesa-linux-baseline
+          path: |
+            target/mesa/build/meson-logs/
+            target/mesa/build/mesa-source.json
+            target/mesa/build/src/nouveau/vulkan/libvulkan_nouveau.so
+            target/mesa/build/src/nouveau/vulkan/*icd*.json
+            target/mesa/mesa-26.2.4/docs/license*
+          if-no-files-found: warn

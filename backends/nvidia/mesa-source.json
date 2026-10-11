@@ -1,0 +1,7 @@
+{
+  "version": "26.2.4",
+  "url": "https://archive.mesa3d.org/mesa-26.2.4.tar.xz",
+  "sha256": "bce5f7fbebb934373b86c999a064d52fb5065878dc57f287f95346648ec832e9",
+  "scope": "Upstream Linux NVK/NAK build baseline, not a Darwin ICD",
+  "license_policy": "Preserve upstream per-file notices; Mesa is not uniformly MIT"
+}
