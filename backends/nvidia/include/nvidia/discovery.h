@@ -3,12 +3,14 @@
 #ifndef MTVK_NVIDIA_DISCOVERY_H
 #define MTVK_NVIDIA_DISCOVERY_H
 #include "platform.h"
+#include <stddef.h>
 #include <stdint.h>
 
 /* Device discovery payload for the MTVK_NV_OP_DEVICE_QUERY response.
  *
- * Mirrors the fields NVK reads from nvkmd_pdev so the two sides agree on one
- * fixed layout. Any field the kernel cannot yet supply stays zero with its
+ * Host data model for fields NVK reads from nvkmd_pdev. This structure is not a
+ * portable wire layout; explicit payload encoding remains pending. Any field
+ * the kernel cannot yet supply stays zero with its
  * capability flag clear: a zero here means "unknown", never a fabricated
  * hardware value, and a set capability flag means the matching transport op is
  * genuinely backed. This is a private NVIDIA backend standard, not an
@@ -69,13 +71,16 @@ typedef struct mtvk_nv_device_info {
     uint64_t va_end;
 } mtvk_nv_device_info;
 
-/* Zero-initializes a device info record. Required before populating one that
+/* Zero-initializes a device info record; NULL is a no-op. Required before populating one that
  * crosses the transport boundary: the record is copied by value, so any
  * uninitialized padding would otherwise leak into the message payload. */
-static inline void mtvk_nv_device_info_init(mtvk_nv_device_info *info) {
-    uint8_t *bytes = (uint8_t *)info;
-    for (size_t index = 0; index < sizeof(*info); ++index) bytes[index] = 0;
-}
+void mtvk_nv_device_info_init(mtvk_nv_device_info *info);
+
+/* Discovery capability policy, independent of session ownership/dispatch.
+ * A NULL device produces zeroed information. dma-buf requires import and export.
+ * The caller supplies a validated operation mask; this does not enable handlers. */
+mtvk_nv_device_info mtvk_nv_effective_device_info(const mtvk_nv_device_info *device,
+                                                uint32_t backed_op_mask);
 
 MTVK_EXTERN_C_END
 #endif

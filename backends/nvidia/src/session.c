@@ -1,26 +1,14 @@
 // SPDX-License-Identifier: MIT
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 /* Capability-gated NVIDIA transport dispatch. The kernel endpoint and the host
- * loopback tests build this one source, like transport.c, so the refusal paths
- * and the capability mask cannot drift between the two sides.
+ * loopback tests build this one source, like transport.c. Sharing the refusal
+ * policy reduces duplicate logic; it does not prove runtime endpoint alignment.
  *
  * Dependency-free on purpose: no libc, allocator, logging or Vulkan. */
 #include "nvidia/session.h"
 
 _Static_assert(sizeof(mtvk_nv_device_info) % 4u == 0u,
                "device info payload must stay 4-byte aligned");
-
-mtvk_nv_device_info mtvk_nv_effective_device_info(const mtvk_nv_device_info *device,
-                                                  uint32_t backed_op_mask) {
-    mtvk_nv_device_info out = *device;
-    if (!(backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_ALLOC_TILED))) out.has_alloc_tiled = 0u;
-    if (!(backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_MAP))) out.has_map_fixed = 0u;
-    if (!(backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_OVERMAP))) out.has_overmap = 0u;
-    if (!(backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_ALLOC_TILED))) out.has_compression = 0u;
-    if (!(backed_op_mask & (MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_IMPORT) |
-                            MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_EXPORT)))) out.has_dma_buf = 0u;
-    return out;
-}
 
 void mtvk_nv_session_init(mtvk_nv_session *session, uint32_t requested_ops,
                           const mtvk_nv_device_info *device) {
@@ -51,6 +39,12 @@ mtvk_status mtvk_nv_session_dispatch(mtvk_nv_session *session,
                                      size_t *response_written) {
     if (!session || !response || !response_written) return MTVK_INVALID_ARGUMENT;
     *response_written = 0;
+    /* Never emit a capability advertisement from corrupted or incompatible
+     * session state. No handler may be enabled by mutating the public mask. */
+    if (session->version != MTVK_NV_TRANSPORT_VERSION) return MTVK_INCOMPATIBLE_VERSION;
+    if ((session->backed_op_mask & ~MTVK_NV_IMPLEMENTED_OPS) != 0u ||
+        !(session->backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_QUERY)))
+        return MTVK_INVALID_ARGUMENT;
     mtvk_nv_request_view view;
     const mtvk_status framed = mtvk_nv_transport_validate(request, request_size, &view);
     if (framed != MTVK_OK)

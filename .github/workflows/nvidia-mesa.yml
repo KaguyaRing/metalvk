@@ -53,6 +53,7 @@ jobs:
           shutil.copyfile('validation/nvidia/nvkmd-metalvk.c', compiler / 'metalvk-nvkmd-adapter.c')
           shutil.copyfile('backends/nvidia/src/transport.c', compiler / 'metalvk-transport.c')
           shutil.copyfile('backends/nvidia/src/session.c', compiler / 'metalvk-session.c')
+          shutil.copyfile('backends/nvidia/src/discovery.c', compiler / 'metalvk-discovery.c')
           root = os.environ['GITHUB_WORKSPACE']
           overlay = pathlib.Path('validation/nvidia/nvkmd-metalvk.meson').read_text().replace('@METALVK_ROOT@', root)
           with (compiler / 'meson.build').open('a') as stream:
@@ -61,6 +62,7 @@ jobs:
           PY
       - name: Check the transport standard against the pinned nvkmd header
         run: |
+          python3 tests/test_nvkmd_catalog.py
           python3 tools/check_nvkmd_alignment.py \
             --manifest backends/nvidia/nvkmd-alignment.json \
             --transport-header backends/nvidia/include/nvidia/transport.h \

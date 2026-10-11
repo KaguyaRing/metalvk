@@ -6,7 +6,7 @@
 # standard-conformance client for the metalvk side of the transport.
 executable(
   'metalvk-nvkmd-adapter',
-  ['metalvk-nvkmd-adapter.c', 'metalvk-transport.c', 'metalvk-session.c'],
+  ['metalvk-nvkmd-adapter.c', 'metalvk-transport.c', 'metalvk-discovery.c', 'metalvk-session.c'],
   include_directories: [inc_include, inc_src],
   dependencies: nvk_deps + [idep_vtn],
   link_with: libnvk,

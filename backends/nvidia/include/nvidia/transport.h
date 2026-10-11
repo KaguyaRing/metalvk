@@ -58,6 +58,10 @@ typedef enum mtvk_nv_op {
     MTVK_NV_OP_COUNT
 } mtvk_nv_op;
 
+/* Version 1 accepts only bits belonging to its operation catalog. */
+#define MTVK_NV_VALID_OP_MASK ((UINT32_C(1) << (uint32_t)MTVK_NV_OP_COUNT) - UINT32_C(1))
+#define MTVK_NV_OP_BIT(op) (UINT32_C(1) << (uint32_t)(op))
+
 /* Which kernel capability an op depends on. This is the alignment axis: an op
  * may only be advertised once its whole class is backed by real hardware. */
 typedef enum mtvk_nv_op_class {
@@ -139,4 +143,3 @@ mtvk_nv_op_class mtvk_nv_op_class_of(uint32_t op);
 
 MTVK_EXTERN_C_END
 #endif
-

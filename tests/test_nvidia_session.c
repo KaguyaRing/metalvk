@@ -52,6 +52,61 @@ static int capability_masking(void) {
     const mtvk_nv_device_info tiled = mtvk_nv_effective_device_info(&info, tiled_only);
     CHECK(tiled.has_alloc_tiled == 1u && tiled.has_compression == 1u);
     CHECK(tiled.has_map_fixed == 0u && tiled.has_overmap == 0u && tiled.has_dma_buf == 0u);
+    const mtvk_nv_device_info import_only = mtvk_nv_effective_device_info(
+        &info, MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_IMPORT));
+    const mtvk_nv_device_info export_only = mtvk_nv_effective_device_info(
+        &info, MTVK_NV_OP_BIT(MTVK_NV_OP_MEMORY_EXPORT));
+    CHECK(import_only.has_dma_buf == 0u && export_only.has_dma_buf == 0u);
+    const mtvk_nv_device_info missing = mtvk_nv_effective_device_info(NULL, all);
+    mtvk_nv_device_info zero;
+    mtvk_nv_device_info_init(&zero);
+    mtvk_nv_device_info_init(NULL);
+    CHECK(memcmp(&missing, &zero, sizeof(zero)) == 0);
+    return 0;
+}
+
+static int corrupt_session_and_response_masks_are_refused(void) {
+    mtvk_nv_device_info info;
+    fixture(&info);
+    mtvk_nv_session session;
+    mtvk_nv_session_init(&session, UINT32_MAX, &info);
+    uint8_t request[sizeof(mtvk_nv_request)];
+    uint8_t response[RESPONSE_BYTES];
+    uint8_t untouched[RESPONSE_BYTES];
+    size_t written = 0;
+    CHECK(mtvk_nv_request_init(request, sizeof(request), MTVK_NV_OP_DEVICE_QUERY,
+                               0u, 0u, &written) == MTVK_OK);
+    memset(response, 0xa5, sizeof(response));
+    memcpy(untouched, response, sizeof(response));
+    session.version++;
+    CHECK(mtvk_nv_session_dispatch(&session, request, sizeof(request), response,
+                                   sizeof(response), &written) == MTVK_INCOMPATIBLE_VERSION);
+    CHECK(written == 0u && memcmp(response, untouched, sizeof(response)) == 0);
+    session.version = MTVK_NV_TRANSPORT_VERSION;
+    for (uint32_t bit = 1u; bit < 32u; ++bit) {
+        session.backed_op_mask = MTVK_NV_IMPLEMENTED_OPS | (UINT32_C(1) << bit);
+        written = 123u;
+        CHECK(mtvk_nv_session_dispatch(&session, request, sizeof(request), response,
+                                       sizeof(response), &written) == MTVK_INVALID_ARGUMENT);
+        CHECK(written == 0u && memcmp(response, untouched, sizeof(response)) == 0);
+    }
+    session.backed_op_mask = 0u;
+    CHECK(mtvk_nv_session_dispatch(&session, request, sizeof(request), response,
+                                   sizeof(response), &written) == MTVK_INVALID_ARGUMENT);
+    CHECK(written == 0u && memcmp(response, untouched, sizeof(response)) == 0);
+    for (uint32_t bit = (uint32_t)MTVK_NV_OP_COUNT; bit < 32u; ++bit) {
+        const uint32_t unknown = UINT32_C(1) << bit;
+        CHECK(mtvk_nv_response_init(response, sizeof(response), MTVK_NV_OP_DEVICE_QUERY,
+                                    MTVK_OK, 0u, unknown, &written) == MTVK_INVALID_ARGUMENT);
+        CHECK(memcmp(response, untouched, sizeof(response)) == 0);
+        CHECK(mtvk_nv_response_init(response, sizeof(response), MTVK_NV_OP_DEVICE_QUERY,
+                                    MTVK_OK, 0u, 0u, &written) == MTVK_OK);
+        /* Independently forge wire bytes, bypassing the encoder. */
+        response[20u + bit / 8u] = (uint8_t)(1u << (bit % 8u));
+        mtvk_nv_response_view view;
+        CHECK(mtvk_nv_transport_validate_response(response, written, &view) == MTVK_INVALID_ARGUMENT);
+        memcpy(response, untouched, sizeof(response));
+    }
     return 0;
 }
 
@@ -230,6 +285,7 @@ int main(void) {
     CHECK(sizeof(mtvk_nv_response) == 24u);
     CHECK(sizeof(mtvk_nv_device_info) % 4u == 0u);
     CHECK(capability_masking() == 0);
+    CHECK(corrupt_session_and_response_masks_are_refused() == 0);
     CHECK(session_gating() == 0);
     CHECK(device_query_path() == 0);
     CHECK(unbacked_ops_are_refused() == 0);

@@ -59,7 +59,12 @@ def upstream_operations(header: pathlib.Path) -> tuple[set[str], set[str]]:
 
 
 def catalog(header: pathlib.Path, source: pathlib.Path) -> tuple[set[str], dict[str, str]]:
-    names = set(OP_ENUM.findall(header.read_text(encoding="utf-8", errors="replace")))
+    text = header.read_text(encoding="utf-8", errors="replace")
+    # Helper macros may use the same prefix; only enum members are operations.
+    block = re.search(r"typedef\s+enum\s+mtvk_nv_op\s*\{([^{}]*)\}\s*mtvk_nv_op\s*;", text)
+    if block is None:
+        fail("transport header has no mtvk_nv_op enum")
+    names = set(OP_ENUM.findall(block.group(1)))
     names.discard("COUNT")
     classes = {op: klass.lower() for op, klass in CLASS_TABLE.findall(
         source.read_text(encoding="utf-8", errors="replace"))}

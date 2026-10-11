@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 /* Single shared implementation of the NVIDIA transport standard. Compiled into
  * the Darwin kernel library, into the user-space nvkmd adapter and into host
- * tests from this one file, so both sides cannot drift apart.
+ * tests from this one file, reducing duplicate framing implementations.
  *
  * Dependency-free on purpose: no libc, allocator, logging or Vulkan. It must
  * link inside a kext and inside Mesa. */
@@ -10,6 +10,7 @@
 
 _Static_assert(sizeof(mtvk_nv_request) == 24u, "transport header must stay 6 dwords");
 _Static_assert(sizeof(mtvk_nv_response) == 24u, "transport response must stay 6 dwords");
+_Static_assert(MTVK_NV_OP_COUNT < 32, "operation mask must fit one dword");
 
 static uint32_t load_le32(const uint8_t *bytes) {
     return (uint32_t)bytes[0] | ((uint32_t)bytes[1] << 8) |
@@ -152,6 +153,7 @@ mtvk_status mtvk_nv_response_init(void *out, size_t capacity, uint32_t op, uint3
     if (!out || !written) return MTVK_INVALID_ARGUMENT;
     if (op >= (uint32_t)MTVK_NV_OP_COUNT) return MTVK_INVALID_ARGUMENT;
     if (status > (uint32_t)MTVK_CLEANUP_REQUIRED) return MTVK_INVALID_ARGUMENT;
+    if (backed_op_mask & ~MTVK_NV_VALID_OP_MASK) return MTVK_INVALID_ARGUMENT;
     if (payload_bytes > MTVK_NV_TRANSPORT_MAX_RESPONSE_BYTES) return MTVK_LIMIT_EXCEEDED;
     if (payload_bytes % 4u != 0u) return MTVK_INVALID_ARGUMENT;
     const size_t total = sizeof(mtvk_nv_response) + (size_t)payload_bytes;
@@ -183,6 +185,7 @@ mtvk_status mtvk_nv_transport_validate_response(const void *bytes, size_t size,
     if (header.version != MTVK_NV_TRANSPORT_VERSION) return MTVK_INCOMPATIBLE_VERSION;
     if (header.op >= (uint32_t)MTVK_NV_OP_COUNT) return MTVK_INVALID_ARGUMENT;
     if (header.status > (uint32_t)MTVK_CLEANUP_REQUIRED) return MTVK_INVALID_ARGUMENT;
+    if (header.backed_op_mask & ~MTVK_NV_VALID_OP_MASK) return MTVK_INVALID_ARGUMENT;
     if (header.payload_bytes > MTVK_NV_TRANSPORT_MAX_RESPONSE_BYTES) return MTVK_LIMIT_EXCEEDED;
     if (header.payload_bytes % 4u != 0u) return MTVK_INVALID_ARGUMENT;
     const size_t expected = sizeof(mtvk_nv_response) + (size_t)header.payload_bytes;
