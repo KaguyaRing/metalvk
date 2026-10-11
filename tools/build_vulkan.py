@@ -80,11 +80,22 @@ def main() -> int:
     subprocess.run([compiler, *flags, str(root / "validation/vulkan/render.c"),
                     str(root / "validation/vulkan/input.c"), str(root / "validation/common/pattern.c"),
                     str(context_library), *library, "-o", str(render_exe)], check=True)
+    faults_exe = build / ("test-vulkan-render-faults" + exe_suffix)
+    subprocess.run([compiler, *flags, "-Dmain=mtvk_render_cli_main", "-include",
+                    str(root / "tests/vulkan_render_faults.h"), "-c",
+                    str(root / "validation/vulkan/render.c"), "-o", str(build / "render-faults.o")], check=True)
+    subprocess.run([compiler, *flags, str(root / "tests/test_vulkan_render_faults.c"),
+                    str(build / "render-faults.o"), str(root / "validation/vulkan/input.c"),
+                    str(root / "validation/common/pattern.c"), str(context_library), *library,
+                    "-o", str(faults_exe)], check=True)
 
     if args.run:
         subprocess.run([str(compute_exe), str(compute_spv), args.vendor], check=True, timeout=60)
     if args.run_render:
         subprocess.run([str(render_exe), str(vert_spv), str(frag_spv), args.vendor], check=True, timeout=60)
+        for fault in ("allocation-failure", "wait-timeout", "drain-failure"):
+            subprocess.run([str(faults_exe), str(vert_spv), str(frag_spv), args.vendor, fault],
+                           check=True, timeout=60)
     return 0
 
 

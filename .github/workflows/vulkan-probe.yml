@@ -40,6 +40,10 @@ jobs:
           clang $CFLAGS -c validation/common/pattern.c -o /tmp/pattern.o
           clang /tmp/compute.o /tmp/input.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-compute
           clang /tmp/render.o /tmp/input.o /tmp/pattern.o /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/vulkan-render
+          clang $CFLAGS -Dmain=mtvk_render_cli_main -include tests/vulkan_render_faults.h \
+            -c validation/vulkan/render.c -o /tmp/render-faults.o
+          clang $CFLAGS tests/test_vulkan_render_faults.c /tmp/render-faults.o /tmp/input.o /tmp/pattern.o \
+            /tmp/libmetalvk-vulkan.a $LDFLAGS -lvulkan -o /tmp/test-vulkan-render-faults
           clang++ $FLAGS -std=c++17 -x c++ -fsyntax-only include/vk/init.h
       - name: Validate the shaders
         run: |
