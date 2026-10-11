@@ -15,7 +15,8 @@
 ## Corrections and verification
 
 - Clarify Vulkan close ownership: live targets and unexpected drain failures
-  retain the context; device loss destroys it and must not be retried.
+  retain the context; device loss and dispose-time validation/invariant errors
+  destroy it and must not be retried.
 - Add native CTA VIC 16/64 and extended VIC 193/225 regressions. Extended VICs
   must not be folded into low VICs by stripping bit 7.
 - Keep NVIDIA/AMD/Intel Metal rendering as a per-device/per-OS coverage target,
