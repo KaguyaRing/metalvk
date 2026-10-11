@@ -17,7 +17,7 @@
  * envelope is reused on the response path; nothing transfers kernel object
  * ownership implicitly. This standard defines framing and validation only. It
  * does not claim that RM/GSP execution, DMA, GPU VA or submission exist. */
-#define MTVK_NV_TRANSPORT_VERSION 1u
+#define MTVK_NV_TRANSPORT_VERSION 2u
 #define MTVK_NV_TRANSPORT_MAX_REQUEST_BYTES 4096u
 #define MTVK_NV_TRANSPORT_MAX_RESPONSE_BYTES 4096u
 
@@ -58,7 +58,8 @@ typedef enum mtvk_nv_op {
     MTVK_NV_OP_COUNT
 } mtvk_nv_op;
 
-/* Version 1 accepts only bits belonging to its operation catalog. */
+/* Version 2 accepts only bits belonging to its operation catalog. Version 1's
+ * host-struct DEVICE_QUERY payload is rejected rather than guessed/converted. */
 #define MTVK_NV_VALID_OP_MASK ((UINT32_C(1) << (uint32_t)MTVK_NV_OP_COUNT) - UINT32_C(1))
 #define MTVK_NV_OP_BIT(op) (UINT32_C(1) << (uint32_t)(op))
 
@@ -80,7 +81,7 @@ typedef struct mtvk_nv_request {
     uint32_t op;
     uint32_t reserved;
     uint32_t request_bytes;
-    uint32_t response_bytes;
+    uint32_t response_bytes; /* Payload budget; zero means unspecified, not zero capacity. */
 } mtvk_nv_request;
 
 /* Validated, host-order view over an untrusted message buffer. */

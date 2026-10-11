@@ -118,6 +118,7 @@ static int validate_rejections(void) {
         {0u, 23u, MTVK_INVALID_ARGUMENT},                                    /* header_bytes */
         {0u, 25u, MTVK_INVALID_ARGUMENT},
         {4u, MTVK_NV_TRANSPORT_VERSION + 1u, MTVK_INCOMPATIBLE_VERSION},     /* version */
+        {4u, 1u, MTVK_INCOMPATIBLE_VERSION},                                /* old struct payload */
         {4u, 0u, MTVK_INCOMPATIBLE_VERSION},
         {8u, (uint32_t)MTVK_NV_OP_COUNT, MTVK_INVALID_ARGUMENT},             /* op */
         {8u, UINT32_MAX, MTVK_INVALID_ARGUMENT},

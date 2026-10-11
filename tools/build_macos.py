@@ -147,7 +147,8 @@ def main() -> int:
                   "mtvk_display_apply", "mtvk_display_notify", "mtvk_display_recover",
                   "mtvk_edid_parse", "mtvk_edid_select_capabilities", "probeBoot", "mtvk_nv_identify",
                    "mtvk_nv_transport_validate", "mtvk_nv_device_info_init",
-                   "mtvk_nv_effective_device_info", "mtvk_nv_session_dispatch"):
+                   "mtvk_nv_effective_device_info", "mtvk_nv_device_info_encode",
+                   "mtvk_nv_device_info_decode", "mtvk_nv_session_dispatch"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")

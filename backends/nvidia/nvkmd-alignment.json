@@ -2,7 +2,7 @@
   "mesa_version": "26.2.4",
   "source_file": "src/nouveau/vulkan/nvkmd/nvkmd.h",
   "discovery_entry": "nvkmd_try_create_pdev_for_drm",
-  "transport_version": 1,
+  "transport_version": 2,
   "capability_gating": "The endpoint advertises backed ops in every response's backed_op_mask; ops outside MTVK_NV_IMPLEMENTED_OPS are refused with NOT_SUPPORTED and capabilities are clipped on both sides.",
   "operations": [
     { "upstream": "nvkmd_try_create_pdev_for_drm", "kind": "entry", "transport": "DEVICE_QUERY", "class": "discovery", "kernel": "device-query-from-read-only-probe" },

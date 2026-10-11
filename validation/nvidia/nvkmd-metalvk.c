@@ -126,12 +126,13 @@ VkResult mtvk_nvkmd_open(const void *response, size_t size,
     if (mtvk_nv_transport_validate_response(response, size, &view) != MTVK_OK)
         return VK_ERROR_INITIALIZATION_FAILED;
     if (view.header.op != (uint32_t)MTVK_NV_OP_DEVICE_QUERY ||
-        view.header.status != (uint32_t)MTVK_OK)
-        return VK_ERROR_INITIALIZATION_FAILED;
-    if (view.payload_bytes != (uint32_t)sizeof(mtvk_nv_device_info))
+        view.header.status != (uint32_t)MTVK_OK ||
+        !(view.header.backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_QUERY)) ||
+        (view.header.backed_op_mask & ~MTVK_NV_IMPLEMENTED_OPS))
         return VK_ERROR_INITIALIZATION_FAILED;
     mtvk_nv_device_info info;
-    memcpy(&info, view.payload, sizeof(info));
+    if (mtvk_nv_device_info_decode(view.payload, view.payload_bytes, &info) != MTVK_OK)
+        return VK_ERROR_INITIALIZATION_FAILED;
     /* Defence in depth: clip capabilities the endpoint did not back, even if it
      * claimed them. The adapter must never advertise an unhonoured capability. */
     const mtvk_nv_device_info effective =
@@ -218,7 +219,7 @@ int main(void) {
     size_t request_written = 0;
     CHECK(mtvk_nv_request_init(request, sizeof(request), (uint32_t)MTVK_NV_OP_DEVICE_QUERY,
                                0u, 0u, &request_written) == MTVK_OK);
-    uint8_t response[sizeof(mtvk_nv_response) + sizeof(mtvk_nv_device_info)];
+    uint8_t response[sizeof(mtvk_nv_response) + MTVK_NV_DEVICE_WIRE_BYTES];
     size_t response_written = 0;
     CHECK(mtvk_nv_session_dispatch(&session, request, request_written, response,
                                    sizeof(response), &response_written) == MTVK_OK);
@@ -235,17 +236,33 @@ int main(void) {
     CHECK(nvkmd_pdev_create_dev(pdev, NULL, &dev) == VK_ERROR_INCOMPATIBLE_DRIVER && dev == NULL);
     nvkmd_pdev_destroy(pdev);
 
-    /* Defence in depth: a hostile response that claims capabilities while
-     * advertising an empty backed mask must still be clipped by the client. */
-    uint8_t forged[sizeof(mtvk_nv_response) + sizeof(mtvk_nv_device_info)];
+    /* Defence in depth: capability claims without backed memory operations
+     * must still be clipped by the client. Missing query backing is rejected. */
+    uint8_t forged[sizeof(mtvk_nv_response) + MTVK_NV_DEVICE_WIRE_BYTES];
     size_t forged_written = 0;
     CHECK(mtvk_nv_response_init(forged, sizeof(forged), (uint32_t)MTVK_NV_OP_DEVICE_QUERY,
-                                (uint32_t)MTVK_OK, (uint32_t)sizeof(info), 0u, &forged_written) == MTVK_OK);
-    memcpy(forged + sizeof(mtvk_nv_response), &info, sizeof(info));
+                                (uint32_t)MTVK_OK, MTVK_NV_DEVICE_WIRE_BYTES,
+                                MTVK_NV_IMPLEMENTED_OPS, &forged_written) == MTVK_OK);
+    CHECK(mtvk_nv_device_info_encode(&info, forged + sizeof(mtvk_nv_response), MTVK_NV_DEVICE_WIRE_BYTES) == MTVK_OK);
     pdev = NULL;
     CHECK(mtvk_nvkmd_open(forged, forged_written, no_sync_types, &pdev) == VK_SUCCESS && pdev != NULL);
     CHECK(!pdev->kmd_info.has_alloc_tiled && !pdev->kmd_info.has_dma_buf && !pdev->kmd_info.has_map_fixed);
     nvkmd_pdev_destroy(pdev);
+    pdev = NULL;
+    const uint32_t invalid_masks[] = {0u, MTVK_NV_IMPLEMENTED_OPS |
+        MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_VRAM_USED)};
+    for (size_t i = 0; i < sizeof(invalid_masks) / sizeof(invalid_masks[0]); ++i) {
+        CHECK(mtvk_nv_response_init(forged, sizeof(forged), MTVK_NV_OP_DEVICE_QUERY,
+                                    MTVK_OK, MTVK_NV_DEVICE_WIRE_BYTES,
+                                    invalid_masks[i], &forged_written) == MTVK_OK);
+        CHECK(mtvk_nvkmd_open(forged, forged_written, no_sync_types, &pdev) == VK_ERROR_INITIALIZATION_FAILED && pdev == NULL);
+    }
+    /* Decoder errors must not publish a Mesa physical-device object. */
+    CHECK(mtvk_nv_response_init(forged, sizeof(forged), MTVK_NV_OP_DEVICE_QUERY,
+                                MTVK_OK, MTVK_NV_DEVICE_WIRE_BYTES,
+                                MTVK_NV_IMPLEMENTED_OPS, &forged_written) == MTVK_OK);
+    forged[sizeof(mtvk_nv_response) + 288u] = 2u; /* malformed has_alloc_tiled */
+    CHECK(mtvk_nvkmd_open(forged, forged_written, no_sync_types, &pdev) == VK_ERROR_INITIALIZATION_FAILED && pdev == NULL);
 
     /* Negative paths: wrong preamble, wrong op, wrong status, wrong payload
      * size and a missing output must all be refused without publishing a pdev. */
@@ -257,14 +274,14 @@ int main(void) {
     uint8_t wrong_status[sizeof(response)];
     size_t wrong_written = 0;
     CHECK(mtvk_nv_response_init(wrong_status, sizeof(wrong_status), (uint32_t)MTVK_NV_OP_DEVICE_QUERY,
-                                (uint32_t)MTVK_NOT_SUPPORTED, (uint32_t)sizeof(info), 1u, &wrong_written) == MTVK_OK);
-    memcpy(wrong_status + sizeof(mtvk_nv_response), &info, sizeof(info));
+                                (uint32_t)MTVK_NOT_SUPPORTED, MTVK_NV_DEVICE_WIRE_BYTES, 1u, &wrong_written) == MTVK_OK);
+    CHECK(mtvk_nv_device_info_encode(&info, wrong_status + sizeof(mtvk_nv_response), MTVK_NV_DEVICE_WIRE_BYTES) == MTVK_OK);
     CHECK(mtvk_nvkmd_open(wrong_status, wrong_written, no_sync_types, &pdev) == VK_ERROR_INITIALIZATION_FAILED && pdev == NULL);
 
     uint8_t short_payload[sizeof(response)];
     size_t short_written = 0;
     CHECK(mtvk_nv_response_init(short_payload, sizeof(short_payload), (uint32_t)MTVK_NV_OP_DEVICE_QUERY,
-                                (uint32_t)MTVK_OK, (uint32_t)sizeof(info) - 4u, 1u, &short_written) == MTVK_OK);
+                                (uint32_t)MTVK_OK, MTVK_NV_DEVICE_WIRE_BYTES - 4u, 1u, &short_written) == MTVK_OK);
     CHECK(mtvk_nvkmd_open(short_payload, short_written, no_sync_types, &pdev) == VK_ERROR_INITIALIZATION_FAILED && pdev == NULL);
 
     puts("PASS user-space nvkmd adapter consumes a kernel response and fails closed for execution");

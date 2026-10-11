@@ -117,8 +117,9 @@ dma-buf 声明要求 import 与 export 同时存在，缺失 discovery 输入返
 回归覆盖每个未实现操作位、全部未知高位、绕过编码器直接伪造的响应和输出未修改断言；
 Debug／Release／Alpha（UBSan）及 Clang 静态分析通过，无编译诊断。
 
-残余限制：discovery 仍复制主机结构，尚非显式跨端字节编码；request 的 response_bytes 语义、
-缓冲区重叠标准和真实 probe／UserClient 接线尚待完成。session 由拥有者串行访问，
+后续完善：discovery 已采用版本化固定小端字节编码；DEVICE_QUERY 的 response_bytes 明确为载荷预算，
+零表示未指定；session 拒绝请求／响应／状态／输出计数的危险重叠。真实 probe／UserClient 接线仍未完成。
+session 由拥有者串行访问，
 共享源码不能证明字段语义、RM 资源标准或双方运行时完整对齐。上述结果不升级 R2／R3。
 
 范围：共享 Vulkan 上下文、验证输入／回读／清理、共享 PCI 服务与诊断 UserClient、受影响构建脚本。

@@ -51,7 +51,7 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 
 对齐不是让两侧各自“看起来能编过”，而是让用户态 NVK／nvkmd 与 Darwin 内核端点共享同一份可机器核验的标准。当前已落实的部分：
 
-1. **按职责共享源码。** `transport.h/.c` 定义并校验信封、op 目录和类别；`discovery.h/.c` 管理设备数据与能力投影；`session.h/.c` 管理分发。内核库与 Mesa 主机验收适配器构建这些共享模块，减少重复实现。discovery 仍复制主机结构，不是稳定的跨端字节编码；共享源码不能证明完整字段语义或运行时已对齐。
+1. **按职责共享源码。** `transport.h/.c` 定义并校验信封、op 目录和类别；`discovery.h/.c` 管理设备数据、能力投影与固定小端字节编码；`session.h/.c` 管理分发。内核库与 Mesa 主机验收适配器构建这些共享模块，减少重复实现。传输版本 2 使用[显式 discovery 载荷](nvidia-discovery-wire.md)，拒绝版本 1 的主机结构复制；共享源码不能证明完整字段语义或运行时已对齐。
 2. **双向且受能力门控。** `mtvk_nv_session_dispatch` 校验请求、写回响应并附带 `backed_op_mask`，未实现操作以 `MTVK_NOT_SUPPORTED` 拒绝。未知能力位、错误 session 版本和被修改为未实现 handler 的 mask 均拒绝。`mtvk_nv_effective_device_info` 在分发与消费时分别裁剪能力，dma-buf 要求 import/export 均存在；这属于纵深校验，不是“任一侧出错仍保证正确”的证明。
 3. **可机器核验的映射。** `backends/nvidia/nvkmd-alignment.json` 逐项记录固定上游每个 `nvkmd` 操作到传输 op 的映射、类别与内核状态。`tools/check_nvkmd_alignment.py` 从固定的 `nvkmd.h` 解析出真实操作集，与清单、`transport.h` 目录、`transport.c` 类别表三方比对。本地与 CI `38152949000` 均已通过：**30 个上游操作、28 个传输操作、无缺漏、无多余、类别一致**。
 4. **用户态验收适配器。** `validation/nvidia/nvkmd-metalvk.c` 在固定 Mesa 树内编译，未挂接真实 NVK physical-device discovery。自测在同一主机进程调用共享分发器生成响应，再交给 `mtvk_nvkmd_open` 消费，是主机 loopback，不是 IOUserClient 内核往返。伪造能力响应会被裁剪；`create_dev` 返回 `VK_ERROR_INCOMPATIBLE_DRIVER`。修复后的 CI [38155051978](https://github.com/KaguyaRing/metalvk/actions/runs/38155051978) 已通过；后续拆分修改须重新验证。
@@ -75,7 +75,7 @@ Mesa 不是统一 MIT。固定版本的 NVK 主目录、NAK 大部分代码、NI
 ## 后续首个真实 draw 的验收顺序
 
 1. 完成项目 vertex／fragment 的离线 NAK 编译与 IR／binary 记录。（已完成）
-2. 固定并核验两侧标准：操作目录映射已通过；显式载荷编码、字段语义与真实双端接线未完成。
+2. 固定并核验两侧标准：操作目录映射与显式 discovery 载荷编码已有主机回归；真实硬件字段来源、RM 语义与 UserClient 双端接线未完成。
 3. 在 Darwin 内核侧实现 discovery／memory／address／execution／sync：可信匹配固件、RM／GSP、DMA／IOMMU、GPU VA、queue／fence，并让 `nvkmd-alignment.json` 中对应条目的 `kernel` 状态从 `not-implemented` 变为已实现。
 4. 在独立 Darwin build graph 编译 NVK／NAK 及真实 nvkmd adapter，禁用尚不可用的扩展。不得把 Linux 构建通过标记为此步通过。
 5. 同一 `vulkan-render` 客户端通过明确 NVIDIA ICD 运行 draw → fence → 回读，验证全部像素与零验证诊断；需要隔离 macOS 真机。Windows 官方 ICD 结果只作 oracle，不作新后端结果。

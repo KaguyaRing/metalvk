@@ -3,13 +3,14 @@
 #ifndef MTVK_NVIDIA_DISCOVERY_H
 #define MTVK_NVIDIA_DISCOVERY_H
 #include "platform.h"
+#include "base/status.h"
 #include <stddef.h>
 #include <stdint.h>
 
 /* Device discovery payload for the MTVK_NV_OP_DEVICE_QUERY response.
  *
  * Host data model for fields NVK reads from nvkmd_pdev. This structure is not a
- * portable wire layout; explicit payload encoding remains pending. Any field
+ * portable wire layout; use the explicit codec below. Any field
  * the kernel cannot yet supply stays zero with its
  * capability flag clear: a zero here means "unknown", never a fabricated
  * hardware value, and a set capability flag means the matching transport op is
@@ -19,6 +20,8 @@
 #define MTVK_NV_CHIPSET_NAME_BYTES 16u
 #define MTVK_NV_SMEM_CONFIGS 10u
 #define MTVK_NV_ZCULL_FIELDS 12u
+#define MTVK_NV_DEVICE_WIRE_VERSION 1u
+#define MTVK_NV_DEVICE_WIRE_BYTES 328u
 
 MTVK_EXTERN_C_BEGIN
 
@@ -71,10 +74,19 @@ typedef struct mtvk_nv_device_info {
     uint64_t va_end;
 } mtvk_nv_device_info;
 
-/* Zero-initializes a device info record; NULL is a no-op. Required before populating one that
- * crosses the transport boundary: the record is copied by value, so any
- * uninitialized padding would otherwise leak into the message payload. */
+/* Zero-initializes a host record; NULL is a no-op. Unknown fields stay zero. */
 void mtvk_nv_device_info_init(mtvk_nv_device_info *info);
+
+/* Fixed little-endian payload, independent of host packing/order. The encoder
+ * writes exactly WIRE_BYTES; decoder requires exactly that size. Narrow values,
+ * booleans, PCI address, array count, names and VA/alignment are checked.
+ * No allocation; no output change on failure. Input/output spans must not
+ * overlap. Callers provide valid readable/writable memory and synchronization.
+ * Names use printable ASCII plus NUL and canonical zero tails on the wire. */
+mtvk_status mtvk_nv_device_info_encode(const mtvk_nv_device_info *info,
+                                      void *bytes, size_t capacity);
+mtvk_status mtvk_nv_device_info_decode(const void *bytes, size_t size,
+                                      mtvk_nv_device_info *info);
 
 /* Discovery capability policy, independent of session ownership/dispatch.
  * A NULL device produces zeroed information. dma-buf requires import and export.

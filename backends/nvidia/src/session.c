@@ -6,18 +6,18 @@
  *
  * Dependency-free on purpose: no libc, allocator, logging or Vulkan. */
 #include "nvidia/session.h"
-
-_Static_assert(sizeof(mtvk_nv_device_info) % 4u == 0u,
-               "device info payload must stay 4-byte aligned");
+#include "base/span.h"
 
 void mtvk_nv_session_init(mtvk_nv_session *session, uint32_t requested_ops,
                           const mtvk_nv_device_info *device) {
     if (!session) return;
+    mtvk_nv_device_info initial;
+    mtvk_nv_device_info_init(&initial);
+    if (device) initial = *device; /* Snapshot before mutation, including self-init. */
     session->version = MTVK_NV_TRANSPORT_VERSION;
     session->backed_op_mask = (requested_ops & MTVK_NV_IMPLEMENTED_OPS) |
                               MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_QUERY);
-    mtvk_nv_device_info_init(&session->device);
-    if (device) session->device = *device;
+    session->device = initial;
 }
 
 static mtvk_status reply(void *response, size_t capacity, uint32_t op, mtvk_status status,
@@ -38,6 +38,14 @@ mtvk_status mtvk_nv_session_dispatch(mtvk_nv_session *session,
                                      void *response, size_t response_capacity,
                                      size_t *response_written) {
     if (!session || !response || !response_written) return MTVK_INVALID_ARGUMENT;
+    if (!mtvk_span_valid(session, sizeof(*session)) || !mtvk_span_valid(request, request_size) ||
+        !mtvk_span_valid(response, response_capacity) || !mtvk_span_valid(response_written, sizeof(*response_written)) ||
+        mtvk_spans_overlap(response, response_capacity, request, request_size) ||
+        mtvk_spans_overlap(response, response_capacity, session, sizeof(*session)) ||
+        mtvk_spans_overlap(response_written, sizeof(*response_written), response, response_capacity) ||
+        mtvk_spans_overlap(response_written, sizeof(*response_written), request, request_size) ||
+        mtvk_spans_overlap(response_written, sizeof(*response_written), session, sizeof(*session)))
+        return MTVK_INVALID_ARGUMENT;
     *response_written = 0;
     /* Never emit a capability advertisement from corrupted or incompatible
      * session state. No handler may be enabled by mutating the public mask. */
@@ -62,14 +70,23 @@ mtvk_status mtvk_nv_session_dispatch(mtvk_nv_session *session,
                          session->backed_op_mask, response_written);
         const mtvk_nv_device_info effective =
             mtvk_nv_effective_device_info(&session->device, session->backed_op_mask);
-        const uint32_t payload = (uint32_t)sizeof(effective);
+        const uint32_t payload = MTVK_NV_DEVICE_WIRE_BYTES;
+        uint8_t encoded[MTVK_NV_DEVICE_WIRE_BYTES];
+        const mtvk_status encoding = mtvk_nv_device_info_encode(&effective, encoded, sizeof(encoded));
+        if (encoding != MTVK_OK)
+            return reply(response, response_capacity, op, encoding, 0u,
+                         session->backed_op_mask, response_written);
+        /* response_bytes is a payload budget; zero retains the unspecified
+         * budget used by older callers. Actual output capacity always applies. */
+        if (view.header.response_bytes && view.header.response_bytes < payload)
+            return reply(response, response_capacity, op, MTVK_BUFFER_TOO_SMALL, 0u,
+                         session->backed_op_mask, response_written);
         size_t written = 0;
         const mtvk_status result = reply(response, response_capacity, op, MTVK_OK, payload,
                                          session->backed_op_mask, &written);
         if (result != MTVK_OK) return result;
         uint8_t *dst = (uint8_t *)response + sizeof(mtvk_nv_response);
-        const uint8_t *src = (const uint8_t *)&effective;
-        for (uint32_t index = 0; index < payload; ++index) dst[index] = src[index];
+        for (uint32_t index = 0; index < payload; ++index) dst[index] = encoded[index];
         *response_written = written;
         return MTVK_OK;
     }

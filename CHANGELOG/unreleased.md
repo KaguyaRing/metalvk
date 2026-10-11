@@ -4,7 +4,17 @@
 
 - Separate discovery initialization/capability projection from session dispatch;
   update host, Mesa and native kernel build graphs to compile the shared module.
-  Explicit portable discovery payload encoding is still pending.
+  Portable discovery payloads now use a fixed 328-byte little-endian codec.
+- Bump the private NVIDIA transport to version 2; reject version 1 host-struct
+  discovery payloads. Validate narrow values, PCI addressing, boolean flags,
+  array counts, names, alignment and VA ranges before publishing host output.
+- DEVICE_QUERY respects a nonzero response payload budget. Reject dangerous
+  session buffer overlap; snapshot self-initialization before state mutation.
+- Mesa adapter decodes wire bytes before constructing its pdev, rejects missing
+  query backing and unimplemented operation bits, and still refuses execution.
+- Add independent golden bytes, full-field preservation, padding/noncanonical
+  name handling, all truncations, malformed values, aliasing and 20,000 bounded
+  payload mutations. These are host regression evidence, not hardware discovery.
 - Reject unknown response capability bits and incompatible/corrupted session
   state; require both import/export operations for dma-buf advertisement.
 - Add malformed-session, forged-response and catalog-parser regressions.
