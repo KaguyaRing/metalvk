@@ -14,14 +14,14 @@
 
 typedef struct mtvk_vk_context mtvk_vk_context;
 MTVK_EXTERN_C_BEGIN
-/* Actual Vulkan handles, not a custom GPU-command API. The owner thread must
- * externally synchronize access to the queue and all objects it submits.
- * This hardware context deliberately rejects CPU/software devices and
- * MoltenVK (avoids a circular Metal -> Vulkan -> Metal execution route). */
+// Actual Vulkan handles, not a custom GPU-command API. The owner thread must
+// externally synchronize access to the queue and all objects it submits.
+// This hardware context deliberately rejects CPU/software devices and
+// MoltenVK (avoids a circular Metal -> Vulkan -> Metal execution route).
 VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out);
-/* Caller must complete all submitted work before destroying its child objects.
- * close drains the device; errors (including device loss) are returned.
- * An unexpected drain error preserves ownership; caller may retry close. */
+// Caller must complete all submitted work before destroying its child objects.
+// close drains the device; errors (including device loss) are returned.
+// An unexpected drain error preserves ownership; caller may retry close.
 VkResult mtvk_vk_close(mtvk_vk_context *context);
 VkDevice mtvk_vk_device(const mtvk_vk_context *context);
 VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *context);
