@@ -24,6 +24,7 @@ VkResult mtvk_vk_open(uint32_t vendor, bool validation, mtvk_vk_context **out);
  * An unexpected drain error preserves ownership; caller may retry close. */
 VkResult mtvk_vk_close(mtvk_vk_context *context);
 VkDevice mtvk_vk_device(const mtvk_vk_context *context);
+VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *context);
 VkQueue mtvk_vk_queue(const mtvk_vk_context *context);
 uint32_t mtvk_vk_queue_family(const mtvk_vk_context *context);
 const VkPhysicalDeviceProperties *mtvk_vk_properties(const mtvk_vk_context *context);

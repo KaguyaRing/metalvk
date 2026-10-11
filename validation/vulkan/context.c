@@ -184,6 +184,7 @@ VkResult mtvk_vk_close(mtvk_vk_context *context) {
     return result == VK_SUCCESS ? disposed : result;
 }
 VkDevice mtvk_vk_device(const mtvk_vk_context *c) { return c ? c->device : VK_NULL_HANDLE; }
+VkPhysicalDevice mtvk_vk_physical(const mtvk_vk_context *c) { return c ? c->physical : VK_NULL_HANDLE; }
 VkQueue mtvk_vk_queue(const mtvk_vk_context *c) { return c ? c->queue : VK_NULL_HANDLE; }
 uint32_t mtvk_vk_queue_family(const mtvk_vk_context *c) { return c ? c->family : UINT32_MAX; }
 const VkPhysicalDeviceProperties *mtvk_vk_properties(const mtvk_vk_context *c) { return c ? &c->properties : NULL; }
