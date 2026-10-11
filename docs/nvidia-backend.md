@@ -1,4 +1,4 @@
-# NVIDIA 后端：硬件入口与实施边界
+# NVIDIA 后端：硬件入口与实施范围
 
 ## 首批实现
 
@@ -30,7 +30,7 @@ PCI 校验要求：
 
 `OSReadLittleInt32` 与 `OSSynchronizeIO` 用于 MMIO。**不能用 `IOPCIDevice::ioRead32` 替代**：Apple 的 x86 实现使用 `inl`，它是端口 I/O，不是 BAR0 memory read。架构 fallback 为拒绝非 x86_64，不编造其他平台实现。
 
-## 固件／RM 选择边界
+## 固件／RM 选择范围
 
 本阶段只为已识别的 AD107 报告与固定 NVIDIA 开放源码相符的依赖：
 
@@ -53,11 +53,11 @@ PCI 校验要求：
 
 ## 验证证据与安全审查
 
-宿主 `make test-nvidia CONFIG=Debug|Release|Alpha`：固定配置／boot tuple **构造夹具**，覆盖 capability 边界／环／PM 重叠、D3／decode disabled／错误 BAR／错误型号、boot identity 不一致、virtual GPU 拒绝、参数／别名、失败输出不变，以及 20,000 次输入变异。它不模拟硬件成功，也不构成 MMIO 实测。
+宿主 `make test-nvidia CONFIG=Debug|Release|Alpha`：固定配置／boot tuple **构造夹具**，覆盖 capability 范围／环／PM 重叠、D3／decode disabled／错误 BAR／错误型号、boot identity 不一致、virtual GPU 拒绝、参数／别名、失败输出不变，以及 20,000 次输入变异。它不模拟硬件成功，也不构成 MMIO 实测。
 
-核心 CI 为 NVIDIA 独立库运行回归、ASan／UBSan 与静态分析；手动 macOS 15／26 CI 编译／分析原生 probe、链接／签名 kext，核验 vendor 与公共库边界。**编译与链接不等于加载；截至本阶段没有 NVIDIA macOS 真机 MMIO 读取记录。**
+核心 CI 为 NVIDIA 独立库运行回归、ASan／UBSan 与静态分析；手动 macOS 15／26 CI 编译／分析原生 probe、链接／签名 kext，核验 vendor 与公共库范围。**编译与链接不等于加载；截至本阶段没有 NVIDIA macOS 真机 MMIO 读取记录。**
 
-威胁边界：不可信 PCI／MMIO 值 → 校验和芯片选择 → registry 元数据。资产是内核映射、provider 引用与后续固件决策；新路径无用户态入口、任意地址、DMA、固件执行或硬件写入。配置大小、cap iteration 和映射大小都受限，失败输出保持不变；map failure、provider-open failure、config／boot 变化均直接失败，并由 RAII 释放成功取得的资源。真实 map OOM／退出竞态尚需隔离真机故障测试，源码检查不能代替它。
+威胁范围：不可信 PCI／MMIO 值 → 校验和芯片选择 → registry 元数据。资产是内核映射、provider 引用与后续固件决策；新路径无用户态入口、任意地址、DMA、固件执行或硬件写入。配置大小、cap iteration 和映射大小都受限，失败输出保持不变；map failure、provider-open failure、config／boot 变化均直接失败，并由 RAII 释放成功取得的资源。真实 map OOM／退出竞态尚需隔离真机故障测试，源码检查不能代替它。
 
 残余风险明确保留：`open` 和 D0 snapshot **不是物理断电／hot-unplug 屏障**。检查与 MMIO transaction 之间仍可能发生断电，CPU／总线 fault 无法靠普通返回值处理；尚未实现 IOKit 电源状态转换和硬件终止的同步。因此默认禁用，仅允许受控、稳定供电、不与其他 GPU 驱动竞争的开发测试，不适用于生产或 hotplug 环境。也不保证目标 OS 的全部内核 KPI／私有 ABI 已验证。
 

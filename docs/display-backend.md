@@ -1,4 +1,4 @@
-# 显示控制 API：厂商后端接入契约
+# 显示控制 API：厂商后端接入标准
 
 入口：`#include "display/init.h"`（也由 `metalvk.h` 聚合）。实现：`src/display/control.c`、`validation.c`，编入 SDK-free `libmetalvk.a`；原生构建还将相同实现编入共享内核平台库并检查 kext 中的定义符号。该 API 是进程／内核内部的显示控制接口，不是稳定二进制插件 ABI、IPC 协议或 GPU 命令提交 ABI。
 
@@ -27,7 +27,7 @@
 
 Apple 私有 HDR 元数据方法的参数方向与调用语义尚未逐 OS build 核验；这里规定的是**自有内部控制流**，不能据此推断 Apple 私有接口调用方向。
 
-## 参数表示与边界
+## 参数表示与范围
 
 - v1 为 progressive、RGB 输出，mode ID 非零且在当前能力集合中唯一。最大 32 个候选 mode、活动尺寸 16384、total timing 65535、时钟 4,000,000 kHz；后端应显式选择可提供的集合，不能把被裁剪的原始 EDID 冒充完整解析结果。
 - 时序含 width／height、htotal／vtotal、sync start／end、sync polarity 和 pixel clock（kHz），保留真实刷新率，不限制为整数 60 Hz。
@@ -40,13 +40,13 @@ Apple 私有 HDR 元数据方法的参数方向与调用语义尚未逐 OS build
 
 apply／disable 成功必须表示**同步完成真实硬件操作**，不能仅表示已把请求排队。普通失败必须保留先前硬件配置（自行事务回滚）；不能保证回滚时返回 `MTVK_CLEANUP_REQUIRED`。未知返回码同样视为 CLEANUP_REQUIRED，进入 FAULT。reset 成功必须使输出处于停止状态，随后由 apply 恢复；reset 或恢复失败均进入 FAULT，不宣称先前状态仍已生效。
 
-通用层在同一所有者锁内校验并进入 busy，锁外调用硬件，再同锁发布结果。其他 apply／disable／recover／connect／close 在 busy 期间返回 Busy，但 notify 可递增 generation 并更新状态，阻止在途完成发布过期成功。reset 完成后已观察到失效时不会调用恢复 apply。检查与实际硬件操作之间仍可能发生物理拔插：**generation 只防止过期状态发布，不提供硬件取消或物理原子性**；后端须用自己的硬件／链路同步及独立身份复核处理此边界。
+通用层在同一所有者锁内校验并进入 busy，锁外调用硬件，再同锁发布结果。其他 apply／disable／recover／connect／close 在 busy 期间返回 Busy，但 notify 可递增 generation 并更新状态，阻止在途完成发布过期成功。reset 完成后已观察到失效时不会调用恢复 apply。检查与实际硬件操作之间仍可能发生物理拔插：**generation 只防止过期状态发布，不提供硬件取消或物理原子性**；后端须用自己的硬件／链路同步及独立身份复核处理此范围。
 
 若通知与操作竞态，即使回调返回 OK，API 仍返回 CLEANUP_REQUIRED、保留 `needs_quiesce`。不能直接重新 connect 或 close，须先成功 disable/drain。unplug 清除 desired 与 capability，避免重新插入不同屏幕后回放旧 HDR；单纯 suspend／link loss 保留已成功的 desired。wake 用 RESET_WAKE；不会自动宣称恢复成功或自行安排线程。
 
 generation 达到 UINT64_MAX 后不回绕，拒绝新配置／恢复。无法递增的信号仍进入 FAULT 并使在途阶段失效；只允许 disable 排空和 close。重新建立 manager 之前必须停止生产者并完成真实清理，不能重置发布中的对象。
 
-## 厂商接线与线程契约
+## 厂商接线与线程标准
 
 1. 主设备管理器为每连接器持有 manager、稳定的 backend context 与专用状态锁。锁／解锁回调是必需项；硬件 apply／disable／reset 缺失时相应操作返回 NOT_SUPPORTED，绝不默认成功。
 2. 后端读取、解析并验证 sink 能力，再调用 connect。配置请求由 macOS 平台适配层或受控内部调用者发起；当前没有新 UserClient 入口。
@@ -59,6 +59,6 @@ generation 达到 UINT64_MAX 后不回绕，拒绝新配置／恢复。无法递
 
 `tests/test_display.c` 使用**仅测试内的回调 spy／故障注入**，验证模式与 HDR 转交、SDR 清除元数据、恢复失败、未知错误码、unplug 阻止 replay、参数拒绝、20,000 次非法参数变异、generation 耗尽和清理门槛。`test_display_threads.cpp` 使用真实宿主 mutex／线程与受控阻塞回调，验证 busy、锁外回调、信号使在途成功失效及后续清理；不是物理显示测试。ASan／UBSan／TSan 与静态分析检查本通用实现，不证明厂商回调正确。
 
-安全边界：可信内部对象／回调；外部输入是解析后的屏幕能力、配置和事件。大小、枚举、掩码、时序、metadata 均在硬件回调前校验，mode 数量及校验循环有硬上限，64 位刷新率计算无乘法溢出；拒绝 manager 内部字段与参数／snapshot 输出重叠；结果发布与通知同锁，不持锁执行硬件。assets 是输出状态、后端对象生命周期及可触发的硬件操作，不新增认证、用户态执行入口、路径、网络访问或裸地址导出。
+安全范围：可信内部对象／回调；外部输入是解析后的屏幕能力、配置和事件。大小、枚举、掩码、时序、metadata 均在硬件回调前校验，mode 数量及校验循环有硬上限，64 位刷新率计算无乘法溢出；拒绝 manager 内部字段与参数／snapshot 输出重叠；结果发布与通知同锁，不持锁执行硬件。assets 是输出状态、后端对象生命周期及可触发的硬件操作，不新增认证、用户态执行入口、路径、网络访问或裸地址导出。
 
 残余风险与验收：后端提供虚假能力、未回滚失败、未设超时、未经同步操作硬件或违反对象生命周期，不能由通用层修复。接入 IPC 时还须独立序列化、权限／连接器所有权和配额检查，不能直接 memcpy 此结构体。真实模式切换、HDR 信号分析、热插拔／唤醒、reset 与多头恢复，必须在隔离真机验证；当前都没有硬件通过证据。

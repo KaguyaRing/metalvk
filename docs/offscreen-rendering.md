@@ -20,7 +20,7 @@
 
 **这是一条以可用硬件 ICD 为前提的用户态离屏管线，不是 NVIDIA macOS 驱动、Metal 翻译器或可见显示管线。** 本机 Windows 官方 NVIDIA ICD 已实测；目前仍没有接通自研 macOS NVIDIA RM／GSP／DMA／ICD，也没有对外声称 R2／R3 通过。
 
-## 接口与资源契约
+## 接口与资源标准
 
 公共头为 `include/vk/offscreen.h`，由 `vk/init.h` 聚合；不进入 SDK-free 的 `metalvk.h`／`libmetalvk.a`，也不进入 kext。context 必须拥有 graphics queue，所有 context、target、queue 和应用自有 pipeline 访问由 owner 线程外部串行化。
 
@@ -32,7 +32,7 @@
 6. `mtvk_vk_offscreen_copy`：只允许已确认完成的结果；输出宽×高×4 字节，按 Vulkan image 行顺序紧密排列。whole allocation map／invalidate 保证 non-coherent atom 对齐要求。失败不修改调用者字节，超出的 capacity 尾部也不写。
 7. `mtvk_vk_offscreen_close`：不隐式等待；Pending／Uncertain 返回 NOT_READY 并保持所有权，Ready／Recording／Complete／Failed／Lost 可释放。调用者随后销毁应用自有 pipeline 等 child，再 close context。
 
-target 存活期间，`mtvk_vk_close(context)` 返回 NOT_READY，不能先释放父设备。它只追踪本模块 target；应用自行创建的其他 Vulkan 对象仍须遵守原有“先销毁 child”契约。初始化失败回滚已成功创建的对象和父引用；失败调用的未定义 handle 输出不会发布为拥有的资源。
+target 存活期间，`mtvk_vk_close(context)` 返回 NOT_READY，不能先释放父设备。它只追踪本模块 target；应用自行创建的其他 Vulkan 对象仍须遵守原有“先销毁 child”标准。初始化失败回滚已成功创建的对象和父引用；失败调用的未定义 handle 输出不会发布为拥有的资源。
 
 状态为 Ready → Recording → Pending → Complete，另有 Failed／Uncertain／Lost。未提交的 recording 可以安全销毁。重复 begin／submit、提前 copy、在途 close、非法尺寸／容量／等待参数都明确拒绝。Device loss 允许资源 teardown，但绝不发布成功像素。Complete 可以 begin 另一帧，复用目标和同一兼容 pipeline。
 
@@ -68,7 +68,7 @@ Linux、macOS 15／26 CI 编译／链接库与验收客户端，检查 C++ 头�
 
 ## 安全审查范围
 
-信任边界为应用参数／原生 Vulkan commands → ICD → 在途 GPU 资源 → CPU 回读。长度、尺寸、allocation 大小、target 数和 wait 值受限；输出 alias 拒绝保护 target／context 元数据，创建 handle 只在成功后进入拥有集合，所有部分失败回滚。无网络、UserClient、任意 MMIO／DMA 地址、privileged installation 或 shader upload 入口。
+信任范围为应用参数／原生 Vulkan commands → ICD → 在途 GPU 资源 → CPU 回读。长度、尺寸、allocation 大小、target 数和 wait 值受限；输出 alias 拒绝保护 target／context 元数据，创建 handle 只在成功后进入拥有集合，所有部分失败回滚。无网络、UserClient、任意 MMIO／DMA 地址、privileged installation 或 shader upload 入口。
 
 应用必须传入有效、仍存活的 context／target 和可写 output 存储，并遵守线程／句柄所有权；整数 span 检查不验证页权限，也不是对任意恶意进程内指针的沙箱。原生 commands 和 shader 必须满足 Vulkan spec；库不接收未验证的外部 shader 字节，验收构建对仓库 shader 执行完整 spirv-val。恶意 ICD、GPU firmware、应用自行破坏的 Vulkan 状态不在本模块可以隔离的信任范围内。
 

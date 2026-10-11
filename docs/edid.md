@@ -7,7 +7,7 @@
 - `include/display/edid.h`：`mtvk_edid_parse`、`mtvk_edid_select_capabilities`；由 `metalvk.h` 聚合。
 - `src/display/edid.c`：EDID 1.3／1.4，完整基础块与声明的扩展块长度／checksum，厂商、型号、年份、数字接口、声明位深、物理尺寸、名称和详细时序。名称移除控制字符并保证 NUL 终止；CLI 不输出序列号。
 - `cta.c`：CTA revision 3 的有界 data block collection、详细时序、RGB BT.2020、HDR EOTF／descriptor、HDMI VSDB 的 RGB deep-color 声明。已提供 VIC 4、16、19、31–34、63–64、93–97 的名义时序表。
-- `displayid.c`：EDID 封装的 DisplayID 1.2／1.3／2.0、独立内部 checksum、块边界及 section 计数／版本一致性；Type I／VII 20 字节 progressive 时序。正确区分 Type I 的 10 kHz 与 Type VII 的 1 kHz、N−1 编码和同步极性；可解析内嵌 CTA collection。
+- `displayid.c`：EDID 封装的 DisplayID 1.2／1.3／2.0、独立内部 checksum、块范围及 section 计数／版本一致性；Type I／VII 20 字节 progressive 时序。正确区分 Type I 的 10 kHz 与 Type VII 的 1 kHz、N−1 编码和同步极性；可解析内嵌 CTA collection。
 - `edid-capabilities.c`：只取屏幕已解析完整时序与后端已核验 RGB 能力的交集，保留后端 mode ID，不合成时序、不猜测位深或 HDR。结果可传给已有 `mtvk_display_connect`，不是自动硬件接线。
 - `tools/edid-inspect.c`：只读、有输入上限的原始二进制 EDID 检查工具。
 
@@ -21,7 +21,7 @@
 
 `mtvk_edid_info` 的 `omitted_timings`／`unhandled_blocks` 显式报告未处理的描述符／块；**OK 不等于所有 EDID 功能都已解释**。不知道的时序不会替换成相同分辨率的猜测模式。`preferred_mode_id` 为第一个已识别 preferred／native 时序，不表示完整的偏好排序。
 
-## HDR、位深与模式的边界
+## HDR、位深与模式的范围
 
 CTA HDR luminance 字节保留编码值及每个字段的 presence，不误标成 cd/m²，也不直接当作内容 mastering metadata。EDID 描述的是接收端能力，之前显示配置 API 的 mastering primaries、CLL／FALL 描述的是输出内容元数据，两者不能互相复制。
 
@@ -59,7 +59,7 @@ CSO 基础时序的 293,760 kHz、2560×1600、160／200 blanking 和 60 Hz 与 
 
 ## 安全审查范围与依据
 
-资产为内核／宿主内存与后续可触发的模式／HDR 配置。信任边界是可能恶意的显示器／缓存字节 → 解码数据 → 硬件能力交集 → 已有控制 API；大小、块计数、checksum、长度、索引、数值和结果容量均受限，未知结构不授权硬件功能。无网络、命令执行、新 UserClient、地址导出或特权文件写入；CLI 只读取调用者指定文件的一次有界快照。回归、变异测试、静态分析及 CI sanitizer 提供证据，不是安全证明。
+资产为内核／宿主内存与后续可触发的模式／HDR 配置。信任范围是可能恶意的显示器／缓存字节 → 解码数据 → 硬件能力交集 → 已有控制 API；大小、块计数、checksum、长度、索引、数值和结果容量均受限，未知结构不授权硬件功能。无网络、命令执行、新 UserClient、地址导出或特权文件写入；CLI 只读取调用者指定文件的一次有界快照。回归、变异测试、静态分析及 CI sanitizer 提供证据，不是安全证明。
 
 格式依据为公开协议字段，并交叉核对 Linux DRM 的 `drm_edid.h`、`drm_displayid_internal.h` 与 edid-decode 的 CTA／DisplayID 字段解释；本实现自行编写，没有导入驱动实现或第三方依赖：
 

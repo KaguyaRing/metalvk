@@ -26,11 +26,11 @@ close 将同锁保护的 FIFO 切换为 DRAINING，拒绝新任务，保留并�
 
 任务、invocation 计数清空后才尝试 thread_call_free；FALSE 表示仍不能释放，并非可以忽略。公开 KPI 支持当前回调尚在调度器尾部时延后释放 call；队列 invocation 引用保护 callback 对对象的最后访问。成功 close 表示已接受的任务执行完成、call 所有者释放完成，**不是第三方回调代码／kext 的全局卸载屏障**。在驱动 stop／卸载之前，仍必须停止 IRQ／其他生产者并建立模块级调用静止协议；本轮不宣称实现了可安全加载／卸载的完整驱动生命周期。没有导入私有 `thread_call_cancel_wait` 来掩盖此缺口。
 
-## 安全复核与验证边界
+## 安全复核与验证范围
 
 资产：任务 context、wired backing、callback 生命周期、spinlock 与 thread_call。入口：可信内核分配、任务投递、关闭、延后引用释放。审查覆盖 FIFO 上界、active 计费、deadline 溢出、拒绝后所有权、关闭／投递原子性、回调锁外执行、尾部引用和超时不回收在途任务。内部异常通过 Error／copyStats.fault 暴露，并停止接受新任务；错误上下文不会被强制丢弃。
 
-宿主测试覆盖满／空、FIFO、环形索引、多轮排空、active 期间投递、关闭拒绝、损坏状态和时间上界；四生产者提交 12,000 次，单消费者验证只执行一次，并让回调重入所有者锁。ASan／UBSan／TSan 在 CI 中运行的是宿主锁契约，不是 IOSimpleLock 或真实 thread_call。
+宿主测试覆盖满／空、FIFO、环形索引、多轮排空、active 期间投递、关闭拒绝、损坏状态和时间上界；四生产者提交 12,000 次，单消费者验证只执行一次，并让回调重入所有者锁。ASan／UBSan／TSan 在 CI 中运行的是宿主锁标准，不是 IOSimpleLock 或真实 thread_call。
 
 本轮 [core／sanitizer CI](https://github.com/KaguyaRing/metalvk/actions/runs/38113990515)、[macOS 15/26 原生编译及静态分析](https://github.com/KaguyaRing/metalvk/actions/runs/38113990548)、[Vulkan 编译回归](https://github.com/KaguyaRing/metalvk/actions/runs/38113990400) 已通过。原生任务没有加载 kext，Apple 虚拟 Metal 全图测试不是 metalvk 执行证据；本机 RTX 4060 的 Windows Vulkan 计算／全图回归仍为零验证错误和警告。
 

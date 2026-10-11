@@ -12,7 +12,7 @@
 
 还已实现[显示后端控制 API](docs/display-backend.md)：模式／HDR 校验与传递、显示复位／配置恢复、运行时信号及失败关闭状态管理。硬件回调必须由厂商后端提供，没有默认模拟成功路径；目前不宣称物理显示／HDR 已支持。
 
-已增加[真实 EDID／CTA／DisplayID 字节解析](docs/edid.md)，并与后端核验的模式／HDR／位深能力取交集。支持的格式有明确边界，未处理特性会报告，不伪造数据；已测试 Windows 真实屏幕缓存，不等于硬件链路控制。
+已增加[真实 EDID／CTA／DisplayID 字节解析](docs/edid.md)，并与后端核验的模式／HDR／位深能力取交集。支持的格式有明确范围，未处理特性会报告，不伪造数据；已测试 Windows 真实屏幕缓存，不等于硬件链路控制。
 
 ```text
 include/                     src/                      （模块布局镜像）
@@ -51,7 +51,7 @@ Windows 使用 `mingw32-make` 与 `AR=llvm-ar`。
 
 ## 独立组件（不进入默认库）
 
-- `backends/nvidia/`：独立 PCI／AD107 boot register 校验库及可显式启用的只读 BAR0 kext probe；默认关闭，尚无 RM／GSP 启动、DMA、GPU 执行或显示支持。详见 [NVIDIA 后端边界](docs/nvidia-backend.md)。`make test-nvidia CONFIG=Release` 运行宿主夹具测试，不是硬件测试。
+- `backends/nvidia/`：独立 PCI／AD107 boot register 校验库及可显式启用的只读 BAR0 kext probe；默认关闭，尚无 RM／GSP 启动、DMA、GPU 执行或显示支持。详见 [NVIDIA 后端范围](docs/nvidia-backend.md)。`make test-nvidia CONFIG=Release` 运行宿主夹具测试，不是硬件测试。
 - `include/vk/`、`src/vk/`：共享硬件 Vulkan 上下文及可复用[离屏渲染／回读目标](docs/offscreen-rendering.md)，独立构建为 `libmetalvk-vulkan.a`，需要 Vulkan SDK／Loader 与可用硬件 ICD。真实原生 pipeline／fence／多帧回读已在 Windows NVIDIA 通过，不代表 macOS NVIDIA 后端通过。
 - [NVK／NAK 基线](docs/nvidia-nvk.md)：固定 Mesa 26.2.4，完整 Linux ICD 构建及仓库顶点／片元 shader 离线编译为 SM89 原生代码已通过。Darwin 内核接线、RM／GSP 执行与 macOS ICD 未实现；Linux 产物不是 macOS 驱动。
 - `kexts/Platform/`：共享 PCI 快照、生命周期、只读 UserClient、受预算约束的 wired 宿主内存域、延后 CPU 工作与 uptime 服务，构建为 `libmetalvk-kernel-platform.a` 并链接进诊断 kext；内存／工作服务尚未绑定 RM 或暴露给用户态，尚无 GPU 执行能力。详见[所有权与执行限制](docs/kernel-runtime.md)。

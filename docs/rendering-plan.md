@@ -21,7 +21,7 @@
 - [系统 Metal 验收客户端编译与发现](https://github.com/KaguyaRing/metalvk/actions/runs/38111095280)：两宿主通过；发现的设备是 Apple Paravirtual，不是 metalvk 设备。
 - [系统 Metal 参考渲染](https://github.com/KaguyaRing/metalvk/actions/runs/38111292491)：两宿主的 Apple Paravirtual 设备均通过 4096 像素校验；不是物理 GPU 或 metalvk 支持证据。
 
-## 模块边界
+## 模块范围
 
 ```text
 系统 Metal 客户端
@@ -55,7 +55,7 @@
 | R6 | HDR／DisplayID／刷新率与故障恢复 | 元数据方向与格式有证据；模式切换、高刷、GPU hang/reset、恢复测试 | 通用 HDR／显示复位 API 与首批 EDID／CTA／DisplayID 解析已实现；硬件 HDR 和整 GPU 恢复未实现 |
 | R7 | macOS 15/26 与多厂商覆盖 | 逐 OS build／GPU／驱动组合真机记录 | 未验收 |
 
-R2 必须先明确厂商 ICD 在 macOS 上的可用执行后端、固件依赖、许可证与 OS 适配边界。
+R2 必须先明确厂商 ICD 在 macOS 上的可用执行后端、固件依赖、许可证与 OS 适配范围。
 Windows 的厂商 ICD 不可直接拿来当 macOS 内核执行实现。Vulkan Loader 本身也不提供硬件驱动。
 MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，两类输入须分别处理和验证。
 
@@ -67,7 +67,7 @@ MSL 源码成功转换不等于已编译 AIR/metallib 的系统应用可用，�
 
 ## 系统 Metal 验收门
 
-显示后端现在可接入[模式／HDR、运行时信号与显示复位控制 API](display-backend.md)。生产库执行真实校验、事务状态与厂商回调，不包含模拟成功后端；缺失硬件回调拒绝操作。测试替身仅验证 API 契约，不升级 R5／R6 的硬件验收状态，也不说明 Apple 私有 HDR 接口已核验。
+显示后端现在可接入[模式／HDR、运行时信号与显示复位控制 API](display-backend.md)。生产库执行真实校验、事务状态与厂商回调，不包含模拟成功后端；缺失硬件回调拒绝操作。测试替身仅验证 API 标准，不升级 R5／R6 的硬件验收状态，也不说明 Apple 私有 HDR 接口已核验。
 
 首批[EDID／CTA／DisplayID 字节解析](edid.md)已接入同一通用／内核库，使用真实 Windows 屏幕缓存解析高刷时序和 HDR 能力，并拒绝截断／额外块。能力结果必须与厂商核验结果取交集；不把 sink EDID 的 desired luminance 当作内容 mastering metadata，不提供默认屏幕或猜测时序。尚需完整标准时序覆盖、flip／vblank 通用完成管理，再进入厂商实际读取／链路／扫描输出阶段。
 

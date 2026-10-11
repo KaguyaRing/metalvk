@@ -32,16 +32,16 @@ create／allocate／close／copyBudget 检查主中断、抢占关闭与中断�
 
 OSObject 的最后 release 回调无法返回“请稍后释放”，所以中断路径必须在进入该路径前持有引用，并将最后的释放移交线程上下文。后续已实现[有界延后释放队列](kernel-runtime.md)，成功投递转移一个已有引用，失败必须保留并在线程重试；尚未实现 IRQ 内存池。不能据此将线程分配器当作 RM 的完整原子分配服务。
 
-## 依据与验证边界
+## 依据与验证范围
 
 - NVIDIA 官方 `open-gpu-kernel-modules` 的 `kernel-open/common/inc/os-interface.h` 声明了 RM 内存、锁、工作队列与时间服务；本轮只落实宿主内存前置模块，不宣称已完成其整个 OS 适配。
 - Apple／固定 MacKernelSDK 的 `IOBufferMemoryDescriptor.h` 明确 kernel 默认 wired、可能阻塞、不鼓励强求物理连续。本轮没有复制参考驱动代码，也没有导入 archived KaguyaNV 的实现。
-- 纯配额已有 Debug／Release／Alpha 测试、20,000 次 ticket 模型操作、四线程 reservation／close／待发布 rollback 检查；线程测试只验证所有者锁契约，不执行 XNU 分配器。
+- 纯配额已有 Debug／Release／Alpha 测试、20,000 次 ticket 模型操作、四线程 reservation／close／待发布 rollback 检查；线程测试只验证所有者锁标准，不执行 XNU 分配器。
 - 原生库／kext 编译、链接与符号检查已有 [CI 证据](https://github.com/KaguyaRing/metalvk/actions/runs/38112082517)。不是加载或真实 wired 分配回收的运行证据。
 
 ## 安全复核与下一步
 
-资产：wired 内存、预算与对象／锁生命周期。信任边界：内核调用者提供的大小与策略到原生 backing；当前没有新用户态特权入口。审查覆盖尺寸取整、预算／计数溢出、关闭与发布竞争、失败归还、子对象保留父对象、锁外释放与禁止 IRQ 阻塞。
+资产：wired 内存、预算与对象／锁生命周期。信任范围：内核调用者提供的大小与策略到原生 backing；当前没有新用户态特权入口。审查覆盖尺寸取整、预算／计数溢出、关闭与发布竞争、失败归还、子对象保留父对象、锁外释放与禁止 IRQ 阻塞。
 
 不映射 MMIO，不取得或导出 DMA 地址，不启用 bus mastering。配额不是认证／权限系统；若以后允许用户态分配，必须另加每客户端所有权、权限、配额、句柄代次与退出回收，不能直接暴露这里的内核对象。
 
