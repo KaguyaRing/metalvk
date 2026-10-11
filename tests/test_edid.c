@@ -123,7 +123,8 @@ int main(void) {
     CHECK(mtvk_edid_parse(bytes, 256, &info) == MTVK_INVALID_ARGUMENT);
     CHECK(mtvk_edid_parse(NULL, 256, &info) == MTVK_INVALID_ARGUMENT);
     CHECK(mtvk_edid_parse(bytes, 256, NULL) == MTVK_INVALID_ARGUMENT);
-    CHECK(mtvk_edid_parse(bytes, MTVK_EDID_MAX_BYTES + 1, &info) == MTVK_LIMIT_EXCEEDED);
+    uint8_t oversized[MTVK_EDID_MAX_BYTES + 1] = {0};
+    CHECK(mtvk_edid_parse(oversized, sizeof(oversized), &info) == MTVK_LIMIT_EXCEEDED);
     base(bytes, 1); cta(bytes + 128); bytes[132] = 0xff; checksum(bytes + 128, 128);
     CHECK(mtvk_edid_parse(bytes, 256, &info) == MTVK_INVALID_ARGUMENT);
     base(bytes, 1); displayid(bytes + 128, true); bytes[132] = 1;
