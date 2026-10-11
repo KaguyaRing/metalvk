@@ -23,14 +23,14 @@ jobs:
           make test CONFIG=Alpha
           python3 tools/check_core_boundary.py --archive target/Release/libmetalvk.a
           clang++ -std=c++17 -Wall -Wextra -Wpedantic -Werror -Iinclude -x c++ -fsyntax-only include/metalvk.h
-          clang -std=c11 -ffreestanding -Wall -Wextra -Wpedantic -Werror -Iinclude -fsyntax-only src/base/status.c
+          clang -std=c11 -ffreestanding -Wall -Wextra -Wpedantic -Werror -Iinclude -fsyntax-only src/base/status.c src/memory/budget.c
       - name: Host memory and thread safety
         if: runner.os == 'Linux'
         run: |
           make test CONFIG=Alpha BUILD=target/Sanitize CFLAGS='-std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -O1 -g -fsanitize=address,undefined' LDFLAGS='-fsanitize=address,undefined'
           make test CONFIG=Debug BUILD=target/ThreadSanitize CFLAGS='-std=c11 -Wall -Wextra -Wpedantic -Werror -Wconversion -Wshadow -O1 -g -fsanitize=thread' LDFLAGS='-fsanitize=thread'
       - name: Static analysis
-        run: clang --analyze -std=c11 -Iinclude -Xanalyzer -analyzer-output=text src/base/status.c
+        run: clang --analyze -std=c11 -Iinclude -Xanalyzer -analyzer-output=text src/base/status.c src/memory/budget.c
       - name: Upload generic library and public headers
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9
         with:
@@ -38,6 +38,7 @@ jobs:
           path: |
             target/Release/libmetalvk.a
             include/base/
+            include/memory/
             include/platform.h
             include/metalvk.h
             LICENSE

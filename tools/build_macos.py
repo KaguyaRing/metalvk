@@ -73,7 +73,10 @@ def main() -> int:
         "-fno-exceptions", "-fno-rtti", "-fno-use-cxa-atexit", "-Wno-deprecated-declarations",
         "-Wno-unused-parameter", *kernel]
     platform_objects = [build / "diagnostics-kernel.o"]
-    for unit in ("pci", "device", "client"):
+    run("xcrun", "clang", "-std=c11", *kernel, "-c", str(root / "src/memory/budget.c"),
+        "-o", str(build / "budget-kernel.o"))
+    platform_objects.append(build / "budget-kernel.o")
+    for unit in ("pci", "device", "client", "memory"):
         obj = build / f"platform-{unit}.o"
         run("xcrun", "clang++", *kernel_cpp, "-c",
             str(root / f"kexts/Platform/src/platform/{unit}.cpp"), "-o", str(obj))
@@ -85,7 +88,7 @@ def main() -> int:
     run("xcrun", "clang++", *kernel_cpp, "-c", str(root / "backends/nvidia/kext/Driver.cpp"),
         "-o", str(build / "Driver.o"))
     run("xcrun", "ld", "-arch", "x86_64", "-kext", "-undefined", "dynamic_lookup",
-        str(build / "Driver.o"), str(platform_library),
+        str(build / "Driver.o"), "-force_load", str(platform_library),
         "-o", str(kext / "MacOS/MetalVK"))
     imports = subprocess.check_output(
         ["xcrun", "nm", "-u", str(kext / "MacOS/MetalVK")], text=True)
@@ -100,7 +103,8 @@ def main() -> int:
             raise ValueError(f"Kernel binary imports a user/runtime symbol: {symbol}")
     symbols = subprocess.check_output(
         ["xcrun", "nm", "-g", str(kext / "MacOS/MetalVK")], text=True)
-    for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci"):
+    for name in ("MetalVKPlatformDevice", "MetalVKDiagnosticClient", "capturePci",
+                 "MetalVKMemoryDomain", "MetalVKWiredBuffer", "mtvk_memory_budget_reserve"):
         definitions = [line for line in symbols.splitlines() if name in line and " U " not in line]
         if not definitions:
             raise ValueError(f"Shared kernel module was not linked: {name}")

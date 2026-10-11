@@ -5,4 +5,5 @@
 #include "platform/device.hpp"
 #include "platform/client.hpp"
 #include "platform/pci.hpp"
+#include "platform/memory.hpp"
 #endif

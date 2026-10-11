@@ -4,4 +4,5 @@
 #ifndef METALVK_H
 #define METALVK_H
 #include "base/init.h"
+#include "memory/init.h"
 #endif
