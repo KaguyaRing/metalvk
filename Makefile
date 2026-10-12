@@ -42,6 +42,8 @@ NVIDIA_OBJECTS := $(patsubst %.c,$(BUILD)/%.o,$(NVIDIA_SOURCES))
 NVIDIA_TEST_OBJECT := $(BUILD)/tests/test_nvidia_boot.o
 NVIDIA_TRANSPORT_TEST_OBJECT := $(BUILD)/tests/test_nvidia_transport.o
 NVIDIA_SESSION_TEST_OBJECT := $(BUILD)/tests/test_nvidia_session.o
+NVIDIA_DARWIN_TEST_OBJECT := $(BUILD)/tests/test_nvidia_darwin.o
+NVIDIA_DARWIN_MOCK_OBJECT := $(BUILD)/tests/nvidia-darwin-mock.o
 NVIDIA_LIBRARY := $(BUILD)/libmetalvk-nvidia.a
 
 ifeq ($(OS),Windows_NT)
@@ -59,6 +61,7 @@ RUN_EDID_TEST = $(subst /,\,$(BUILD)/test-edid$(EXE))
 RUN_NVIDIA_TEST = $(subst /,\,$(BUILD)/test-nvidia-boot$(EXE))
 RUN_NVIDIA_TRANSPORT_TEST = $(subst /,\,$(BUILD)/test-nvidia-transport$(EXE))
 RUN_NVIDIA_SESSION_TEST = $(subst /,\,$(BUILD)/test-nvidia-session$(EXE))
+RUN_NVIDIA_DARWIN_TEST = $(subst /,\,$(BUILD)/test-nvidia-darwin$(EXE))
 THREAD_FLAGS :=
 remove_temporary = if exist "$(subst /,\,$@).tmp" del "$(subst /,\,$@).tmp"
 replace_archive = move /Y "$(subst /,\,$@).tmp" "$(subst /,\,$@)" >nul
@@ -75,6 +78,7 @@ RUN_EDID_TEST = ./$(BUILD)/test-edid
 RUN_NVIDIA_TEST = ./$(BUILD)/test-nvidia-boot
 RUN_NVIDIA_TRANSPORT_TEST = ./$(BUILD)/test-nvidia-transport
 RUN_NVIDIA_SESSION_TEST = ./$(BUILD)/test-nvidia-session
+RUN_NVIDIA_DARWIN_TEST = ./$(BUILD)/test-nvidia-darwin
 THREAD_FLAGS := -pthread
 remove_temporary = rm -f "$@.tmp"
 replace_archive = mv -f "$@.tmp" "$@"
@@ -144,10 +148,24 @@ $(BUILD)/test-nvidia-transport$(EXE): $(NVIDIA_TRANSPORT_TEST_OBJECT) $(NVIDIA_L
 $(BUILD)/test-nvidia-session$(EXE): $(NVIDIA_SESSION_TEST_OBJECT) $(NVIDIA_LIBRARY)
 	$(CC) $(CFLAGS) $(LDFLAGS) $(NVIDIA_SESSION_TEST_OBJECT) $(NVIDIA_LIBRARY) -o "$@"
 
-test-nvidia: $(BUILD)/test-nvidia-boot$(EXE) $(BUILD)/test-nvidia-transport$(EXE) $(BUILD)/test-nvidia-session$(EXE)
+$(NVIDIA_DARWIN_MOCK_OBJECT): backends/nvidia/darwin/Discovery.cpp
+	@$(mkdir_parent)
+	$(CXX) $(CPPFLAGS) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 -Ibackends/nvidia/include -Itests/fixtures/iokit -MMD -MP -c "$<" -o "$@"
+
+$(NVIDIA_DARWIN_TEST_OBJECT): tests/test_nvidia_darwin.cpp
+	@$(mkdir_parent)
+	$(CXX) $(CPPFLAGS) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 -Ibackends/nvidia/include -Itests/fixtures/iokit -MMD -MP -c "$<" -o "$@"
+
+$(BUILD)/test-nvidia-darwin$(EXE): $(NVIDIA_DARWIN_TEST_OBJECT) $(NVIDIA_DARWIN_MOCK_OBJECT) $(NVIDIA_LIBRARY)
+	$(CXX) $(filter-out -std=c11,$(CFLAGS)) -std=c++17 $(LDFLAGS) $(NVIDIA_DARWIN_TEST_OBJECT) $(NVIDIA_DARWIN_MOCK_OBJECT) $(NVIDIA_LIBRARY) -o "$@"
+
+test-nvidia: $(BUILD)/test-nvidia-boot$(EXE) $(BUILD)/test-nvidia-transport$(EXE) $(BUILD)/test-nvidia-session$(EXE) $(BUILD)/test-nvidia-darwin$(EXE)
 	$(RUN_NVIDIA_TEST)
 	$(RUN_NVIDIA_TRANSPORT_TEST)
 	$(RUN_NVIDIA_SESSION_TEST)
+	$(RUN_NVIDIA_DARWIN_TEST)
+
+-include $(NVIDIA_DARWIN_TEST_OBJECT:.o=.d) $(NVIDIA_DARWIN_MOCK_OBJECT:.o=.d)
 
 test: $(BUILD)/test-diagnostics$(EXE) $(BUILD)/test-memory-budget$(EXE) $(BUILD)/test-memory-threads$(EXE) $(BUILD)/test-work-queue$(EXE) $(BUILD)/test-work-threads$(EXE) $(BUILD)/test-display$(EXE) $(BUILD)/test-display-threads$(EXE) $(BUILD)/test-edid$(EXE) $(BUILD)/edid-inspect$(EXE)
 	$(RUN_DIAG_TEST)

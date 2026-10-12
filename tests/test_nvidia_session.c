@@ -477,6 +477,27 @@ int main(void) {
     CHECK(mtvk_nv_device_info_decode(projectedView.payload, projectedView.payload_bytes, &projectedDecoded) == MTVK_OK);
     CHECK(projectedDecoded.device_id == projected.device_id && projectedDecoded.pci_device == 25u &&
           projectedView.header.backed_op_mask == MTVK_NV_IMPLEMENTED_OPS);
+    CHECK(mtvk_nv_discovery_response_decode(queryResponse, queryWritten, &projectedDecoded) == MTVK_OK);
+    uint8_t goodResponse[sizeof(queryResponse)];
+    memcpy(goodResponse, queryResponse, sizeof(goodResponse));
+    for (unsigned fault = 0; fault < 5u; ++fault) {
+        memcpy(queryResponse, goodResponse, sizeof(queryResponse));
+        switch (fault) {
+        case 0: queryResponse[8] = MTVK_NV_OP_DEVICE_VRAM_USED; break;
+        case 1: queryResponse[20] = 0u; break;
+        case 2: queryResponse[12] = MTVK_NOT_SUPPORTED; break; // error with success payload
+        case 3: queryResponse[sizeof(mtvk_nv_response) + 12u] = 0u; break; // wrong device ID
+        default: queryResponse[sizeof(mtvk_nv_response) + 8u] = MTVK_NV_DEVICE_SOC; break;
+        }
+        uint8_t before[sizeof(projectedDecoded)];
+        memcpy(before, &projectedDecoded, sizeof(before));
+        CHECK(mtvk_nv_discovery_response_decode(queryResponse, sizeof(queryResponse), &projectedDecoded) ==
+              (fault < 3u ? MTVK_INVALID_ARGUMENT : MTVK_NOT_SUPPORTED));
+        CHECK(memcmp(before, &projectedDecoded, sizeof(before)) == 0);
+    }
+    CHECK(mtvk_nv_response_init(queryResponse, sizeof(queryResponse), MTVK_NV_OP_DEVICE_QUERY,
+                               MTVK_NOT_SUPPORTED, 0u, MTVK_NV_IMPLEMENTED_OPS, &queryWritten) == MTVK_OK);
+    CHECK(mtvk_nv_discovery_response_decode(queryResponse, queryWritten, &projectedDecoded) == MTVK_NOT_SUPPORTED);
     const mtvk_diag_snapshot valid = snapshot;
     for (unsigned fault = 0; fault < 8u; ++fault) {
         snapshot = valid;

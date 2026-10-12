@@ -164,12 +164,21 @@ def main() -> int:
             str(root / f"backends/nvidia/src/{unit}.c"), "-o", str(obj))
         query_objects.append(obj)
     discovery_client = app / "MacOS/metalvk-nvidia-discovery"
+    darwin_source = root / "backends/nvidia/darwin/Discovery.cpp"
+    darwin_object = build / "nvidia-darwin-discovery.o"
+    run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes, "-Wpedantic", "-c",
+        str(darwin_source), "-o", str(darwin_object))
+    darwin_library = build / "libmetalvk-nvidia-darwin.a"
+    run("xcrun", "libtool", "-static", "-o", str(darwin_library), str(darwin_object),
+        *(str(obj) for obj in query_objects))
     run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes, "-Wpedantic",
-        str(root / "validation/nvidia/discovery.cpp"), *(str(obj) for obj in query_objects),
+        str(root / "validation/nvidia/discovery.cpp"), str(darwin_library), str(build / "status-user.o"),
         "-framework", "IOKit", "-framework", "CoreFoundation", "-o", str(discovery_client))
     run("codesign", "--force", "--sign", "-", str(discovery_client))
     run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes,
         "--analyze", "-Xanalyzer", "-analyzer-output=text", str(root / "validation/nvidia/discovery.cpp"))
+    run("xcrun", "clang++", "-std=c++17", *user, *nvidia_includes,
+        "--analyze", "-Xanalyzer", "-analyzer-output=text", str(darwin_source))
     run("codesign", "--verify", "--strict", str(discovery_client))
     for bundle in (kext.parent, app.parent):
         run("codesign", "--force", "--sign", "-", str(bundle))

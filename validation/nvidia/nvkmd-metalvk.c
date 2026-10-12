@@ -12,6 +12,10 @@
 #include "nvkmd/nvkmd.h"
 #include "nv_device_info.h"
 #include "nvidia/init.h"
+#include "nvkmd-metalvk.h"
+#if defined(__APPLE__) || defined(MTVK_NVKMD_NATIVE_INGRESS_TEST)
+#include "nvidia/darwin.h"
+#endif
 #include "util/macros.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,10 +29,6 @@ struct mtvk_nvkmd_pdev {
      * backs GPU VA; nvkmd_pdev itself has no place to publish it. */
     mtvk_nv_device_info info;
 };
-
-VkResult mtvk_nvkmd_open(const void *response, size_t size,
-                         const struct vk_sync_type *const *sync_types,
-                         struct nvkmd_pdev **out);
 
 static void copy_name(char *out, size_t bytes, const char *in) {
     size_t index = 0;
@@ -122,21 +122,12 @@ VkResult mtvk_nvkmd_open(const void *response, size_t size,
                          struct nvkmd_pdev **out) {
     if (!out) return VK_ERROR_INITIALIZATION_FAILED;
     *out = NULL;
-    mtvk_nv_response_view view;
-    if (mtvk_nv_transport_validate_response(response, size, &view) != MTVK_OK)
-        return VK_ERROR_INITIALIZATION_FAILED;
-    if (view.header.op != (uint32_t)MTVK_NV_OP_DEVICE_QUERY ||
-        view.header.status != (uint32_t)MTVK_OK ||
-        !(view.header.backed_op_mask & MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_QUERY)) ||
-        (view.header.backed_op_mask & ~MTVK_NV_IMPLEMENTED_OPS))
-        return VK_ERROR_INITIALIZATION_FAILED;
     mtvk_nv_device_info info;
-    if (mtvk_nv_device_info_decode(view.payload, view.payload_bytes, &info) != MTVK_OK)
+    if (mtvk_nv_discovery_response_decode(response, size, &info) != MTVK_OK)
         return VK_ERROR_INITIALIZATION_FAILED;
     /* Defence in depth: clip capabilities the endpoint did not back, even if it
      * claimed them. The adapter must never advertise an unhonoured capability. */
-    const mtvk_nv_device_info effective =
-        mtvk_nv_effective_device_info(&info, view.header.backed_op_mask);
+    const mtvk_nv_device_info effective = info;
     struct mtvk_nvkmd_pdev *pdev = calloc(1, sizeof(*pdev));
     if (!pdev) return VK_ERROR_OUT_OF_HOST_MEMORY;
     pdev->info = effective;
@@ -144,7 +135,7 @@ VkResult mtvk_nvkmd_open(const void *response, size_t size,
     pdev->base.ops = &metalvk_pdev_ops;
     pdev->base.kmd_info = (struct nvkmd_info) {
         .has_dma_buf = effective.has_dma_buf != 0,
-        .has_get_vram_used = (view.header.backed_op_mask &
+        .has_get_vram_used = (MTVK_NV_IMPLEMENTED_OPS &
                               MTVK_NV_OP_BIT(MTVK_NV_OP_DEVICE_VRAM_USED)) != 0,
         .has_alloc_tiled = effective.has_alloc_tiled != 0,
         .has_map_fixed = effective.has_map_fixed != 0,
@@ -156,6 +147,39 @@ VkResult mtvk_nvkmd_open(const void *response, size_t size,
     *out = &pdev->base;
     return VK_SUCCESS;
 }
+
+#if defined(__APPLE__) || defined(MTVK_NVKMD_NATIVE_INGRESS_TEST)
+/* Native discovery ingress, not a complete Darwin Vulkan physical-device
+ * registration. No loopback fallback; create_dev still refuses execution. */
+VkResult mtvk_nvkmd_open_registry(uint64_t registry_id,
+    const struct vk_sync_type *const *sync_types, struct nvkmd_pdev **out) {
+    if (!out) return VK_ERROR_INITIALIZATION_FAILED;
+    *out = NULL;
+    uint8_t response[MTVK_NV_QUERY_RESPONSE_BYTES];
+    const mtvk_nv_darwin_result result = mtvk_nv_darwin_query(registry_id, response, sizeof(response));
+    if (result.status == MTVK_OUT_OF_MEMORY) return VK_ERROR_OUT_OF_HOST_MEMORY;
+    if (result.status != MTVK_OK) return VK_ERROR_INCOMPATIBLE_DRIVER;
+    return mtvk_nvkmd_open(response, result.response_bytes, sync_types, out);
+}
+#endif
+
+#ifdef MTVK_NVKMD_NATIVE_INGRESS_TEST
+/* Test-executable provider only, never linked into a shipped ICD or native
+ * transport. Lets Linux Mesa CI compile/test the real native ingress body. */
+static const void *native_fixture_response;
+static size_t native_fixture_size;
+static mtvk_status native_fixture_status;
+mtvk_nv_darwin_result mtvk_nv_darwin_query(uint64_t registry_id, void *response, size_t capacity) {
+    mtvk_nv_darwin_result result = {native_fixture_status, MTVK_NV_DARWIN_CALL, 0u, 0u};
+    if (registry_id != 42u) { result.status = MTVK_NOT_FOUND; return result; }
+    if (result.status != MTVK_OK) return result;
+    if (capacity < native_fixture_size) { result.status = MTVK_BUFFER_TOO_SMALL; return result; }
+    memcpy(response, native_fixture_response, native_fixture_size);
+    result.response_bytes = native_fixture_size;
+    result.stage = MTVK_NV_DARWIN_COMPLETE;
+    return result;
+}
+#endif
 
 static void fixture(mtvk_nv_device_info *info) {
     mtvk_nv_device_info_init(info);
@@ -228,6 +252,24 @@ int main(void) {
     struct nvkmd_pdev *pdev = NULL;
     CHECK(mtvk_nvkmd_open(response, response_written, no_sync_types, &pdev) == VK_SUCCESS && pdev != NULL);
     CHECK(fixtures_agree(pdev, &info) == 0);
+#ifdef MTVK_NVKMD_NATIVE_INGRESS_TEST
+    native_fixture_response = response;
+    native_fixture_size = response_written;
+    native_fixture_status = MTVK_OK;
+    struct nvkmd_pdev *native_pdev = NULL;
+    CHECK(mtvk_nvkmd_open_registry(42u, no_sync_types, &native_pdev) == VK_SUCCESS && native_pdev != NULL);
+    CHECK(fixtures_agree(native_pdev, &info) == 0);
+    nvkmd_pdev_destroy(native_pdev);
+    CHECK(mtvk_nvkmd_open_registry(43u, no_sync_types, &native_pdev) == VK_ERROR_INCOMPATIBLE_DRIVER && native_pdev == NULL);
+    native_fixture_status = MTVK_OUT_OF_MEMORY;
+    CHECK(mtvk_nvkmd_open_registry(42u, no_sync_types, &native_pdev) == VK_ERROR_OUT_OF_HOST_MEMORY && native_pdev == NULL);
+    native_fixture_status = MTVK_CLEANUP_REQUIRED;
+    CHECK(mtvk_nvkmd_open_registry(42u, no_sync_types, &native_pdev) == VK_ERROR_INCOMPATIBLE_DRIVER && native_pdev == NULL);
+    CHECK(mtvk_nvkmd_open_registry(42u, no_sync_types, NULL) == VK_ERROR_INITIALIZATION_FAILED);
+    native_fixture_status = MTVK_OK;
+    native_fixture_size = 5u;
+    CHECK(mtvk_nvkmd_open_registry(42u, no_sync_types, &native_pdev) == VK_ERROR_INITIALIZATION_FAILED && native_pdev == NULL);
+#endif
     /* Only DEVICE_QUERY is backed, so nothing else may leak through. */
     CHECK(!pdev->kmd_info.has_alloc_tiled && !pdev->kmd_info.has_map_fixed);
     CHECK(!pdev->kmd_info.has_overmap && !pdev->kmd_info.has_compression && !pdev->kmd_info.has_dma_buf);

@@ -6,11 +6,12 @@
 # standard-conformance client for the metalvk side of the transport.
 executable(
   'metalvk-nvkmd-adapter',
-  ['metalvk-nvkmd-adapter.c', 'metalvk-transport.c', 'metalvk-discovery.c', 'metalvk-session.c'],
+  ['metalvk-nvkmd-adapter.c', 'metalvk-transport.c', 'metalvk-discovery.c', 'metalvk-session.c', 'metalvk-endpoint.c'],
   include_directories: [inc_include, inc_src],
   dependencies: nvk_deps + [idep_vtn],
   link_with: libnvk,
   c_args: [
+    '-DMTVK_NVKMD_NATIVE_INGRESS_TEST',
     '-I@METALVK_ROOT@/include',
     '-I@METALVK_ROOT@/backends/nvidia/include',
     '-Werror',

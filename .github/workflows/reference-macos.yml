@@ -101,6 +101,7 @@ jobs:
             target/macos/MetalVK.kext
             target/macos/MetalVK.app
             target/macos/libmetalvk-kernel-platform.a
+            target/macos/libmetalvk-nvidia-darwin.a
             target/macos/metal-render
           if-no-files-found: error
       - name: Package development release preserving bundle permissions

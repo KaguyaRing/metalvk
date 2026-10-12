@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 // Real IOKit client, never a loopback/default GPU substitute. No installation.
 #include "nvidia/init.h"
+#include "nvidia/darwin.h"
 #include <IOKit/IOKitLib.h>
 #include <cstdio>
 #include <cstring>
@@ -49,35 +50,16 @@ int listServices() {
     std::printf("Service count: %u (listing only; no loading or GPU execution)\n", count);
     return result;
 }
-int query(io_service_t service, uint64_t id) {
-    io_connect_t connection = IO_OBJECT_NULL;
-    const kern_return_t opened = IOServiceOpen(service, mach_task_self(), MTVK_NV_CONNECT_TYPE, &connection);
-    if (opened != KERN_SUCCESS) {
-        std::fprintf(stderr, "NVIDIA UserClient open failed: 0x%08x\n", static_cast<unsigned>(opened));
-        return Failure;
+int query(uint64_t id) {
+    uint8_t response[MTVK_NV_QUERY_RESPONSE_BYTES];
+    const mtvk_nv_darwin_result queried = mtvk_nv_darwin_query(id, response, sizeof(response));
+    if (queried.status != MTVK_OK) {
+        std::fprintf(stderr, "NVIDIA query refused: %s stage=%u native=0x%08x\n",
+            mtvk_status_name(queried.status), static_cast<unsigned>(queried.stage), queried.native_error);
+        return queried.status == MTVK_NOT_FOUND ? Missing : Failure;
     }
-    uint8_t request[MTVK_NV_QUERY_REQUEST_BYTES], response[MTVK_NV_QUERY_RESPONSE_BYTES] {};
-    size_t requestSize = 0, responseSize = sizeof(response);
-    const mtvk_status prepared = mtvk_nv_request_init(request, sizeof(request), MTVK_NV_OP_DEVICE_QUERY,
-        0u, MTVK_NV_DEVICE_WIRE_BYTES, &requestSize);
-    kern_return_t called = kIOReturnBadArgument;
-    if (prepared == MTVK_OK)
-        called = IOConnectCallStructMethod(connection, MTVK_NV_QUERY_SELECTOR,
-            request, requestSize, response, &responseSize);
-    const kern_return_t closed = IOServiceClose(connection);
-    if (called != KERN_SUCCESS || closed != KERN_SUCCESS || responseSize > sizeof(response)) {
-        std::fprintf(stderr, "NVIDIA query/close failed: 0x%08x / 0x%08x\n",
-            static_cast<unsigned>(called), static_cast<unsigned>(closed));
-        return Failure;
-    }
-    mtvk_nv_response_view view;
     mtvk_nv_device_info info;
-    if (mtvk_nv_transport_validate_response(response, responseSize, &view) != MTVK_OK ||
-        view.header.op != MTVK_NV_OP_DEVICE_QUERY || view.header.status != MTVK_OK ||
-        view.header.backed_op_mask != MTVK_NV_IMPLEMENTED_OPS ||
-        mtvk_nv_device_info_decode(view.payload, view.payload_bytes, &info) != MTVK_OK ||
-        info.device_id != MTVK_NV_INITIAL_DEVICE_ID || info.has_alloc_tiled || info.has_map_fixed ||
-        info.has_overmap || info.has_compression || info.has_dma_buf) {
+    if (mtvk_nv_discovery_response_decode(response, queried.response_bytes, &info) != MTVK_OK) {
         std::fputs("NVIDIA discovery response rejected; no valid result published.\n", stderr);
         return Failure;
     }
@@ -85,7 +67,7 @@ int query(io_service_t service, uint64_t id) {
         " PCI 10de:%04x bus=%u device=%u function=%u revision=%02x transport=%u\n",
         id, static_cast<unsigned>(info.device_id), static_cast<unsigned>(info.pci_bus),
         static_cast<unsigned>(info.pci_device), static_cast<unsigned>(info.pci_function),
-        static_cast<unsigned>(info.pci_revision), view.header.version);
+        static_cast<unsigned>(info.pci_revision), MTVK_NV_TRANSPORT_VERSION);
     std::puts("Cached PCI snapshot only; RM fields unknown. No GPU execution, Metal or display claim.");
     return 0;
 }
@@ -97,16 +79,5 @@ int main(int argc, char **argv) {
         std::fputs("Usage: metalvk-nvidia-discovery --list-services | --registry-id 0xHEX\n", stderr);
         return Usage;
     }
-    auto *matching = IORegistryEntryIDMatching(id);
-    if (!matching) return Failure;
-    io_service_t service = IOServiceGetMatchingService(kIOMainPortDefault, matching);
-    if (!service) { std::fputs("Selected diagnostic service not found.\n", stderr); return Missing; }
-    uint64_t actualId = 0;
-    int result = Failure;
-    if (IOObjectConformsTo(service, MTVK_DIAG_SERVICE_CLASS) &&
-        IORegistryEntryGetRegistryEntryID(service, &actualId) == KERN_SUCCESS && actualId == id)
-        result = query(service, id);
-    else std::fputs("Selected registry entry is not the expected diagnostic service.\n", stderr);
-    if (IOObjectRelease(service) != KERN_SUCCESS) result = Failure;
-    return result;
+    return query(id);
 }

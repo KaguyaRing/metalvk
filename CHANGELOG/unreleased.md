@@ -2,6 +2,16 @@
 
 ## NVIDIA transport and module maintenance
 
+- Extract native IOKit queries into libmetalvk-nvidia-darwin.a; share response
+  validation/device policy/capability projection with the CLI and Mesa adapter.
+- Publish native wire output only after response validation and close/release;
+  report structured failure stage/native error with transactional output.
+- Add explicit registry-ID Mesa native discovery ingress without a default GPU
+  or loopback fallback. ICD physical enumeration and execution remain pending.
+- Test actual Darwin source using isolated mock IOKit faults, and compile/test
+  native-ingress mapping in the Linux Mesa conformance binary with a test-only
+  provider. Neither fixture path is part of a native shipped transport/ICD.
+
 - Wire a dedicated NVIDIA read-only UserClient (connect type 1) to the captured
   PCI snapshot, private transport session and versioned discovery codec.
   Existing generic diagnostic connect type 0 remains unchanged.

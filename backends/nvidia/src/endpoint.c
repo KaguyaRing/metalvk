@@ -2,6 +2,7 @@
 // SPDX-FileCopyrightText: 2026 KaguyaRing
 #include "nvidia/endpoint.h"
 #include "nvidia/boot.h"
+#include "nvidia/session.h"
 #include "base/span.h"
 enum { SnapshotDisplayClass = 3u };
 _Static_assert(MTVK_NV_QUERY_REQUEST_BYTES == sizeof(mtvk_nv_request), "IOKit request size");
@@ -29,5 +30,25 @@ mtvk_status mtvk_nv_discovery_from_pci(const mtvk_diag_snapshot *snapshot,
     info.pci_function = (uint8_t)snapshot->pci_address;
     info.pci_revision = (uint8_t)snapshot->class_revision;
     *out = info;
+    return MTVK_OK;
+}
+
+mtvk_status mtvk_nv_discovery_response_decode(const void *response, size_t size,
+                                             mtvk_nv_device_info *out) {
+    if (!response || !out || !mtvk_span_valid(response, size) || !mtvk_span_valid(out, sizeof(*out)) ||
+        mtvk_spans_overlap(response, size, out, sizeof(*out))) return MTVK_INVALID_ARGUMENT;
+    mtvk_nv_response_view view;
+    const mtvk_status framed = mtvk_nv_transport_validate_response(response, size, &view);
+    if (framed != MTVK_OK) return framed;
+    if (view.header.op != MTVK_NV_OP_DEVICE_QUERY || view.header.backed_op_mask != MTVK_NV_IMPLEMENTED_OPS)
+        return MTVK_INVALID_ARGUMENT;
+    if (view.header.status != MTVK_OK)
+        return view.payload_bytes ? MTVK_INVALID_ARGUMENT : (mtvk_status)view.header.status;
+    mtvk_nv_device_info info;
+    const mtvk_status decoded = mtvk_nv_device_info_decode(view.payload, view.payload_bytes, &info);
+    if (decoded != MTVK_OK) return decoded;
+    if (info.device_type != MTVK_NV_DEVICE_DISCRETE || info.device_id != MTVK_NV_INITIAL_DEVICE_ID)
+        return MTVK_NOT_SUPPORTED;
+    *out = mtvk_nv_effective_device_info(&info, view.header.backed_op_mask);
     return MTVK_OK;
 }

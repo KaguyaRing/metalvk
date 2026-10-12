@@ -43,6 +43,36 @@ MetalVK.app/Contents/MacOS/metalvk-nvidia-discovery --registry-id 0xYOUR_REGISTR
 
 ## 安全复核和残余风险
 
+### 可复用 Darwin transport
+
+`backends/nvidia/darwin/Discovery.cpp` 提供 `mtvk_nv_darwin_query`；原生构建产出
+`libmetalvk-nvidia-darwin.a`，CLI 链接此库，不再复制 open/call/close 查询实现。
+`endpoint.c` 的共享 response decoder 统一检查信封、状态、操作 mask、设备策略与能力裁剪，
+CLI、native library 和 Mesa adapter 都使用它；失败不修改调用方输出。
+
+返回值包含 status、stage、native_error 与 response_bytes。仅当 close、service release
+和完整响应验证均成功后才复制响应给调用方；close/release 失败返回 CLEANUP_REQUIRED。
+清理错误优先于先前查询错误，不能继续消费缓存的“成功”字节。调用者必须停止使用此次结果。
+不返回 service/connection handle，不持有全局共享连接，不自动选择 GPU 或降级到 loopback。
+
+Apple IOKitUser `323ead896d04424f87184d8f6ff0cce811aab106` 的
+[IOKitLib.c](https://github.com/apple-oss-distributions/IOKitUser/blob/323ead896d04424f87184d8f6ff0cce811aab106/IOKitLib.c)
+显示 matching API 消耗 matching dictionary；IOServiceClose 调用 close 后无条件释放 connection
+的 Mach send right。因此不在 close 失败后再次释放同一 connection，避免二次释放／名称复用风险。
+框架内那次 release 的返回值未公开给调用方，不能凭 IOServiceClose success 声称全部内部清理已取证。
+
+Mesa adapter 增加显式 registry-ID native ingress `mtvk_nvkmd_open_registry`，调用同一 Darwin
+库并映射错误。它仍是独立 adapter，不是已挂接 NVK ICD 的 physical-device enumerator；
+未知 RM 字段不够创建 GPU execution device，`create_dev` 继续拒绝。
+
+主机回归编译真正的 Discovery.cpp，但用 `tests/fixtures/iokit` 隔离 IOKit fault provider，
+覆盖 lookup allocation/missing、ID/class 不符、open/call/close/release 失败、超长／损坏响应
+及成功提交；每个失败要求输出不变、预期清理次数一致。这是 fault-injection，不是真实 IPC。
+该 mock include 路径只用于 test object，不进入原生库、App、kext 或 ICD。
+Linux Mesa conformance executable 通过显式 test-only provider 编译同一 native ingress body，
+验证成功映射、无设备、OOM、cleanup failure 和畸形响应，不能当作 macOS NVK 运行证据。
+原生构建则使用 Apple SDK 和真实 IOKit framework，并运行无服务／参数拒绝路径。
+
 资产是 kernel memory、缓存 PCI 身份完整性和 service/client 生命周期。入口是本地进程
 IOKit 结构请求／连接类型与 CLI registry ID；内核不执行用户提供的指针、路径或命令。
 长度有固定上限，局部栈数据，无请求堆分配；没有网络、文件解包或外部代码执行。

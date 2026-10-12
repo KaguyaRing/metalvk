@@ -15,5 +15,10 @@ MTVK_EXTERN_C_BEGIN
  * chipset, SM, VRAM or execution capabilities are inferred from PCI IDs. */
 mtvk_status mtvk_nv_discovery_from_pci(const mtvk_diag_snapshot *snapshot,
                                       mtvk_nv_device_info *out);
+/* Validate query envelope, semantic status, supported operation set and device
+ * policy before decoding. Failed calls preserve out; successful capability
+ * projection matches the session policy. No IOKit dependency. */
+mtvk_status mtvk_nv_discovery_response_decode(const void *response, size_t size,
+                                             mtvk_nv_device_info *out);
 MTVK_EXTERN_C_END
 #endif
