@@ -48,6 +48,9 @@ IOReturn MetalVKNvidiaClient::query(OSObject *target, void *, IOExternalMethodAr
     size_t written = 0;
     const IOReturn result = client->device_->copyDiscovery(args->structureInput, args->structureInputSize,
         args->structureOutput, args->structureOutputSize, &written);
-    if (result == kIOReturnSuccess) args->structureOutputSize = written;
+    if (result == kIOReturnSuccess) {
+        if (!written || written > MTVK_NV_QUERY_RESPONSE_BYTES) return kIOReturnError;
+        args->structureOutputSize = static_cast<uint32_t>(written);
+    }
     return result;
 }

@@ -65,7 +65,7 @@ int query(io_service_t service, uint64_t id) {
         called = IOConnectCallStructMethod(connection, MTVK_NV_QUERY_SELECTOR,
             request, requestSize, response, &responseSize);
     const kern_return_t closed = IOServiceClose(connection);
-    if (called != KERN_SUCCESS || closed != KERN_SUCCESS) {
+    if (called != KERN_SUCCESS || closed != KERN_SUCCESS || responseSize > sizeof(response)) {
         std::fprintf(stderr, "NVIDIA query/close failed: 0x%08x / 0x%08x\n",
             static_cast<unsigned>(called), static_cast<unsigned>(closed));
         return Failure;
