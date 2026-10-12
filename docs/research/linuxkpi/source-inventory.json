@@ -1,0 +1,5791 @@
+{
+  "baselines": {
+    "D": [
+      "drm-kmod-research",
+      "c16de0f9fa84f70b9551f69fde837a7f3a73c0e9",
+      "freebsd/drm-kmod"
+    ],
+    "F": [
+      "freebsd-14.3-research",
+      "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "freebsd/freebsd-src"
+    ],
+    "L": [
+      "linux-v6.14",
+      "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "torvalds/linux"
+    ],
+    "M": [
+      "mesa/mesa-26.2.4",
+      "mesa-26.2.4",
+      "mesa"
+    ],
+    "N": [
+      "open-gpu-kernel-modules",
+      "e4a5faa2567f28c8eabe0ebb6422b6d0abcf37eb",
+      "NVIDIA/open-gpu-kernel-modules"
+    ],
+    "P": [
+      "IOPCIFamily-macos15",
+      "0eeb801b9d471778f5f177bd2e6c395a18f0ad95",
+      "apple-oss-distributions/IOPCIFamily"
+    ],
+    "Q": [
+      "IOPCIFamily",
+      "4822b27a36e2de70e231ecf2bf3021384fab6ec2",
+      "apple-oss-distributions/IOPCIFamily"
+    ],
+    "R": [
+      "nvidia-macos-driver",
+      "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "nullmoth/nvidia-macos-driver"
+    ],
+    "X": [
+      "xnu-macos15",
+      "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "apple-oss-distributions/xnu"
+    ],
+    "Y": [
+      "xnu",
+      "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+      "apple-oss-distributions/xnu"
+    ]
+  },
+  "coverage": "Lexical C/H include/SPDX inventory, including optional/tests; not preprocessed or link closure",
+  "driver_files": {
+    "abi/gsc_command_header_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "3ca34414029144bafeb99e534862229cca521f61d43294d298c7235cd77be892",
+      "spdx": "MIT"
+    },
+    "abi/gsc_mkhi_commands_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "4cd5dd2d84b917eef4a707a1caa25ffad141338f7549d1dec2a5d62a94a04330",
+      "spdx": "MIT"
+    },
+    "abi/gsc_proxy_commands_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "4512efe7c587ba942a8253629059d3f3ac9f7099005fc7168dcb36fb99ca6009",
+      "spdx": "MIT"
+    },
+    "abi/gsc_pxp_commands_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "689515671c82c30dc64a9da391c4513dbb73fc35c4dfbed466fa83885a464964",
+      "spdx": "MIT"
+    },
+    "abi/guc_actions_abi.h": {
+      "includes": [],
+      "sha256": "68cb022d0afe542aa252fff1406aca7f84dbe4c3f820e206948572ed83383c35",
+      "spdx": "MIT"
+    },
+    "abi/guc_actions_slpc_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "a8e6b5176f0a87ccd8aa09ab4e5da26bdf0d2f6126868442fd0791a9331a5269",
+      "spdx": "MIT"
+    },
+    "abi/guc_actions_sriov_abi.h": {
+      "includes": [
+        "guc_communication_ctb_abi.h"
+      ],
+      "sha256": "bae4399a00fff0ce1ea67bafcb9c6e91047a3ab68c74281406853700a88a8258",
+      "spdx": "MIT"
+    },
+    "abi/guc_capture_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "c73c4693d59209f284d6e4a61fab9f602a7d3f9c08ee6ea49a645fc86cc0f95d",
+      "spdx": "MIT"
+    },
+    "abi/guc_communication_ctb_abi.h": {
+      "includes": [
+        "linux/types.h",
+        "linux/build_bug.h",
+        "guc_messages_abi.h"
+      ],
+      "sha256": "f62c93e2930f600c3a5d62d56253766d3987fa04abf3b6ad2eaa4034e123ecbb",
+      "spdx": "MIT"
+    },
+    "abi/guc_communication_mmio_abi.h": {
+      "includes": [],
+      "sha256": "3942ea7259b3e059db02f53c0e19da22f95d5ca773e6c70261a6a0b0309612fd",
+      "spdx": "MIT"
+    },
+    "abi/guc_errors_abi.h": {
+      "includes": [],
+      "sha256": "faad62a82c3b2f9839a948035815718d34e4942008da32d6277b108f035bcbe2",
+      "spdx": "MIT"
+    },
+    "abi/guc_klvs_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "cd9877476e39b96394e6838c9f1eeb774757fc5570b0d68c8f9d48a47df3750d",
+      "spdx": "MIT"
+    },
+    "abi/guc_log_abi.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "14a1276ccf636a7fca161d8bc74477437d48e4c1cab61b24b09ca7deb01da138",
+      "spdx": "MIT"
+    },
+    "abi/guc_messages_abi.h": {
+      "includes": [],
+      "sha256": "c7101af4fc6458f1917cfb1bb1cc94a365fb14a68d7efdf5fd0ea7dbbe116995",
+      "spdx": "MIT"
+    },
+    "abi/guc_relay_actions_abi.h": {
+      "includes": [
+        "abi/guc_relay_communication_abi.h"
+      ],
+      "sha256": "57a8a3621f8d137e135cdcbd839027c2c325a6424ee883f78b29b2c673a23c5a",
+      "spdx": "MIT"
+    },
+    "abi/guc_relay_communication_abi.h": {
+      "includes": [
+        "linux/build_bug.h",
+        "guc_actions_sriov_abi.h",
+        "guc_communication_ctb_abi.h",
+        "guc_messages_abi.h"
+      ],
+      "sha256": "e42a1b00c1b11c6516ea6529af5e3886e657c3d010ee4c45c7b4996ee8ad6d60",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/gem/i915_gem_stolen.h": {
+      "includes": [
+        "xe_ttm_stolen_mgr.h",
+        "xe_res_cursor.h"
+      ],
+      "sha256": "40f55cc05fc205dff7e768cf5a3908823b15923d3edf031f2e5e37c5e6e1693f",
+      "spdx": "NO_SPDX"
+    },
+    "compat-i915-headers/gt/intel_gt_types.h": {
+      "includes": [],
+      "sha256": "4874331304129595340239aaecd754105af0f3425b9aed641abfcbbabb98c2cd",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/gt/intel_rps.h": {
+      "includes": [],
+      "sha256": "a46e1e861c0492714cdb46cab29812d63d1cfa424b435dce697653329a8b51ef",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_active.h": {
+      "includes": [
+        "i915_active_types.h"
+      ],
+      "sha256": "c217aa546ec7d975fe2acc9ec62234944818aadbde26bcf17644cce41e71aa66",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_active_types.h": {
+      "includes": [],
+      "sha256": "3a87f95bb21d1740dd521da8dfb42ad10b6b386c9fd4c0f6f73d6711a00c6aac",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_config.h": {
+      "includes": [
+        "linux/sched.h"
+      ],
+      "sha256": "641a4e0d3306bdab67513a2067f06b41c95b548305d5d789779b874b690f1573",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_drv.h": {
+      "includes": [
+        "drm/drm_drv.h",
+        "i915_utils.h",
+        "intel_runtime_pm.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "linux/rtc.h"
+      ],
+      "sha256": "ac45aff087612155435fe07e2f92765ee73e9beb33bfda7b470ba44ec1da636b",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_irq.h": {
+      "includes": [
+        "../../i915/i915_irq.h"
+      ],
+      "sha256": "7c2e4779b2e6b1ca08a614859ba70f0f03d84db42c2d4d45f167023a6b23d80b",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_reg.h": {
+      "includes": [
+        "../../i915/i915_reg.h"
+      ],
+      "sha256": "d0af172014fec5e169509c3b9515605a17dd557a89d49135bb8e1a1e44479998",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_reg_defs.h": {
+      "includes": [
+        "../../i915/i915_reg_defs.h"
+      ],
+      "sha256": "0f2dd67e24cd4184e89a546fc4c8a71b30dd7cd8e778ffef57a06a937662c3fe",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_utils.h": {
+      "includes": [
+        "../../i915/i915_utils.h"
+      ],
+      "sha256": "363db424bdc6f5ac3b4b11711635293a5596ffa6d3852979a02bc83d7d4f182b",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_vgpu.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "54b0ee9401d8b5bfb61bb48bad61218986e3c4067703b3ee1bb55c684b098b9f",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_vma.h": {
+      "includes": [
+        "uapi/drm/i915_drm.h",
+        "xe_ggtt_types.h"
+      ],
+      "sha256": "03e113d608c6dffbff47a043c99d5a40da34963269f1dc7d08902bf07dadfb04",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/i915_vma_types.h": {
+      "includes": [
+        "linux/types.h",
+        "linux/build_bug.h"
+      ],
+      "sha256": "631b9174e85165100cacba85ca0c15d7b3ab2a6a6d634b47ff695b3418fc36b1",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_clock_gating.h": {
+      "includes": [
+        "../../i915/intel_clock_gating.h"
+      ],
+      "sha256": "f1559d8e37fa284b3bfbab846e7c556c0ad7cda7ddac88f451b1974736f78f1d",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_mchbar_regs.h": {
+      "includes": [
+        "../../i915/intel_mchbar_regs.h"
+      ],
+      "sha256": "c352c84e4c59a86b7aa3d72d6feb0b701c1c762c272afefef8ebbe476ff08b96",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_pci_config.h": {
+      "includes": [
+        "../../i915/intel_pci_config.h"
+      ],
+      "sha256": "92ffad6a0449270bcb663d11b2044112b55f851ab2a849a0fb05f457a30aa3a8",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_pcode.h": {
+      "includes": [
+        "intel_uncore.h",
+        "xe_pcode.h"
+      ],
+      "sha256": "12741ec6986bb4d5d539fb9daf4ef15274e30831f84236e49884e40e41e5d267",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_runtime_pm.h": {
+      "includes": [
+        "intel_wakeref.h",
+        "xe_device_types.h",
+        "xe_pm.h"
+      ],
+      "sha256": "9f7389291af8c6a8a2c4e8cfd336aef837059a7a9ed9f73fa33f26bfcd97cf70",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_step.h": {
+      "includes": [
+        "xe_step.h"
+      ],
+      "sha256": "6444c37862926f3f93843d53aa16acaea533ebfb511d495d21e5a7a0d50cdc30",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_uncore.h": {
+      "includes": [
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_mmio.h"
+      ],
+      "sha256": "e65755ad84104b58f1b1c78ab11c52ae5d13ea6812b2542bc3197a6d521b0fc6",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_uncore_trace.h": {
+      "includes": [],
+      "sha256": "60f8236ba4a65f72d977c265f46d6b154a46132ed162a6d98a31af661957b49c",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/intel_wakeref.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "06f884b8924b728c82d9f5933e707037b8c1e282b006035bda5ac77c06d9511b",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/pxp/intel_pxp.h": {
+      "includes": [
+        "linux/errno.h",
+        "linux/types.h"
+      ],
+      "sha256": "274694591cf1f11b843823aa6c09717f3cbeb2bf698f0db7ea321c7d2f5afbf3",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/soc/intel_dram.h": {
+      "includes": [
+        "../../../i915/soc/intel_dram.h"
+      ],
+      "sha256": "a6babec9d518fb2e2c43e4cef4e302425fed57244becc9eaa5e115c5ace1769f",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/soc/intel_gmch.h": {
+      "includes": [
+        "../../../i915/soc/intel_gmch.h"
+      ],
+      "sha256": "28aa195c0eaab0ad2dc41f59288f40d645a23c671d050a37c148e2d59f25ffd0",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/soc/intel_pch.h": {
+      "includes": [
+        "../../../i915/soc/intel_pch.h"
+      ],
+      "sha256": "afeaf78411a0ec2874195049d2f1eaa56d78b21db1f3d93989bdea1a1d2c3b30",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/soc/intel_rom.h": {
+      "includes": [
+        "../../../i915/soc/intel_rom.h"
+      ],
+      "sha256": "e6745f46281ad790ae50600c098035ce8bb0a1c0033b84ecb20da5856b9c2f65",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/vlv_sideband.h": {
+      "includes": [
+        "linux/types.h",
+        "vlv_sideband_reg.h"
+      ],
+      "sha256": "e7b9cf0e6a50fb0f0ce93010f18b68cfe16052e7ed8d33266009b9749a7bf599",
+      "spdx": "MIT"
+    },
+    "compat-i915-headers/vlv_sideband_reg.h": {
+      "includes": [
+        "../../i915/vlv_sideband_reg.h"
+      ],
+      "sha256": "1f2e4963fc204d873cb27fcd82e09bddf8f257a4101319e17bfc30ac2dc77044",
+      "spdx": "MIT"
+    },
+    "display/ext/i915_irq.c": {
+      "includes": [
+        "i915_irq.h",
+        "i915_reg.h",
+        "intel_uncore.h"
+      ],
+      "sha256": "976ec6076b3278e6c3918f273040bfff8a26f209702753c83bbe84bbf6cafe40",
+      "spdx": "MIT"
+    },
+    "display/ext/i915_utils.c": {
+      "includes": [
+        "i915_drv.h"
+      ],
+      "sha256": "29ced7fcd9bc202c60461eb0c1c96fd32e7abecaf184a8233dda63916b92eeb2",
+      "spdx": "MIT"
+    },
+    "display/intel_bo.c": {
+      "includes": [
+        "drm/drm_gem.h",
+        "xe_bo.h",
+        "intel_bo.h"
+      ],
+      "sha256": "79a68fa4ac4a6e68698322e3a784c554e5447729d61c6c8427a5b15d051c52df",
+      "spdx": "MIT"
+    },
+    "display/intel_fb_bo.c": {
+      "includes": [
+        "drm/drm_modeset_helper.h",
+        "drm/ttm/ttm_bo.h",
+        "intel_display_types.h",
+        "intel_fb.h",
+        "intel_fb_bo.h",
+        "xe_bo.h"
+      ],
+      "sha256": "435af1f89c86dc5d09c8566997b4c37d246c9c6c45517460f4371333370337fd",
+      "spdx": "MIT"
+    },
+    "display/intel_fbdev_fb.c": {
+      "includes": [
+        "drm/drm_fb_helper.h",
+        "intel_display_types.h",
+        "intel_fb.h",
+        "intel_fbdev_fb.h",
+        "xe_bo.h",
+        "xe_ttm_stolen_mgr.h",
+        "xe_wa.h",
+        "generated/xe_wa_oob.h"
+      ],
+      "sha256": "208d9c025814e5fd87e0d49f45532b947d39b8abb8627e18b9d7f7daf6e23087",
+      "spdx": "MIT"
+    },
+    "display/xe_display.c": {
+      "includes": [
+        "xe_display.h",
+        "regs/xe_irq_regs.h",
+        "linux/fb.h",
+        "drm/drm_drv.h",
+        "drm/drm_managed.h",
+        "drm/drm_probe_helper.h",
+        "uapi/drm/xe_drm.h",
+        "soc/intel_dram.h",
+        "intel_acpi.h",
+        "intel_audio.h",
+        "intel_bw.h",
+        "intel_display.h",
+        "intel_display_driver.h",
+        "intel_display_irq.h",
+        "intel_display_types.h",
+        "intel_dmc.h",
+        "intel_dmc_wl.h",
+        "intel_dp.h",
+        "intel_encoder.h",
+        "intel_fbdev.h",
+        "intel_hdcp.h",
+        "intel_hotplug.h",
+        "intel_opregion.h",
+        "xe_module.h"
+      ],
+      "sha256": "460ef8a3a88240a27ab1918f198d4b3ceda1a62e68dc30a0d5721917ade8d72f",
+      "spdx": "MIT"
+    },
+    "display/xe_display.h": {
+      "includes": [
+        "xe_device.h"
+      ],
+      "sha256": "3395d4e7680a8e022c885a171b3c2f74cccf8aaf5eb707136628b44568977779",
+      "spdx": "MIT"
+    },
+    "display/xe_display_misc.c": {
+      "includes": [
+        "intel_display_types.h"
+      ],
+      "sha256": "2da7e3c206945b0ac5bf76d618309c1ae120a3216b4a5c317a963da44d315de1",
+      "spdx": "MIT"
+    },
+    "display/xe_display_rps.c": {
+      "includes": [
+        "intel_display_rps.h"
+      ],
+      "sha256": "94760ca9907e8043c89898db8196eb1141200862b5551e8f9c1678b2d732cb65",
+      "spdx": "MIT"
+    },
+    "display/xe_display_wa.c": {
+      "includes": [
+        "intel_display_wa.h",
+        "xe_device.h",
+        "xe_wa.h",
+        "generated/xe_wa_oob.h"
+      ],
+      "sha256": "9e766aec94365a7109b797fae3dd2d58a4ebdca3525e93078a2b9d184e39e124",
+      "spdx": "MIT"
+    },
+    "display/xe_dsb_buffer.c": {
+      "includes": [
+        "i915_vma.h",
+        "intel_display_types.h",
+        "intel_dsb_buffer.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_device_types.h"
+      ],
+      "sha256": "b95a77c22efd4e65c597d9af014627ce63e7dcef666ea922986777f1112b62ce",
+      "spdx": "MIT"
+    },
+    "display/xe_fb_pin.c": {
+      "includes": [
+        "drm/ttm/ttm_bo.h",
+        "intel_display_types.h",
+        "intel_dpt.h",
+        "intel_fb.h",
+        "intel_fb_pin.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_ggtt.h",
+        "xe_pm.h"
+      ],
+      "sha256": "2535aa7fc817de9105d9bc34db85e8779454decff4b39cbb4a31682ccb2f4d15",
+      "spdx": "MIT"
+    },
+    "display/xe_hdcp_gsc.c": {
+      "includes": [
+        "drm/drm_print.h",
+        "drm/intel/i915_hdcp_interface.h",
+        "linux/delay.h",
+        "abi/gsc_command_header_abi.h",
+        "intel_hdcp_gsc.h",
+        "intel_hdcp_gsc_message.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_force_wake.h",
+        "xe_gsc_proxy.h",
+        "xe_gsc_submit.h",
+        "xe_map.h",
+        "xe_pm.h",
+        "xe_uc_fw.h"
+      ],
+      "sha256": "bcbee0919bfbcf74b30782b43b4463766e25b265c9c3fc8f6598f0a15d9894d7",
+      "spdx": "MIT"
+    },
+    "display/xe_plane_initial.c": {
+      "includes": [
+        "linux/io-64-nonatomic-lo-hi.h",
+        "regs/xe_gtt_defs.h",
+        "xe_ggtt.h",
+        "intel_atomic_plane.h",
+        "intel_crtc.h",
+        "intel_display.h",
+        "intel_display_types.h",
+        "intel_fb.h",
+        "intel_fb_pin.h",
+        "intel_frontbuffer.h",
+        "intel_plane_initial.h",
+        "xe_bo.h",
+        "xe_wa.h",
+        "generated/xe_wa_oob.h"
+      ],
+      "sha256": "ed267885ba90c0ffb932481f461e0b172794a003384f2e0bf3506ffc29aff27b",
+      "spdx": "MIT"
+    },
+    "display/xe_tdf.c": {
+      "includes": [
+        "xe_device.h",
+        "intel_display_types.h",
+        "intel_tdf.h"
+      ],
+      "sha256": "9e66c476265d73fddaeb2df8559cfe91f5e1d3168c9bc2354058d7b2ae78978b",
+      "spdx": "MIT"
+    },
+    "instructions/xe_gfx_state_commands.h": {
+      "includes": [
+        "instructions/xe_instr_defs.h"
+      ],
+      "sha256": "60d945e9fe2244ced318a3352098641ae33cb649e5702b405c4cba14e252de50",
+      "spdx": "MIT"
+    },
+    "instructions/xe_gfxpipe_commands.h": {
+      "includes": [
+        "instructions/xe_instr_defs.h"
+      ],
+      "sha256": "3af188c18f70f21fbfca152a3cc8c1b35f87bf7a0f999dd752856ade605d25dd",
+      "spdx": "MIT"
+    },
+    "instructions/xe_gpu_commands.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "33b1ac6376d4be9afd9daf3f9b90d7be1ecd7b5f927d92e3f0d65c8f1429b3c0",
+      "spdx": "MIT"
+    },
+    "instructions/xe_gsc_commands.h": {
+      "includes": [
+        "instructions/xe_instr_defs.h"
+      ],
+      "sha256": "d2d9d4faecb7be598c426ce439fed4885956011f5ea9f63a37ed7a19d457b39d",
+      "spdx": "MIT"
+    },
+    "instructions/xe_instr_defs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "03da7d1ea04ded67274581f3c4933982d70ab33d9421742a144732907998c7e1",
+      "spdx": "MIT"
+    },
+    "instructions/xe_mi_commands.h": {
+      "includes": [
+        "instructions/xe_instr_defs.h"
+      ],
+      "sha256": "9dc10e1f22f9b76e8f897fa60c530f45b441a0b379ce105c3963426de3b6d9ea",
+      "spdx": "MIT"
+    },
+    "regs/xe_bars.h": {
+      "includes": [],
+      "sha256": "2fee2f51b845b6bef6f68585060b41457bc361a169cb87b00fa55ce830f1d9c6",
+      "spdx": "MIT"
+    },
+    "regs/xe_engine_regs.h": {
+      "includes": [
+        "asm/page.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "0830bd0171b617a22ee93960852c95ea85c4f18462b477228dd5d72790202d31",
+      "spdx": "MIT"
+    },
+    "regs/xe_gsc_regs.h": {
+      "includes": [
+        "linux/compiler.h",
+        "linux/types.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "f3903d562b9a50e59a44bb2199897eb4d6e74b960727a86aedb887cb3f0e0f5d",
+      "spdx": "MIT"
+    },
+    "regs/xe_gt_regs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "42756f659568123e98decfd5cdd9899842278aeacb0bd761d2a6490282184148",
+      "spdx": "MIT"
+    },
+    "regs/xe_gtt_defs.h": {
+      "includes": [],
+      "sha256": "55afcbf691c4063cb28ee48dad071f313a0bdb44054ea20ac84c7400788cec88",
+      "spdx": "MIT"
+    },
+    "regs/xe_guc_regs.h": {
+      "includes": [
+        "linux/compiler.h",
+        "linux/types.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "518b2eb33f3f2a2fed764d3dd8ece7700d44142388363fe0d08e96adf95e3fa8",
+      "spdx": "MIT"
+    },
+    "regs/xe_irq_regs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "161ca0ad49697f4c31725c7dabbb34944fd770aa72749da4fe6d8fb4a7562688",
+      "spdx": "MIT"
+    },
+    "regs/xe_lrc_layout.h": {
+      "includes": [],
+      "sha256": "577c58f4c0312fb5d1414f4be573e1ba633be187b5567a548ca586898c343a0e",
+      "spdx": "MIT"
+    },
+    "regs/xe_mchbar_regs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "6698d5f54ed03dda05e4e49f244d4b26ce701695f8b547ece7d2b633871cbd86",
+      "spdx": "MIT"
+    },
+    "regs/xe_oa_regs.h": {
+      "includes": [],
+      "sha256": "dcbd5efb70c76d65fd42dada9f7ce7b62bf170dc249da4a626d7ba6633e2b940",
+      "spdx": "MIT"
+    },
+    "regs/xe_pcode_regs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "74fdfb03f1b74950e37aa828bbda1763a82d78d3fe49093a899f5fe27ab7b465",
+      "spdx": "MIT"
+    },
+    "regs/xe_pmt.h": {
+      "includes": [],
+      "sha256": "57b6445a2af57769434634a9670c7fd8defd6dbfc84cea4d7bdee1e9452b0a07",
+      "spdx": "MIT"
+    },
+    "regs/xe_reg_defs.h": {
+      "includes": [
+        "linux/build_bug.h",
+        "compat-i915-headers/i915_reg_defs.h"
+      ],
+      "sha256": "6b76bdd6b0ac449c13d522ed2bf066c4cc3dab7310907554982e885aac42c369",
+      "spdx": "MIT"
+    },
+    "regs/xe_regs.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "46696f536fee8421e5f9740065f6f6eec68be31d7764386157c4786c9df18d66",
+      "spdx": "MIT"
+    },
+    "tests/xe_args_test.c": {
+      "includes": [
+        "kunit/test.h",
+        "xe_args.h"
+      ],
+      "sha256": "744086751522c1f534a4d37d811178cc1055c43293e50231bb3143cf6273972b",
+      "spdx": "GPL-2.0"
+    },
+    "tests/xe_bo.c": {
+      "includes": [
+        "kunit/test.h",
+        "kunit/visibility.h",
+        "linux/iosys-map.h",
+        "linux/math64.h",
+        "linux/prandom.h",
+        "linux/swap.h",
+        "uapi/linux/sysinfo.h",
+        "tests/xe_kunit_helpers.h",
+        "tests/xe_pci_test.h",
+        "tests/xe_test.h",
+        "xe_bo_evict.h",
+        "xe_pci.h",
+        "xe_pm.h"
+      ],
+      "sha256": "c57d3d1bc64d2b67c875b41edda1429427b4425285eb4fae8fbe4a8b594cb3d0",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_dma_buf.c": {
+      "includes": [
+        "uapi/drm/xe_drm.h",
+        "kunit/test.h",
+        "kunit/visibility.h",
+        "tests/xe_kunit_helpers.h",
+        "tests/xe_pci_test.h",
+        "xe_pci.h",
+        "xe_pm.h"
+      ],
+      "sha256": "5af4fd7d82c3de3dbc8d398334aa013c40e6f47c36afcfb45eeb392e6dc8575c",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_gt_sriov_pf_service_test.c": {
+      "includes": [
+        "kunit/test.h",
+        "xe_device.h",
+        "xe_kunit_helpers.h",
+        "xe_pci_test.h"
+      ],
+      "sha256": "eda6a4d974159a6ece857ec567c71f6a3269fc182014dbcf98c50ec5360e36dd",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_guc_db_mgr_test.c": {
+      "includes": [
+        "kunit/test.h",
+        "xe_device.h",
+        "xe_kunit_helpers.h"
+      ],
+      "sha256": "475b5344112b68643e10cde185f56be31a1bc3147fd30fd4854fcfafd12a1142",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_guc_id_mgr_test.c": {
+      "includes": [
+        "kunit/test.h",
+        "xe_device.h",
+        "xe_kunit_helpers.h"
+      ],
+      "sha256": "f798798081f8ca4ec68e4f9a9d8ee1eaed45c36483d52f93e903ed093ea72639",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_guc_relay_test.c": {
+      "includes": [
+        "kunit/static_stub.h",
+        "kunit/test.h",
+        "kunit/test-bug.h",
+        "xe_device.h",
+        "xe_kunit_helpers.h",
+        "xe_pci_test.h"
+      ],
+      "sha256": "b4768a40bbea4bd81e14555b702344b9ee86ade0195d231acc90af54a4a11f74",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_kunit_helpers.c": {
+      "includes": [
+        "kunit/test.h",
+        "kunit/static_stub.h",
+        "kunit/visibility.h",
+        "drm/drm_drv.h",
+        "drm/drm_kunit_helpers.h",
+        "tests/xe_kunit_helpers.h",
+        "tests/xe_pci_test.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_pm.h"
+      ],
+      "sha256": "3a211dd0d1903fe27c9cc9fc0ed944d4ce76a7099704b32dcce69ee93b7216f6",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_kunit_helpers.h": {
+      "includes": [],
+      "sha256": "c424fcf7cde515c84bd30a2fcae3a398a375f6f235089be118551eb1b728111c",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_live_test_mod.c": {
+      "includes": [
+        "linux/module.h",
+        "kunit/test.h"
+      ],
+      "sha256": "a3d5bb8ef2e9aef32c50506c3403297f2f84b9e1327eaf57fd72c2e5e9f70b79",
+      "spdx": "GPL-2.0"
+    },
+    "tests/xe_lmtt_test.c": {
+      "includes": [
+        "kunit/test.h"
+      ],
+      "sha256": "d0ac48d49b27a2c36de902bd7e62f08cb167781202a0ef4537fba58d961e44f5",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_migrate.c": {
+      "includes": [
+        "kunit/test.h",
+        "kunit/visibility.h",
+        "tests/xe_kunit_helpers.h",
+        "tests/xe_pci_test.h",
+        "xe_pci.h",
+        "xe_pm.h"
+      ],
+      "sha256": "c39bd7660f015dcaba98e31da46488a06710b1553850fed3d9013572f9e2073f",
+      "spdx": "MIT"
+    },
+    "tests/xe_mocs.c": {
+      "includes": [
+        "kunit/test.h",
+        "kunit/visibility.h",
+        "tests/xe_kunit_helpers.h",
+        "tests/xe_pci_test.h",
+        "tests/xe_test.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_mocs.h",
+        "xe_pci.h",
+        "xe_pm.h"
+      ],
+      "sha256": "10920dcb3bed398dfbaa5d6985c973370eaf4b5234946c18eff64b295018df97",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_pci.c": {
+      "includes": [
+        "tests/xe_pci_test.h",
+        "tests/xe_test.h",
+        "kunit/test-bug.h",
+        "kunit/test.h",
+        "kunit/test-bug.h",
+        "kunit/visibility.h"
+      ],
+      "sha256": "4b27e17fb017ef5b99e80c74791b090002b4c470d1828e37bc4e1a5b44ee4c27",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_pci_test.c": {
+      "includes": [
+        "drm/drm_drv.h",
+        "drm/drm_kunit_helpers.h",
+        "kunit/test.h",
+        "tests/xe_test.h",
+        "xe_device.h",
+        "xe_pci_test.h",
+        "xe_pci_types.h"
+      ],
+      "sha256": "51a8041a18b9c8f56817085dc79215cde17dba5c6016c3908a013ea6e8093e42",
+      "spdx": "GPL-2.0"
+    },
+    "tests/xe_pci_test.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_platform_types.h",
+        "xe_sriov_types.h"
+      ],
+      "sha256": "d7f57642b576ac85eaf91c987f2c79b7a982140b9e315b2ac1076c4c2f221fb1",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_rtp_test.c": {
+      "includes": [
+        "linux/string.h",
+        "linux/xarray.h",
+        "drm/drm_drv.h",
+        "drm/drm_kunit_helpers.h",
+        "kunit/test.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_reg_defs.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_kunit_helpers.h",
+        "xe_pci_test.h",
+        "xe_reg_sr.h",
+        "xe_rtp.h"
+      ],
+      "sha256": "b3bc5b8f801d66318503653c2c62505c465bf3dd51cd24d2c95adcb9353de14e",
+      "spdx": "GPL-2.0"
+    },
+    "tests/xe_test.h": {
+      "includes": [
+        "linux/types.h",
+        "kunit/test.h",
+        "kunit/test-bug.h"
+      ],
+      "sha256": "f8b20153edc7b1c8320450b34af749fdaa495ad76b8b082a2c51240e285211f1",
+      "spdx": "GPL-2.0 AND MIT"
+    },
+    "tests/xe_test_mod.c": {
+      "includes": [
+        "linux/module.h"
+      ],
+      "sha256": "165a0bf1eaa7f8f11c8b4491e4fbe5091e9eeda88384c47b02b5fc90f8eb4c56",
+      "spdx": "GPL-2.0"
+    },
+    "tests/xe_wa_test.c": {
+      "includes": [
+        "drm/drm_drv.h",
+        "drm/drm_kunit_helpers.h",
+        "kunit/test.h",
+        "xe_device.h",
+        "xe_kunit_helpers.h",
+        "xe_pci_test.h",
+        "xe_reg_sr.h",
+        "xe_tuning.h",
+        "xe_wa.h"
+      ],
+      "sha256": "65566fd58db12bf65d01cc1698f679ece4fa943d4877f5d1715c3a4471b92ae3",
+      "spdx": "GPL-2.0"
+    },
+    "xe_args.h": {
+      "includes": [
+        "linux/args.h"
+      ],
+      "sha256": "de5915f4bb750c11d5590d0571cb00ca03c1b04f3eedfa60ce7ffcb985389992",
+      "spdx": "MIT"
+    },
+    "xe_assert.h": {
+      "includes": [
+        "linux/string_helpers.h",
+        "drm/drm_print.h",
+        "xe_gt_types.h",
+        "xe_step.h"
+      ],
+      "sha256": "c07e4a3ccac05d31bd88c9126fdf5f6d739714a945a251c17658ae6c348a990b",
+      "spdx": "MIT"
+    },
+    "xe_bb.c": {
+      "includes": [
+        "xe_bb.h",
+        "instructions/xe_mi_commands.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_exec_queue_types.h",
+        "xe_gt.h",
+        "xe_hw_fence.h",
+        "xe_sa.h",
+        "xe_sched_job.h",
+        "xe_vm_types.h"
+      ],
+      "sha256": "335ea91724c4892fabb11d34c5106fa16f8d017b4876c8f5979d53776bf94373",
+      "spdx": "MIT"
+    },
+    "xe_bb.h": {
+      "includes": [
+        "xe_bb_types.h"
+      ],
+      "sha256": "3a84f5c04756c51fb3b67df410f01865ab7a4b2c63bd7af5e45ae683025504c6",
+      "spdx": "MIT"
+    },
+    "xe_bb_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "b05c4b25de17d2d3d2db2535565ca29030f2e7df191d6f844fd949b31cd1e883",
+      "spdx": "MIT"
+    },
+    "xe_bo.c": {
+      "includes": [
+        "xe_bo.h",
+        "linux/dma-buf.h",
+        "drm/drm_drv.h",
+        "drm/drm_gem_ttm_helper.h",
+        "drm/drm_managed.h",
+        "drm/ttm/ttm_device.h",
+        "drm/ttm/ttm_placement.h",
+        "drm/ttm/ttm_tt.h",
+        "uapi/drm/xe_drm.h",
+        "xe_device.h",
+        "xe_dma_buf.h",
+        "xe_drm_client.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_map.h",
+        "xe_migrate.h",
+        "xe_pm.h",
+        "xe_preempt_fence.h",
+        "xe_res_cursor.h",
+        "xe_trace_bo.h",
+        "xe_ttm_stolen_mgr.h",
+        "xe_vm.h",
+        "tests/xe_bo.c"
+      ],
+      "sha256": "ecfdb3d09d8bc96875a8c82b06858f936aba6a49063dec11dcb7a85d74408541",
+      "spdx": "MIT"
+    },
+    "xe_bo.h": {
+      "includes": [
+        "drm/ttm/ttm_tt.h",
+        "xe_bo_types.h",
+        "xe_macros.h",
+        "xe_vm_types.h",
+        "xe_vm.h"
+      ],
+      "sha256": "9b1e7eb76404b928cdc372369bd6ed1ff06bb865df0b8be6abac8e99f62c631f",
+      "spdx": "MIT"
+    },
+    "xe_bo_doc.h": {
+      "includes": [],
+      "sha256": "21f3fdca2ba0797450609cb982a893975a12e3834e1afdfef6df5dcfd9789d75",
+      "spdx": "MIT"
+    },
+    "xe_bo_evict.c": {
+      "includes": [
+        "xe_bo_evict.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_ggtt.h",
+        "xe_tile.h"
+      ],
+      "sha256": "d3a445a2f90b961dcae7df24ad0aa18c7369055efd26f3c4777eb6e16d4e6a50",
+      "spdx": "MIT"
+    },
+    "xe_bo_evict.h": {
+      "includes": [],
+      "sha256": "70eed539f5a85e16d0e9ad30e9d8a3fea4fd727e21c94725ab38410aa083f6b9",
+      "spdx": "MIT"
+    },
+    "xe_bo_types.h": {
+      "includes": [
+        "linux/iosys-map.h",
+        "drm/ttm/ttm_bo.h",
+        "drm/ttm/ttm_device.h",
+        "drm/ttm/ttm_placement.h",
+        "xe_device_types.h",
+        "xe_ggtt_types.h"
+      ],
+      "sha256": "573541ad4c9c43ebfed82e4bf4120fc16bf6f413a3bf127e64657b1c0030cd9f",
+      "spdx": "MIT"
+    },
+    "xe_debugfs.c": {
+      "includes": [
+        "xe_debugfs.h",
+        "linux/debugfs.h",
+        "linux/fault-inject.h",
+        "linux/string_helpers.h",
+        "drm/drm_debugfs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt_debugfs.h",
+        "xe_gt_printk.h",
+        "xe_guc_ads.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_step.h",
+        "xe_bo_evict.h",
+        "xe_migrate.h",
+        "xe_vm.h"
+      ],
+      "sha256": "7b69cce28dddc64b7d6dfb4185cebc2a84e4c2e875ec76cfdf13cd4b96f3fb62",
+      "spdx": "MIT"
+    },
+    "xe_debugfs.h": {
+      "includes": [],
+      "sha256": "10615ff12f3a3f0789af30311dd65089743198da6612f69d311ad04f2be3ddd5",
+      "spdx": "MIT"
+    },
+    "xe_devcoredump.c": {
+      "includes": [
+        "xe_devcoredump.h",
+        "xe_devcoredump_types.h",
+        "linux/ascii85.h",
+        "linux/devcoredump.h",
+        "generated/utsrelease.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_guc_capture.h",
+        "xe_guc_ct.h",
+        "xe_guc_log.h",
+        "xe_guc_submit.h",
+        "xe_hw_engine.h",
+        "xe_module.h",
+        "xe_pm.h",
+        "xe_sched_job.h",
+        "xe_vm.h"
+      ],
+      "sha256": "5321a9564e0a5d5536e07e46b3532c4c67a78126c0c8f6ab5b606e3240a37f90",
+      "spdx": "MIT"
+    },
+    "xe_devcoredump.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "75b6fb691cea1e7b6d757de69da9cc96a07827a83c87b08493e0a180ffaf5687",
+      "spdx": "MIT"
+    },
+    "xe_devcoredump_types.h": {
+      "includes": [
+        "linux/ktime.h",
+        "linux/mutex.h",
+        "xe_hw_engine_types.h"
+      ],
+      "sha256": "554836f744d16d2e2681631ec7bfa8815bcad07a05da4ffbc56238740d71e88b",
+      "spdx": "MIT"
+    },
+    "xe_device.c": {
+      "includes": [
+        "xe_device.h",
+        "linux/aperture.h",
+        "linux/delay.h",
+        "linux/fault-inject.h",
+        "linux/units.h",
+        "drm/drm_atomic_helper.h",
+        "drm/drm_client.h",
+        "drm/drm_gem_ttm_helper.h",
+        "drm/drm_ioctl.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "uapi/drm/xe_drm.h",
+        "display/xe_display.h",
+        "instructions/xe_gpu_commands.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_bo.h",
+        "xe_debugfs.h",
+        "xe_devcoredump.h",
+        "xe_dma_buf.h",
+        "xe_drm_client.h",
+        "xe_drv.h",
+        "xe_exec.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_ggtt.h",
+        "xe_gsc_proxy.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_guc.h",
+        "xe_hw_engine_group.h",
+        "xe_hwmon.h",
+        "xe_irq.h",
+        "xe_memirq.h",
+        "xe_mmio.h",
+        "xe_module.h",
+        "xe_oa.h",
+        "xe_observation.h",
+        "xe_pat.h",
+        "xe_pcode.h",
+        "xe_pm.h",
+        "xe_query.h",
+        "xe_sriov.h",
+        "xe_tile.h",
+        "xe_ttm_stolen_mgr.h",
+        "xe_ttm_sys_mgr.h",
+        "xe_vm.h",
+        "xe_vram.h",
+        "xe_vsec.h",
+        "xe_wait_user_fence.h",
+        "xe_wa.h",
+        "generated/xe_wa_oob.h"
+      ],
+      "sha256": "95954b51c67fa242556a7947dce814756be85a4f2466e0d01eb3afbc43d8bcea",
+      "spdx": "MIT"
+    },
+    "xe_device.h": {
+      "includes": [
+        "drm/drm_util.h",
+        "xe_device_types.h",
+        "xe_gt_types.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "48f54fb57b902db43f70c59fd2c9c1a9735eca8d6402f8c9b49bb04481356518",
+      "spdx": "MIT"
+    },
+    "xe_device_sysfs.c": {
+      "includes": [
+        "linux/kobject.h",
+        "linux/pci.h",
+        "linux/sysfs.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_device_sysfs.h",
+        "xe_pm.h"
+      ],
+      "sha256": "aa68841e70a6cf4ac72c92130298ea0512695fabc350b04d6ff6d9c4c0e24d02",
+      "spdx": "MIT"
+    },
+    "xe_device_sysfs.h": {
+      "includes": [],
+      "sha256": "83baa6096c91c9951068b89d25e0d8881bf87e10bf80d85dc9dbf28687ab1f16",
+      "spdx": "MIT"
+    },
+    "xe_device_types.h": {
+      "includes": [
+        "linux/pci.h",
+        "drm/drm_device.h",
+        "drm/drm_file.h",
+        "drm/ttm/ttm_device.h",
+        "xe_devcoredump_types.h",
+        "xe_heci_gsc.h",
+        "xe_lmtt_types.h",
+        "xe_memirq_types.h",
+        "xe_oa_types.h",
+        "xe_platform_types.h",
+        "xe_pt_types.h",
+        "xe_sriov_types.h",
+        "xe_step_types.h",
+        "soc/intel_pch.h",
+        "intel_display_core.h",
+        "intel_display_device.h"
+      ],
+      "sha256": "dc246e2ff08bed0d411992e1108d3e0b9df27bf19fa6591a9d91ef56f65b7e39",
+      "spdx": "MIT"
+    },
+    "xe_dma_buf.c": {
+      "includes": [
+        "xe_dma_buf.h",
+        "kunit/test.h",
+        "linux/dma-buf.h",
+        "linux/pci-p2pdma.h",
+        "drm/drm_device.h",
+        "drm/drm_prime.h",
+        "drm/ttm/ttm_tt.h",
+        "tests/xe_test.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_pm.h",
+        "xe_ttm_vram_mgr.h",
+        "xe_vm.h",
+        "tests/xe_dma_buf.c"
+      ],
+      "sha256": "4c2437d8fc0e6b292880c976b37deb977e0519b04cd3497084b82947c500df10",
+      "spdx": "MIT"
+    },
+    "xe_dma_buf.h": {
+      "includes": [
+        "drm/drm_gem.h"
+      ],
+      "sha256": "0024f800715af6ef8877e126f2191ab71e9ae053b9b871b87a56b8374c0d10a4",
+      "spdx": "MIT"
+    },
+    "xe_drm_client.c": {
+      "includes": [
+        "xe_drm_client.h",
+        "drm/drm_print.h",
+        "uapi/drm/xe_drm.h",
+        "linux/kernel.h",
+        "linux/slab.h",
+        "linux/types.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_bo_types.h",
+        "xe_device_types.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_hw_engine.h",
+        "xe_pm.h",
+        "xe_trace.h"
+      ],
+      "sha256": "00a97691b089c13476c680715076f261c700379819368ac006ef9f4e5da0b1af",
+      "spdx": "MIT"
+    },
+    "xe_drm_client.h": {
+      "includes": [
+        "linux/kref.h",
+        "linux/list.h",
+        "linux/pid.h",
+        "linux/rcupdate.h",
+        "linux/sched.h",
+        "linux/spinlock.h"
+      ],
+      "sha256": "09262ac0f5cb5bd86267090d3337fc4f7da921e238d28e184f1bf59a3f15fbd4",
+      "spdx": "MIT"
+    },
+    "xe_drv.h": {
+      "includes": [
+        "drm/drm_drv.h"
+      ],
+      "sha256": "868ca341b3e2ca6acf4d37ca2c572f82500d46ad85b02fb70c736ec0a93151db",
+      "spdx": "MIT"
+    },
+    "xe_exec.c": {
+      "includes": [
+        "xe_exec.h",
+        "drm/drm_device.h",
+        "drm/drm_exec.h",
+        "drm/drm_file.h",
+        "uapi/drm/xe_drm.h",
+        "linux/delay.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_hw_engine_group.h",
+        "xe_macros.h",
+        "xe_ring_ops_types.h",
+        "xe_sched_job.h",
+        "xe_sync.h",
+        "xe_vm.h"
+      ],
+      "sha256": "43577f1a6ea08a9a678cbc361f33738389545ea74ffabddf20167cdd1c813ae7",
+      "spdx": "MIT"
+    },
+    "xe_exec.h": {
+      "includes": [],
+      "sha256": "d3a4b6c87ec10f53e6fb9ddd92dce1e8f57c387de7e7981125e28a3302a55f3f",
+      "spdx": "MIT"
+    },
+    "xe_exec_queue.c": {
+      "includes": [
+        "xe_exec_queue.h",
+        "linux/nospec.h",
+        "drm/drm_device.h",
+        "drm/drm_drv.h",
+        "drm/drm_file.h",
+        "uapi/drm/xe_drm.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_hw_engine_class_sysfs.h",
+        "xe_hw_engine_group.h",
+        "xe_hw_fence.h",
+        "xe_irq.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_migrate.h",
+        "xe_pm.h",
+        "xe_ring_ops_types.h",
+        "xe_trace.h",
+        "xe_vm.h"
+      ],
+      "sha256": "6c15cb2265680ee2eec4745798f02b41ab91cb80903396fa08de222ef515543f",
+      "spdx": "MIT"
+    },
+    "xe_exec_queue.h": {
+      "includes": [
+        "xe_exec_queue_types.h",
+        "xe_vm_types.h"
+      ],
+      "sha256": "3d7a1eb64ef43083058c97fc2fd3cab8741161b8692c66ca91c5a8882901dc52",
+      "spdx": "MIT"
+    },
+    "xe_exec_queue_types.h": {
+      "includes": [
+        "linux/kref.h",
+        "drm/gpu_scheduler.h",
+        "xe_gpu_scheduler_types.h",
+        "xe_hw_engine_types.h",
+        "xe_hw_fence_types.h",
+        "xe_lrc_types.h"
+      ],
+      "sha256": "bd6d2b78cd6090ecb0643b86be18507c3effc27cac18f4decd01360955f272b3",
+      "spdx": "MIT"
+    },
+    "xe_execlist.c": {
+      "includes": [
+        "xe_execlist.h",
+        "drm/drm_managed.h",
+        "instructions/xe_mi_commands.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_lrc_layout.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_gt.h",
+        "xe_hw_fence.h",
+        "xe_irq.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_mocs.h",
+        "xe_ring_ops_types.h",
+        "xe_sched_job.h"
+      ],
+      "sha256": "c1e9f7ce13bdac8c52de798767db9d762880e263a5d12ae0cb9bc6fee5e6547c",
+      "spdx": "MIT"
+    },
+    "xe_execlist.h": {
+      "includes": [
+        "xe_execlist_types.h"
+      ],
+      "sha256": "6fef2da4e08838f881d0457de49b6ccdb83fb04a013143f3aeb42188e64e42fb",
+      "spdx": "MIT"
+    },
+    "xe_execlist_types.h": {
+      "includes": [
+        "linux/list.h",
+        "linux/spinlock.h",
+        "linux/workqueue.h",
+        "xe_exec_queue_types.h"
+      ],
+      "sha256": "5a523bedce7ef4f500dcaba9319a1edffae71a896c4e60e0784a11f4ecc3387d",
+      "spdx": "MIT"
+    },
+    "xe_force_wake.c": {
+      "includes": [
+        "xe_force_wake.h",
+        "drm/drm_util.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_reg_defs.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_mmio.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "1b44ac888f45988e8c87f8943c101d276ab2dcdbee943073db00cebff04a5fe2",
+      "spdx": "MIT"
+    },
+    "xe_force_wake.h": {
+      "includes": [
+        "xe_assert.h",
+        "xe_force_wake_types.h"
+      ],
+      "sha256": "eaf35795c5a8f4db990b097ec9722e5747db66b7147322955018c18f5b714964",
+      "spdx": "MIT"
+    },
+    "xe_force_wake_types.h": {
+      "includes": [
+        "linux/mutex.h",
+        "linux/types.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "f9eace4a5556b8c96bd215fa23048170110e98d1382e3949e79a4af5d33b230f",
+      "spdx": "MIT"
+    },
+    "xe_gen_wa_oob.c": {
+      "includes": [
+        "ctype.h",
+        "errno.h",
+        "stdbool.h",
+        "stdio.h",
+        "string.h"
+      ],
+      "sha256": "8f29089827055acdfdc7f50478cf3568dfef9e1d129d022eecbd8a7f072f4175",
+      "spdx": "MIT"
+    },
+    "xe_ggtt.c": {
+      "includes": [
+        "xe_ggtt.h",
+        "linux/fault-inject.h",
+        "linux/io-64-nonatomic-lo-hi.h",
+        "linux/sizes.h",
+        "drm/drm_drv.h",
+        "drm/drm_managed.h",
+        "drm/intel/i915_drm.h",
+        "generated/xe_wa_oob.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_gtt_defs.h",
+        "regs/xe_regs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_wa.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "e0cae2299012a8673af90ad77c88b7a67183e7a2499515c4175162a1d8d4bb81",
+      "spdx": "MIT"
+    },
+    "xe_ggtt.h": {
+      "includes": [
+        "xe_ggtt_types.h"
+      ],
+      "sha256": "dc908ee6c7799c9e151e60114959ffeba2a372f8aec52dc5876d4eb38e7c58b8",
+      "spdx": "MIT"
+    },
+    "xe_ggtt_types.h": {
+      "includes": [
+        "drm/drm_mm.h",
+        "xe_pt_types.h"
+      ],
+      "sha256": "934fd6a5b72e6c413f18c26a059d6c0722f70930cb713a9911bd296cfa876d07",
+      "spdx": "MIT"
+    },
+    "xe_gpu_scheduler.c": {
+      "includes": [
+        "xe_gpu_scheduler.h"
+      ],
+      "sha256": "450e9c208f620e86f2d6f605fc21bd2ef361faa3774a817896833b862b6b0bb0",
+      "spdx": "MIT"
+    },
+    "xe_gpu_scheduler.h": {
+      "includes": [
+        "xe_gpu_scheduler_types.h",
+        "xe_sched_job_types.h"
+      ],
+      "sha256": "0419ada2d716d3a1c7bee74fe9622ab556a9162f4e9e14b37023945d1f665975",
+      "spdx": "MIT"
+    },
+    "xe_gpu_scheduler_types.h": {
+      "includes": [
+        "drm/gpu_scheduler.h"
+      ],
+      "sha256": "12536af4b1045aba38239f8c751c228745b5573a7f7f3dca9a9292265a2b022b",
+      "spdx": "MIT"
+    },
+    "xe_gsc.c": {
+      "includes": [
+        "xe_gsc.h",
+        "linux/delay.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "generated/xe_wa_oob.h",
+        "abi/gsc_mkhi_commands_abi.h",
+        "xe_bb.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gsc_proxy.h",
+        "xe_gsc_submit.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_guc_pc.h",
+        "xe_huc.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_pm.h",
+        "xe_sched_job.h",
+        "xe_uc_fw.h",
+        "xe_wa.h",
+        "instructions/xe_gsc_commands.h",
+        "regs/xe_gsc_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_irq_regs.h"
+      ],
+      "sha256": "2cff099c4f3b9ffa5b973a5d00f13a1cf67cf54f695d1ddf977407c07922820b",
+      "spdx": "MIT"
+    },
+    "xe_gsc.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "f61e85594c08622e57ea2ad36a82858ccac0e3d045f45980f6ff9520908be294",
+      "spdx": "MIT"
+    },
+    "xe_gsc_debugfs.c": {
+      "includes": [
+        "xe_gsc_debugfs.h",
+        "drm/drm_debugfs.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gsc.h",
+        "xe_macros.h",
+        "xe_pm.h"
+      ],
+      "sha256": "7392653222cbd9f2bb4bba840cf6a9e619a62b7d96faa4d93902c94e703c2116",
+      "spdx": "MIT"
+    },
+    "xe_gsc_debugfs.h": {
+      "includes": [],
+      "sha256": "aa43b5f11251fc4d27e8b3577c523f93252a12a6a9c215fb4d4ae44b5e71c4c3",
+      "spdx": "MIT"
+    },
+    "xe_gsc_proxy.c": {
+      "includes": [
+        "xe_gsc_proxy.h",
+        "linux/component.h",
+        "linux/delay.h",
+        "drm/drm_managed.h",
+        "drm/intel/i915_component.h",
+        "drm/intel/i915_gsc_proxy_mei_interface.h",
+        "abi/gsc_proxy_commands_abi.h",
+        "regs/xe_gsc_regs.h",
+        "xe_bo.h",
+        "xe_force_wake.h",
+        "xe_gsc.h",
+        "xe_gsc_submit.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_pm.h"
+      ],
+      "sha256": "31e0add36d02dc1015f63822406583aa6981b8234b3292e932d4e4eea84cb5b2",
+      "spdx": "MIT"
+    },
+    "xe_gsc_proxy.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "dbe8f0e4bd024b850b7cb48c1e407c1b14f90a323b1bd525539191de4abedb2f",
+      "spdx": "MIT"
+    },
+    "xe_gsc_submit.c": {
+      "includes": [
+        "xe_gsc_submit.h",
+        "linux/poison.h",
+        "abi/gsc_command_header_abi.h",
+        "xe_assert.h",
+        "xe_bb.h",
+        "xe_exec_queue.h",
+        "xe_gt_printk.h",
+        "xe_gt_types.h",
+        "xe_map.h",
+        "xe_sched_job.h",
+        "instructions/xe_gsc_commands.h",
+        "regs/xe_gsc_regs.h"
+      ],
+      "sha256": "4ed3fda593b23a484f08b3d59746a95563bd3ab04e4f240661c03b44074c6b2d",
+      "spdx": "MIT"
+    },
+    "xe_gsc_submit.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "402c7113caded845186bb32bbc9e52a272323c47c76fa1acc50dd6f435678aab",
+      "spdx": "MIT"
+    },
+    "xe_gsc_types.h": {
+      "includes": [
+        "linux/iosys-map.h",
+        "linux/mutex.h",
+        "linux/spinlock.h",
+        "linux/types.h",
+        "linux/workqueue.h",
+        "xe_uc_fw_types.h"
+      ],
+      "sha256": "c25d6ff1398ad3a0d27f74656dac952c490d37c5173e2131922f56a68d76aae6",
+      "spdx": "MIT"
+    },
+    "xe_gt.c": {
+      "includes": [
+        "xe_gt.h",
+        "linux/minmax.h",
+        "drm/drm_managed.h",
+        "uapi/drm/xe_drm.h",
+        "generated/xe_wa_oob.h",
+        "instructions/xe_gfxpipe_commands.h",
+        "instructions/xe_mi_commands.h",
+        "regs/xe_gt_regs.h",
+        "xe_assert.h",
+        "xe_bb.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_execlist.h",
+        "xe_force_wake.h",
+        "xe_ggtt.h",
+        "xe_gsc.h",
+        "xe_gt_ccs_mode.h",
+        "xe_gt_clock.h",
+        "xe_gt_freq.h",
+        "xe_gt_idle.h",
+        "xe_gt_mcr.h",
+        "xe_gt_pagefault.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_pf.h",
+        "xe_gt_sysfs.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_gt_topology.h",
+        "xe_guc_exec_queue_types.h",
+        "xe_guc_pc.h",
+        "xe_hw_fence.h",
+        "xe_hw_engine_class_sysfs.h",
+        "xe_irq.h",
+        "xe_lmtt.h",
+        "xe_lrc.h",
+        "xe_map.h",
+        "xe_migrate.h",
+        "xe_mmio.h",
+        "xe_pat.h",
+        "xe_pm.h",
+        "xe_mocs.h",
+        "xe_reg_sr.h",
+        "xe_ring_ops.h",
+        "xe_sa.h",
+        "xe_sched_job.h",
+        "xe_sriov.h",
+        "xe_tuning.h",
+        "xe_uc.h",
+        "xe_uc_fw.h",
+        "xe_vm.h",
+        "xe_wa.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "e08869879e0ee4ee588aea03d08eb41df4d50f5b790afc9a43041572edb19fc2",
+      "spdx": "MIT"
+    },
+    "xe_gt.h": {
+      "includes": [
+        "linux/fault-inject.h",
+        "drm/drm_util.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_hw_engine.h"
+      ],
+      "sha256": "bd131120c60fb89aef5368028b3b20e6999346f788fd7f8f5474f1469a8259aa",
+      "spdx": "MIT"
+    },
+    "xe_gt_ccs_mode.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "regs/xe_gt_regs.h",
+        "xe_assert.h",
+        "xe_gt.h",
+        "xe_gt_ccs_mode.h",
+        "xe_gt_printk.h",
+        "xe_gt_sysfs.h",
+        "xe_mmio.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "aee1142d98e56fb5b3acd42e12494227390a5db110ed4cf8a48c6365b2401068",
+      "spdx": "MIT"
+    },
+    "xe_gt_ccs_mode.h": {
+      "includes": [
+        "xe_device_types.h",
+        "xe_gt.h",
+        "xe_gt_types.h",
+        "xe_platform_types.h"
+      ],
+      "sha256": "a2120a0878c72cba7b72e7a6a52258b751faa2d1208d6af7b2ca9e17b7b4a444",
+      "spdx": "MIT"
+    },
+    "xe_gt_clock.c": {
+      "includes": [
+        "linux/math64.h",
+        "xe_gt_clock.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_macros.h",
+        "xe_mmio.h"
+      ],
+      "sha256": "930e12cd7131d526f2a13c9bc60f302760ba9169b71a28b251ca87b118170daf",
+      "spdx": "MIT"
+    },
+    "xe_gt_clock.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "6c6c845d7985349e2c3ab1223ec89e229319f9b2273353e76372a84671570276",
+      "spdx": "MIT"
+    },
+    "xe_gt_debugfs.c": {
+      "includes": [
+        "xe_gt_debugfs.h",
+        "linux/debugfs.h",
+        "drm/drm_debugfs.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_idle.h",
+        "xe_gt_sriov_pf_debugfs.h",
+        "xe_gt_sriov_vf_debugfs.h",
+        "xe_gt_stats.h",
+        "xe_gt_topology.h",
+        "xe_guc_hwconfig.h",
+        "xe_hw_engine.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_mocs.h",
+        "xe_pat.h",
+        "xe_pm.h",
+        "xe_reg_sr.h",
+        "xe_reg_whitelist.h",
+        "xe_sriov.h",
+        "xe_uc_debugfs.h",
+        "xe_wa.h"
+      ],
+      "sha256": "3df67539537b98a69f71e63f77a76fc5629f2c1ac4f672b89731f7eda05d18f0",
+      "spdx": "MIT"
+    },
+    "xe_gt_debugfs.h": {
+      "includes": [],
+      "sha256": "285c21ae6b65670fe2d842ec6e794a68e7ae7ac949d981be2fdaccee683e5f72",
+      "spdx": "MIT"
+    },
+    "xe_gt_freq.c": {
+      "includes": [
+        "xe_gt_freq.h",
+        "linux/kobject.h",
+        "linux/sysfs.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "xe_gt_sysfs.h",
+        "xe_gt_throttle.h",
+        "xe_gt_types.h",
+        "xe_guc_pc.h",
+        "xe_pm.h"
+      ],
+      "sha256": "1034160e7587f09562758a9fdc53856cb6a7c620e8dbc7ab2fb2f222ac00aa29",
+      "spdx": "MIT"
+    },
+    "xe_gt_freq.h": {
+      "includes": [],
+      "sha256": "a8b66649df95cf49c60bbc794c96099443bce64dda9e511b46eae88097dc9c1e",
+      "spdx": "MIT"
+    },
+    "xe_gt_idle.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "xe_force_wake.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_idle.h",
+        "xe_gt_sysfs.h",
+        "xe_guc_pc.h",
+        "regs/xe_gt_regs.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_pm.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "bd1a13a6c591f71a12526f6137ae2c4a0b96749052e69beab4b0f10b01de5c12",
+      "spdx": "MIT"
+    },
+    "xe_gt_idle.h": {
+      "includes": [
+        "xe_gt_idle_types.h"
+      ],
+      "sha256": "ae28c90e80a94035d0af30e9cadc7f56c0eb6965450f038e4c52e83a31b3d376",
+      "spdx": "MIT"
+    },
+    "xe_gt_idle_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "5b87532ea2879ff52a3d985ef7c9b8c84ec9e7690a17fb0272481ebd597cec49",
+      "spdx": "MIT"
+    },
+    "xe_gt_mcr.c": {
+      "includes": [
+        "xe_gt_mcr.h",
+        "regs/xe_gt_regs.h",
+        "xe_assert.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_topology.h",
+        "xe_gt_types.h",
+        "xe_guc_hwconfig.h",
+        "xe_mmio.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "adbe13b9af83f056be6b17bfbdeefd18a089205c5b6126830f0c3af267ea24d3",
+      "spdx": "MIT"
+    },
+    "xe_gt_mcr.h": {
+      "includes": [
+        "regs/xe_reg_defs.h",
+        "xe_gt_topology.h"
+      ],
+      "sha256": "b03644c0ce11ab5848a14353875186e60f5a9c16fc6f130acd8253880dcaa733",
+      "spdx": "MIT"
+    },
+    "xe_gt_pagefault.c": {
+      "includes": [
+        "xe_gt_pagefault.h",
+        "linux/bitfield.h",
+        "linux/circ_buf.h",
+        "drm/drm_exec.h",
+        "drm/drm_managed.h",
+        "abi/guc_actions_abi.h",
+        "xe_bo.h",
+        "xe_gt.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_migrate.h",
+        "xe_trace_bo.h",
+        "xe_vm.h"
+      ],
+      "sha256": "be428913d6358043eb2cba8096a7e0f74404c09141905504c571a9277588492d",
+      "spdx": "MIT"
+    },
+    "xe_gt_pagefault.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "abf33423b71e409c9d2d93789870b06979df2ce734754e2c35255128d7a059d2",
+      "spdx": "MIT"
+    },
+    "xe_gt_printk.h": {
+      "includes": [
+        "drm/drm_print.h",
+        "xe_gt_types.h"
+      ],
+      "sha256": "395192dead5bb4a8e848a410381d7a7f5dabdb69759deb75791b123ad05ef4b2",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_regs.h",
+        "xe_gt.h",
+        "xe_gt_sriov_pf.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_control.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_migration.h",
+        "xe_gt_sriov_pf_service.h",
+        "xe_mmio.h"
+      ],
+      "sha256": "a9c71519f7b88f81855a49b9437719ca991c58fa2e724b2310ca1ef8a41dd0e9",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf.h": {
+      "includes": [],
+      "sha256": "4774acf57a9d2fbab2a034e2459ac319b6a04c734af6701d171df5be3eb2d9e1",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_config.c": {
+      "includes": [
+        "linux/string_choices.h",
+        "linux/wordpart.h",
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_klvs_abi.h",
+        "regs/xe_guc_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_policy.h",
+        "xe_gt_sriov_printk.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_guc_db_mgr.h",
+        "xe_guc_fwif.h",
+        "xe_guc_id_mgr.h",
+        "xe_guc_klv_helpers.h",
+        "xe_guc_klv_thresholds_set.h",
+        "xe_guc_submit.h",
+        "xe_lmtt.h",
+        "xe_map.h",
+        "xe_migrate.h",
+        "xe_sriov.h",
+        "xe_ttm_vram_mgr.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "5cbb244e7b48df9a9b11ad4f70ab6d21c2fdba1d3e762fa78f52516474455557",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_config.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "604d8ed8e848bbb9aa499808f2a0a6e3742f832c489f8afe414fac3c54fd2708",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_config_types.h": {
+      "includes": [
+        "xe_ggtt_types.h",
+        "xe_guc_klv_thresholds_set_types.h"
+      ],
+      "sha256": "57c4ff3e4d1beab239ff1345b1044318faa80512637817d5937a6ad1d9f729a8",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_control.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "abi/guc_actions_sriov_abi.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_sriov_pf.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_control.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_migration.h",
+        "xe_gt_sriov_pf_monitor.h",
+        "xe_gt_sriov_pf_service.h",
+        "xe_gt_sriov_printk.h",
+        "xe_guc_ct.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "03b3c116a5912165df5f72e07d04037aae4285993e6586783c7842c0d4b84252",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_control.h": {
+      "includes": [
+        "linux/errno.h",
+        "linux/types.h"
+      ],
+      "sha256": "b2e9cc48d68e8ec20f2d14824b00fedc50eb677a8d8607e2f0a46e641b18b0c8",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_control_types.h": {
+      "includes": [
+        "linux/completion.h",
+        "linux/spinlock.h",
+        "linux/workqueue_types.h"
+      ],
+      "sha256": "0ea45bcc263c7a115d02bd9aa2c31a0c4791d96978e38f31405fc99b7b495c58",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_debugfs.c": {
+      "includes": [
+        "linux/debugfs.h",
+        "drm/drm_print.h",
+        "drm/drm_debugfs.h",
+        "xe_bo.h",
+        "xe_debugfs.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_debugfs.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_control.h",
+        "xe_gt_sriov_pf_debugfs.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_migration.h",
+        "xe_gt_sriov_pf_monitor.h",
+        "xe_gt_sriov_pf_policy.h",
+        "xe_gt_sriov_pf_service.h",
+        "xe_pm.h"
+      ],
+      "sha256": "8a596a80df4b95715ac51c9406114ade1b7d49584b04b8674f3fb1f10ac40083",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_debugfs.h": {
+      "includes": [],
+      "sha256": "270e967cc64736d49ef09a882a296e3e573551225ffe857b79d2038f41c146a4",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_helpers.h": {
+      "includes": [
+        "xe_gt_types.h",
+        "xe_sriov_pf_helpers.h"
+      ],
+      "sha256": "402840f4e9ad699d90eb75e6e7a14e3e9e7a290625505dfe444cc6ef7ef00338",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_migration.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "abi/guc_actions_sriov_abi.h",
+        "xe_bo.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_migration.h",
+        "xe_gt_sriov_printk.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "02c753cd0f0036511964eda37c1c021651944242c91216cf01da09b63b3b941a",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_migration.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "7ce8552527186f9aa354aa3a0c32d3d323495f96868391000c73ba8c3a103fe2",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_migration_types.h": {
+      "includes": [
+        "linux/mutex.h",
+        "linux/types.h"
+      ],
+      "sha256": "63ea6ad0dc55f7dc5adb469caee3e0bb49f0c26438a7a4dc35feed68a70fdc12",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_monitor.c": {
+      "includes": [
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_messages_abi.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_monitor.h",
+        "xe_gt_sriov_printk.h",
+        "xe_guc_klv_helpers.h",
+        "xe_guc_klv_thresholds_set.h"
+      ],
+      "sha256": "a87ca64a343885ea180cf1ac721ed80ad6f7e3338b7273ff77b4167be88554e8",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_monitor.h": {
+      "includes": [
+        "linux/errno.h",
+        "linux/types.h"
+      ],
+      "sha256": "9fb48402f6a8006d80d78fa33839f39c466c4a915c5d6ff176461aade0fcf59f",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_monitor_types.h": {
+      "includes": [
+        "xe_guc_klv_thresholds_set_types.h"
+      ],
+      "sha256": "247a42511f308adb81eaf8757124ec3dbce0060ef3f04d215dce5adb954761b6",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_policy.c": {
+      "includes": [
+        "abi/guc_actions_sriov_abi.h",
+        "xe_bo.h",
+        "xe_gt.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_policy.h",
+        "xe_gt_sriov_printk.h",
+        "xe_guc_ct.h",
+        "xe_guc_klv_helpers.h",
+        "xe_pm.h"
+      ],
+      "sha256": "8a984ca9856ab37c90f686af82e7ccb055a1fb57cd229192aa5092b7c606fa3b",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_policy.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "6d5241224692290165fe66b5d14304d208cabe56e1bb5398163f6334eb87ea09",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_policy_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "98ed00f591b2897bb9f7b92b23336cb3556039fa5c772ac4f6cc0126e577d7cc",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_service.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_relay_actions_abi.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_regs.h",
+        "xe_mmio.h",
+        "xe_gt_sriov_printk.h",
+        "xe_gt_sriov_pf_helpers.h",
+        "xe_gt_sriov_pf_service.h",
+        "xe_gt_sriov_pf_service_types.h",
+        "xe_guc_ct.h",
+        "xe_guc_hxg_helpers.h",
+        "tests/xe_gt_sriov_pf_service_test.c"
+      ],
+      "sha256": "87e18f2c81e6f5fb92bdf2b800fb535ae5f45aeade692d864135048ccecff021",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_service.h": {
+      "includes": [
+        "linux/errno.h",
+        "linux/types.h"
+      ],
+      "sha256": "bddac198319832db59ffc497215cc347f0b7b5d00cbf0d27acda13d13d94afdc",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_service_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "2e6525b334f7b5b7ca92dffa293cff5bb585fabb7973d08fb03bf55f7a434631",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_pf_types.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_gt_sriov_pf_config_types.h",
+        "xe_gt_sriov_pf_control_types.h",
+        "xe_gt_sriov_pf_migration_types.h",
+        "xe_gt_sriov_pf_monitor_types.h",
+        "xe_gt_sriov_pf_policy_types.h",
+        "xe_gt_sriov_pf_service_types.h"
+      ],
+      "sha256": "e78ac65a841985a4b1b1378e1836c3c7ab0bc7fd305c07b2803db910ebccd882",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_printk.h": {
+      "includes": [
+        "xe_gt_printk.h",
+        "xe_sriov_printk.h"
+      ],
+      "sha256": "7c5f076576efd4e90879d46dbeadb498445b8416f349d68f3a42fe5847c6c620",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_vf.c": {
+      "includes": [
+        "linux/bitfield.h",
+        "linux/bsearch.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_communication_mmio_abi.h",
+        "abi/guc_klvs_abi.h",
+        "abi/guc_relay_actions_abi.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_gtt_defs.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_ggtt.h",
+        "xe_gt_sriov_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_gt_sriov_vf_types.h",
+        "xe_guc.h",
+        "xe_guc_hxg_helpers.h",
+        "xe_guc_relay.h",
+        "xe_mmio.h",
+        "xe_sriov.h",
+        "xe_sriov_vf.h",
+        "xe_uc_fw.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "d3958d86af0e597b03d721c1f3b9de5a1283889d9569a1ead561e5d6f7b0939a",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_vf.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "df0adb5ccb03383363a49c73be9e62aeb38d2fc93e6126220870e372ce3090a2",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_vf_debugfs.c": {
+      "includes": [
+        "linux/debugfs.h",
+        "drm/drm_debugfs.h",
+        "xe_gt_debugfs.h",
+        "xe_gt_sriov_vf.h",
+        "xe_gt_sriov_vf_debugfs.h",
+        "xe_gt_types.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "8ec32b65be611f1244c02ae2f9b2bab0fd38cc971470cd4b97d8846b96928e4c",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_vf_debugfs.h": {
+      "includes": [],
+      "sha256": "28c5f593bc38fd3663774234def2d252f03c3ae1495a8ebf7bdf0a7faca2563d",
+      "spdx": "MIT"
+    },
+    "xe_gt_sriov_vf_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "cb05a3165c29fe196892251db81ce7969b01e62686c77af0360e824ba680e4ca",
+      "spdx": "MIT"
+    },
+    "xe_gt_stats.c": {
+      "includes": [
+        "linux/atomic.h",
+        "drm/drm_print.h",
+        "xe_gt.h",
+        "xe_gt_stats.h"
+      ],
+      "sha256": "f607ce75b32e9b8c16c72e9cc58294dd48c9ca2d4378c089120ad31354903c08",
+      "spdx": "MIT"
+    },
+    "xe_gt_stats.h": {
+      "includes": [
+        "xe_gt_stats_types.h"
+      ],
+      "sha256": "74bf228be22a0edf7bcdf2c2477e967acd46213ae1f0d3b205e05207c6e8b7bf",
+      "spdx": "MIT"
+    },
+    "xe_gt_stats_types.h": {
+      "includes": [],
+      "sha256": "4b01c720ee644410f7f7e015781676fc9ba63724d20a07580b4805518c009b51",
+      "spdx": "MIT"
+    },
+    "xe_gt_sysfs.c": {
+      "includes": [
+        "xe_gt_sysfs.h",
+        "linux/kobject.h",
+        "linux/sysfs.h",
+        "drm/drm_managed.h",
+        "xe_gt.h"
+      ],
+      "sha256": "12fb957ee6d8c67e8a8bb746e3b03843809520120240a4743bcdf978d7225baa",
+      "spdx": "MIT"
+    },
+    "xe_gt_sysfs.h": {
+      "includes": [
+        "xe_gt_sysfs_types.h"
+      ],
+      "sha256": "728bc134121ba553c77abd041116d717847c4c0ca329a08fc85c6d82ea9f71ea",
+      "spdx": "MIT"
+    },
+    "xe_gt_sysfs_types.h": {
+      "includes": [
+        "linux/kobject.h"
+      ],
+      "sha256": "ede961801b200c8985d6aead1c830b0591ed21fcf9d09ed32e725b42373b10aa",
+      "spdx": "MIT"
+    },
+    "xe_gt_throttle.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "regs/xe_gt_regs.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_sysfs.h",
+        "xe_gt_throttle.h",
+        "xe_mmio.h",
+        "xe_pm.h"
+      ],
+      "sha256": "288ba4e31466e8fcfa16fbdb9a4ce8a219bca3de41a5fea5ff636d5cbdfe7a21",
+      "spdx": "MIT"
+    },
+    "xe_gt_throttle.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "bf0ef5dabbdefa67c238f16e1dd51cf5806937b129841b338dc0a557a400171f",
+      "spdx": "MIT"
+    },
+    "xe_gt_tlb_invalidation.c": {
+      "includes": [
+        "xe_gt_tlb_invalidation.h",
+        "abi/guc_actions_abi.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_gt_stats.h",
+        "xe_mmio.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_trace.h",
+        "regs/xe_guc_regs.h"
+      ],
+      "sha256": "abc7f7c7ef65d3a1cc9497efc639be3576f07678f742d93a945cfe656f8f9849",
+      "spdx": "MIT"
+    },
+    "xe_gt_tlb_invalidation.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_gt_tlb_invalidation_types.h"
+      ],
+      "sha256": "41962c4168cabccfcc168994a43abade3ba1e3a4e44dd364063bf1bad73c47e8",
+      "spdx": "MIT"
+    },
+    "xe_gt_tlb_invalidation_types.h": {
+      "includes": [
+        "linux/dma-fence.h"
+      ],
+      "sha256": "7cb21387e4af74e8fcd4b100758f563b7d5d6ed2fe3efe9b834d76cae9676ac1",
+      "spdx": "MIT"
+    },
+    "xe_gt_topology.c": {
+      "includes": [
+        "xe_gt_topology.h",
+        "generated/xe_wa_oob.h",
+        "linux/bitmap.h",
+        "linux/compiler.h",
+        "regs/xe_gt_regs.h",
+        "xe_assert.h",
+        "xe_gt.h",
+        "xe_mmio.h",
+        "xe_wa.h"
+      ],
+      "sha256": "4062c8d863dd07a601d32d0512aa8d5f33c1a62a974343512685d37560a07d20",
+      "spdx": "MIT"
+    },
+    "xe_gt_topology.h": {
+      "includes": [
+        "xe_gt_types.h"
+      ],
+      "sha256": "7bba7a0c75e3b580fd8a625194e6a91a7cc1957b4f3ad20223b1e5778cad09ff",
+      "spdx": "MIT"
+    },
+    "xe_gt_types.h": {
+      "includes": [
+        "xe_device_types.h",
+        "xe_force_wake_types.h",
+        "xe_gt_idle_types.h",
+        "xe_gt_sriov_pf_types.h",
+        "xe_gt_sriov_vf_types.h",
+        "xe_gt_stats_types.h",
+        "xe_hw_engine_types.h",
+        "xe_hw_fence_types.h",
+        "xe_oa_types.h",
+        "xe_reg_sr_types.h",
+        "xe_sa_types.h",
+        "xe_uc_types.h"
+      ],
+      "sha256": "52ec4f4b7c669e5b4eeb4001598f27f5bdb07d02b9310a8bd12900aafa4141ff",
+      "spdx": "MIT"
+    },
+    "xe_guc.c": {
+      "includes": [
+        "xe_guc.h",
+        "drm/drm_managed.h",
+        "generated/xe_wa_oob.h",
+        "abi/guc_actions_abi.h",
+        "abi/guc_errors_abi.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_gtt_defs.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_irq_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_gt_throttle.h",
+        "xe_guc_ads.h",
+        "xe_guc_capture.h",
+        "xe_guc_ct.h",
+        "xe_guc_db_mgr.h",
+        "xe_guc_hwconfig.h",
+        "xe_guc_log.h",
+        "xe_guc_pc.h",
+        "xe_guc_relay.h",
+        "xe_guc_submit.h",
+        "xe_memirq.h",
+        "xe_mmio.h",
+        "xe_platform_types.h",
+        "xe_sriov.h",
+        "xe_uc.h",
+        "xe_uc_fw.h",
+        "xe_wa.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "ab5ca0ea5ce72338d58ff3aa74b854c61b16a1d5cfb203bed3cd1310a97963ab",
+      "spdx": "MIT"
+    },
+    "xe_guc.h": {
+      "includes": [
+        "xe_gt.h",
+        "xe_guc_types.h",
+        "xe_hw_engine_types.h",
+        "xe_macros.h"
+      ],
+      "sha256": "afde725ee3293970e982730fb901ef220cf15074337d6e8e7d3fd663e1caff60",
+      "spdx": "MIT"
+    },
+    "xe_guc_ads.c": {
+      "includes": [
+        "xe_guc_ads.h",
+        "linux/fault-inject.h",
+        "drm/drm_managed.h",
+        "generated/xe_wa_oob.h",
+        "abi/guc_actions_abi.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_guc_regs.h",
+        "xe_bo.h",
+        "xe_gt.h",
+        "xe_gt_ccs_mode.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_capture.h",
+        "xe_guc_ct.h",
+        "xe_hw_engine.h",
+        "xe_lrc.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_platform_types.h",
+        "xe_uc_fw.h",
+        "xe_wa.h",
+        "xe_gt_mcr.h"
+      ],
+      "sha256": "ecf554be624fed2dc5431fce10d6c4e273b9d68e98f1709020d0bc6812c4522c",
+      "spdx": "MIT"
+    },
+    "xe_guc_ads.h": {
+      "includes": [],
+      "sha256": "cd6a902bd05c9bdc43c6cf6dc7401569744903ac14a9fc4c61493249a3d9f281",
+      "spdx": "MIT"
+    },
+    "xe_guc_ads_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "0c2cdec3dbdf28041b74fbf06d4a0ab505c55219779575554d3de675c0a7fed2",
+      "spdx": "MIT"
+    },
+    "xe_guc_capture.c": {
+      "includes": [
+        "linux/types.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "abi/guc_actions_abi.h",
+        "abi/guc_capture_abi.h",
+        "abi/guc_log_abi.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue_types.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_ads.h",
+        "xe_guc_capture.h",
+        "xe_guc_capture_types.h",
+        "xe_guc_ct.h",
+        "xe_guc_exec_queue_types.h",
+        "xe_guc_log.h",
+        "xe_guc_submit_types.h",
+        "xe_guc_submit.h",
+        "xe_hw_engine_types.h",
+        "xe_hw_engine.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_sched_job.h"
+      ],
+      "sha256": "e75f6e4b25006c8bcdee35a3c1ad709cb21b0b8619c1c41cbd1b267b38e6c837",
+      "spdx": "MIT"
+    },
+    "xe_guc_capture.h": {
+      "includes": [
+        "linux/types.h",
+        "abi/guc_capture_abi.h",
+        "xe_guc.h",
+        "xe_guc_fwif.h"
+      ],
+      "sha256": "3ce8d0ea2c2f42b1286535f40e5b0ba13faf40abc56cfc627cc3916cd86bba18",
+      "spdx": "MIT"
+    },
+    "xe_guc_capture_types.h": {
+      "includes": [
+        "linux/types.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "194cd06c6ba6a149fc35870f608478d4d801bc19319a26a45ad8bab0a211c2b8",
+      "spdx": "MIT"
+    },
+    "xe_guc_ct.c": {
+      "includes": [
+        "xe_guc_ct.h",
+        "linux/bitfield.h",
+        "linux/circ_buf.h",
+        "linux/delay.h",
+        "linux/fault-inject.h",
+        "kunit/static_stub.h",
+        "drm/drm_managed.h",
+        "abi/guc_actions_abi.h",
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_klvs_abi.h",
+        "xe_bo.h",
+        "xe_devcoredump.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_pagefault.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_pf_control.h",
+        "xe_gt_sriov_pf_monitor.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_guc.h",
+        "xe_guc_log.h",
+        "xe_guc_relay.h",
+        "xe_guc_submit.h",
+        "xe_map.h",
+        "xe_pm.h",
+        "xe_trace_guc.h"
+      ],
+      "sha256": "88275b2ced3afaa42878aea7cb02b49f394236afc2c7e9a6c23f6c850223625b",
+      "spdx": "MIT"
+    },
+    "xe_guc_ct.h": {
+      "includes": [
+        "xe_guc_ct_types.h"
+      ],
+      "sha256": "e7a8be50164e6d5c63cd686cbc60ae1103da018b7ffcbd9149472a13ee5cb3e6",
+      "spdx": "MIT"
+    },
+    "xe_guc_ct_types.h": {
+      "includes": [
+        "linux/interrupt.h",
+        "linux/iosys-map.h",
+        "linux/spinlock_types.h",
+        "linux/wait.h",
+        "linux/xarray.h",
+        "abi/guc_communication_ctb_abi.h"
+      ],
+      "sha256": "07dada64e6dcdc959ef76e2e87f9d5f0bcc8f53f94028a176ab5d969878977a6",
+      "spdx": "MIT"
+    },
+    "xe_guc_db_mgr.c": {
+      "includes": [
+        "linux/bitmap.h",
+        "linux/mutex.h",
+        "drm/drm_managed.h",
+        "regs/xe_guc_regs.h",
+        "xe_assert.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_db_mgr.h",
+        "xe_guc_types.h",
+        "tests/xe_guc_db_mgr_test.c"
+      ],
+      "sha256": "d3261bf059a0e93ae458375578d8944fead2c6ab38005e17aad7248bc1b58c42",
+      "spdx": "MIT"
+    },
+    "xe_guc_db_mgr.h": {
+      "includes": [],
+      "sha256": "b4cba108e37e991318a73fe70de7d61b4131df9842e54758c15eb4e19c5a4b5e",
+      "spdx": "MIT"
+    },
+    "xe_guc_debugfs.c": {
+      "includes": [
+        "xe_guc_debugfs.h",
+        "drm/drm_debugfs.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_guc_log.h",
+        "xe_macros.h",
+        "xe_pm.h"
+      ],
+      "sha256": "2c0c64e4f79dc9715ae190e03859a0261a1d3495291e5390fd99beb645e6fac4",
+      "spdx": "MIT"
+    },
+    "xe_guc_debugfs.h": {
+      "includes": [],
+      "sha256": "d662719cb8ca389297c901cbc734797bfc3a4fc8c3e136a80e5847231a80e5c1",
+      "spdx": "MIT"
+    },
+    "xe_guc_exec_queue_types.h": {
+      "includes": [
+        "linux/spinlock.h",
+        "linux/workqueue.h",
+        "xe_gpu_scheduler_types.h"
+      ],
+      "sha256": "e02506b904014792180cd0ffdf87b5f12183d98a0d5f6a03c7ea5831039337c0",
+      "spdx": "MIT"
+    },
+    "xe_guc_fwif.h": {
+      "includes": [
+        "linux/bits.h",
+        "abi/guc_capture_abi.h",
+        "abi/guc_klvs_abi.h",
+        "xe_hw_engine_types.h"
+      ],
+      "sha256": "23f146c848cec3c212e75c3a294a1fc6e08b892783f5b4b3f468c6e6414ffc6e",
+      "spdx": "MIT"
+    },
+    "xe_guc_hwconfig.c": {
+      "includes": [
+        "xe_guc_hwconfig.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "abi/guc_actions_abi.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_guc.h",
+        "xe_map.h"
+      ],
+      "sha256": "0acf56a8977f23a1a88caa013e519756c4b406bd66a31819bcb6a3ca3bdab022",
+      "spdx": "MIT"
+    },
+    "xe_guc_hwconfig.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "4478f9ddb3d33a62d906db06b894a61b6e8abf1b2520cc04760a1fd0632bcfe4",
+      "spdx": "MIT"
+    },
+    "xe_guc_hxg_helpers.h": {
+      "includes": [
+        "linux/bitfield.h",
+        "linux/types.h",
+        "abi/guc_messages_abi.h"
+      ],
+      "sha256": "572642466de877427e78dbdf9b9767e395efe4a47df2f7cfb6c514fb916deaec",
+      "spdx": "MIT"
+    },
+    "xe_guc_id_mgr.c": {
+      "includes": [
+        "linux/bitmap.h",
+        "linux/mutex.h",
+        "drm/drm_managed.h",
+        "xe_assert.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_id_mgr.h",
+        "xe_guc_types.h",
+        "tests/xe_guc_id_mgr_test.c"
+      ],
+      "sha256": "0717be0e24b2945f46151bc71874bd0068f085806d8bcdd8a5abb3470fbbd57a",
+      "spdx": "MIT"
+    },
+    "xe_guc_id_mgr.h": {
+      "includes": [],
+      "sha256": "cc8824b80b621a28747aa2959165f0c2534f749b41e7a8dcc2a6db25318a5058",
+      "spdx": "MIT"
+    },
+    "xe_guc_klv_helpers.c": {
+      "includes": [
+        "linux/bitfield.h",
+        "drm/drm_print.h",
+        "abi/guc_klvs_abi.h",
+        "xe_guc_klv_helpers.h",
+        "xe_guc_klv_thresholds_set.h"
+      ],
+      "sha256": "28709568ab7d1968cba964ec6f168bdacdfc3993a8df88b6c27637227134c302",
+      "spdx": "MIT"
+    },
+    "xe_guc_klv_helpers.h": {
+      "includes": [
+        "linux/args.h",
+        "linux/types.h"
+      ],
+      "sha256": "c5bf8062755f80ae7032eb0dd46a5f52ca5098d54c1225fc548dc8ee6f362f25",
+      "spdx": "MIT"
+    },
+    "xe_guc_klv_thresholds_set.h": {
+      "includes": [
+        "abi/guc_klvs_abi.h",
+        "xe_guc_klv_helpers.h",
+        "xe_guc_klv_thresholds_set_types.h"
+      ],
+      "sha256": "ada3de96c9539ea2ea5f61562108f8504da68ebeef3b468c3315bacee7ec9405",
+      "spdx": "MIT"
+    },
+    "xe_guc_klv_thresholds_set_types.h": {
+      "includes": [
+        "xe_args.h"
+      ],
+      "sha256": "5f0a4946bb724c8df873ccbbe9d2fc4e5e4987098bd40c069737b15cca4332c2",
+      "spdx": "MIT"
+    },
+    "xe_guc_log.c": {
+      "includes": [
+        "xe_guc_log.h",
+        "linux/fault-inject.h",
+        "drm/drm_managed.h",
+        "regs/xe_guc_regs.h",
+        "xe_bo.h",
+        "xe_devcoredump.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_module.h"
+      ],
+      "sha256": "69f662b55e61ef92c5338a748b7041de66ddb90d2eb73b8c2d1265cd84277de7",
+      "spdx": "MIT"
+    },
+    "xe_guc_log.h": {
+      "includes": [
+        "xe_guc_log_types.h",
+        "abi/guc_log_abi.h"
+      ],
+      "sha256": "8c961e035759ee029d7e67afd98083d58bcd26bc8c825301df02c2491c80bd93",
+      "spdx": "MIT"
+    },
+    "xe_guc_log_types.h": {
+      "includes": [
+        "linux/types.h",
+        "abi/guc_log_abi.h",
+        "xe_uc_fw_types.h"
+      ],
+      "sha256": "3a0a7e7ab49cefb3c1088924e5dbb7d79de12f9da3812688ec5e12f206b46541",
+      "spdx": "MIT"
+    },
+    "xe_guc_pc.c": {
+      "includes": [
+        "xe_guc_pc.h",
+        "linux/delay.h",
+        "linux/ktime.h",
+        "drm/drm_managed.h",
+        "generated/xe_wa_oob.h",
+        "abi/guc_actions_slpc_abi.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_idle.h",
+        "xe_gt_printk.h",
+        "xe_gt_throttle.h",
+        "xe_gt_types.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_pcode.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_wa.h"
+      ],
+      "sha256": "3a0800e41882df9e0a1ced04e1abacdec2ffcec4a2c15d2ce26960e0e9da3673",
+      "spdx": "MIT"
+    },
+    "xe_guc_pc.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "d11c979e9ff6dc36df6181692a1b89a2cf928f87e792df2c6388aaf7219f514e",
+      "spdx": "MIT"
+    },
+    "xe_guc_pc_types.h": {
+      "includes": [
+        "linux/mutex.h",
+        "linux/types.h"
+      ],
+      "sha256": "603a9f7f893929fcf9abe1bdfb10ad1a58e635b1e67012f6243804986a265874",
+      "spdx": "MIT"
+    },
+    "xe_guc_relay.c": {
+      "includes": [
+        "linux/bitfield.h",
+        "linux/delay.h",
+        "linux/fault-inject.h",
+        "drm/drm_managed.h",
+        "kunit/static_stub.h",
+        "kunit/test-bug.h",
+        "abi/guc_actions_sriov_abi.h",
+        "abi/guc_relay_actions_abi.h",
+        "abi/guc_relay_communication_abi.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_sriov_printk.h",
+        "xe_gt_sriov_pf_service.h",
+        "xe_guc.h",
+        "xe_guc_ct.h",
+        "xe_guc_hxg_helpers.h",
+        "xe_guc_relay.h",
+        "xe_guc_relay_types.h",
+        "xe_sriov.h",
+        "tests/xe_guc_relay_test.c"
+      ],
+      "sha256": "fbc8d99a3e5553c9b21bb6da93d5d5ebc3bc3e4fa1c24a1ebc80439a9c112bd4",
+      "spdx": "MIT"
+    },
+    "xe_guc_relay.h": {
+      "includes": [
+        "linux/types.h",
+        "linux/errno.h"
+      ],
+      "sha256": "a3d5fca60442a5e6cec40b3225f8968ad1ebf2d71a8c8dee5a43448d53899ede",
+      "spdx": "MIT"
+    },
+    "xe_guc_relay_types.h": {
+      "includes": [
+        "linux/mempool.h",
+        "linux/spinlock.h",
+        "linux/workqueue.h"
+      ],
+      "sha256": "8d60b6c612edea7ff23097a3936ea46f6eb1af271e7437e00fb7a4db9c3cfd50",
+      "spdx": "MIT"
+    },
+    "xe_guc_submit.c": {
+      "includes": [
+        "xe_guc_submit.h",
+        "linux/bitfield.h",
+        "linux/bitmap.h",
+        "linux/circ_buf.h",
+        "linux/delay.h",
+        "linux/dma-fence-array.h",
+        "linux/math64.h",
+        "drm/drm_managed.h",
+        "abi/guc_actions_abi.h",
+        "abi/guc_klvs_abi.h",
+        "regs/xe_lrc_layout.h",
+        "xe_assert.h",
+        "xe_devcoredump.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gpu_scheduler.h",
+        "xe_gt.h",
+        "xe_gt_clock.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_guc_capture.h",
+        "xe_guc_ct.h",
+        "xe_guc_exec_queue_types.h",
+        "xe_guc_id_mgr.h",
+        "xe_guc_submit_types.h",
+        "xe_hw_engine.h",
+        "xe_hw_fence.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_map.h",
+        "xe_mocs.h",
+        "xe_pm.h",
+        "xe_ring_ops_types.h",
+        "xe_sched_job.h",
+        "xe_trace.h",
+        "xe_vm.h"
+      ],
+      "sha256": "c1439aae470306f44bca1bd3f35ddaae8b26f1d01ed78631bf074fce6b462d5f",
+      "spdx": "MIT"
+    },
+    "xe_guc_submit.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "f853ce6b1b359626afe013d03af493db71a6a172a1e30752f9e19e1fa7251393",
+      "spdx": "MIT"
+    },
+    "xe_guc_submit_types.h": {
+      "includes": [
+        "xe_hw_engine_types.h"
+      ],
+      "sha256": "3a4b8bf1a76c6ac1bb2b07c0e65dc2640c7a3933a3a05e7edbb6a80877342519",
+      "spdx": "MIT"
+    },
+    "xe_guc_types.h": {
+      "includes": [
+        "linux/idr.h",
+        "linux/xarray.h",
+        "regs/xe_reg_defs.h",
+        "xe_guc_ads_types.h",
+        "xe_guc_ct_types.h",
+        "xe_guc_fwif.h",
+        "xe_guc_log_types.h",
+        "xe_guc_pc_types.h",
+        "xe_guc_relay_types.h",
+        "xe_uc_fw_types.h"
+      ],
+      "sha256": "6f75429d218a13ffe933f1fd631dac24a05bc41f976ad7e8f63a4430270faaca",
+      "spdx": "MIT"
+    },
+    "xe_heci_gsc.c": {
+      "includes": [
+        "linux/irq.h",
+        "linux/mei_aux.h",
+        "linux/pci.h",
+        "linux/sizes.h",
+        "xe_device_types.h",
+        "xe_drv.h",
+        "xe_heci_gsc.h",
+        "xe_platform_types.h"
+      ],
+      "sha256": "b4e40b2da73b6caaa052a96d220022936815e05f805626cbcd4eb61a8be1775f",
+      "spdx": "MIT"
+    },
+    "xe_heci_gsc.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "703ada3809bad608dada56eb5a43c8153d3afd53a2d759038ba2ebb8cd8de6a6",
+      "spdx": "MIT"
+    },
+    "xe_hmm.c": {
+      "includes": [
+        "linux/scatterlist.h",
+        "linux/mmu_notifier.h",
+        "linux/dma-mapping.h",
+        "linux/memremap.h",
+        "linux/swap.h",
+        "linux/hmm.h",
+        "linux/mm.h",
+        "xe_hmm.h",
+        "xe_vm.h",
+        "xe_bo.h"
+      ],
+      "sha256": "299249231ceb100f0378186cc07fd05a7f67ea389c0f128fd644b31b7fe91ef0",
+      "spdx": "MIT"
+    },
+    "xe_hmm.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "9f82c25b160f58421e2510d040b22dbb35bd40829cb23294d0728c51c2af780e",
+      "spdx": "MIT"
+    },
+    "xe_huc.c": {
+      "includes": [
+        "xe_huc.h",
+        "linux/delay.h",
+        "drm/drm_managed.h",
+        "abi/gsc_pxp_commands_abi.h",
+        "regs/xe_gsc_regs.h",
+        "regs/xe_guc_regs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gsc_submit.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_sriov.h",
+        "xe_uc_fw.h"
+      ],
+      "sha256": "68426df9e2c7f7983807b1c9cc763513a333cd15c27f05f3f03cea3641e8dace",
+      "spdx": "MIT"
+    },
+    "xe_huc.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "02822b8a634002f575b538192f2e42e0df4faefa5b1ac5673778d4eb79df5fff",
+      "spdx": "MIT"
+    },
+    "xe_huc_debugfs.c": {
+      "includes": [
+        "xe_huc_debugfs.h",
+        "drm/drm_debugfs.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_huc.h",
+        "xe_macros.h",
+        "xe_pm.h"
+      ],
+      "sha256": "b87ec434f2703a5cfe41077cf1798d4b02e600c3928136558368a66cfd2cbedb",
+      "spdx": "MIT"
+    },
+    "xe_huc_debugfs.h": {
+      "includes": [],
+      "sha256": "b51581846a4d960b4a03719c0fbd63da218886e1bdade47b3e7954e9589373fa",
+      "spdx": "MIT"
+    },
+    "xe_huc_types.h": {
+      "includes": [
+        "xe_uc_fw_types.h"
+      ],
+      "sha256": "5ca0e1a80a5fffb965c2ba6a06bf020d9effc400acec7f7fa8342354d21923bf",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine.c": {
+      "includes": [
+        "xe_hw_engine.h",
+        "linux/nospec.h",
+        "drm/drm_managed.h",
+        "uapi/drm/xe_drm.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_irq_regs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_execlist.h",
+        "xe_force_wake.h",
+        "xe_gsc.h",
+        "xe_gt.h",
+        "xe_gt_ccs_mode.h",
+        "xe_gt_printk.h",
+        "xe_gt_mcr.h",
+        "xe_gt_topology.h",
+        "xe_guc_capture.h",
+        "xe_hw_engine_group.h",
+        "xe_hw_fence.h",
+        "xe_irq.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_reg_sr.h",
+        "xe_reg_whitelist.h",
+        "xe_rtp.h",
+        "xe_sched_job.h",
+        "xe_sriov.h",
+        "xe_tuning.h",
+        "xe_uc_fw.h",
+        "xe_wa.h"
+      ],
+      "sha256": "e29f67ccc59680d4ab1749fc098d8b34245c6a1478699bc05d8ec59add1a83bf",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine.h": {
+      "includes": [
+        "xe_hw_engine_types.h"
+      ],
+      "sha256": "5db1c25f3b9683257bf689aaf343f6cd4d9dcca2e8e225be93c39d8cd0c1b706",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_class_sysfs.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "linux/kobject.h",
+        "linux/sysfs.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_hw_engine_class_sysfs.h",
+        "xe_pm.h"
+      ],
+      "sha256": "f56b6f50fb342b0427570a8231614ce2be9ae837036a28848c9a0286a9e5389b",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_class_sysfs.h": {
+      "includes": [
+        "linux/kobject.h"
+      ],
+      "sha256": "8e9e0185387b126af6a58e21c4bc2e75eeb7c5340915afaa8ef21e64f8925335",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_group.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_gt.h",
+        "xe_hw_engine_group.h",
+        "xe_vm.h"
+      ],
+      "sha256": "5d3adfd752ac637f2f67796046429e36acfbb69c4c305e64bbea421bbc2d1f47",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_group.h": {
+      "includes": [
+        "xe_hw_engine_group_types.h"
+      ],
+      "sha256": "11117437d33be572f0b1b4b9e3ea07546bc1e04cc5ab60d5cd0a8d8249f98871",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_group_types.h": {
+      "includes": [
+        "xe_force_wake_types.h",
+        "xe_lrc_types.h",
+        "xe_reg_sr_types.h"
+      ],
+      "sha256": "fe4455a0d945e28bf1fade799689da444f05c18f0f1c9c84eb034f30960efa0f",
+      "spdx": "MIT"
+    },
+    "xe_hw_engine_types.h": {
+      "includes": [
+        "xe_force_wake_types.h",
+        "xe_lrc_types.h",
+        "xe_reg_sr_types.h"
+      ],
+      "sha256": "79ec3821ff904c29f89d8abbf7611ea9831233cfd9c8d86539dfb8bd96e4728d",
+      "spdx": "MIT"
+    },
+    "xe_hw_fence.c": {
+      "includes": [
+        "xe_hw_fence.h",
+        "linux/device.h",
+        "linux/slab.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_hw_engine.h",
+        "xe_macros.h",
+        "xe_map.h",
+        "xe_trace.h"
+      ],
+      "sha256": "1ea33331cc129549adbd71fa49c57113450643c0e20d6dec43f6fe98cb24a6ec",
+      "spdx": "MIT"
+    },
+    "xe_hw_fence.h": {
+      "includes": [
+        "xe_hw_fence_types.h"
+      ],
+      "sha256": "8c60ac053227248c5c416feded1263c9fcf0d920c18e48ed7a2f933854171c16",
+      "spdx": "MIT"
+    },
+    "xe_hw_fence_types.h": {
+      "includes": [
+        "linux/dma-fence.h",
+        "linux/iosys-map.h",
+        "linux/irq_work.h",
+        "linux/list.h",
+        "linux/spinlock.h"
+      ],
+      "sha256": "5cb49cb98e79d73bf2e1bcb657a55579627d816d4071d682e68358dcd3186ac8",
+      "spdx": "MIT"
+    },
+    "xe_hwmon.c": {
+      "includes": [
+        "linux/hwmon-sysfs.h",
+        "linux/hwmon.h",
+        "linux/types.h",
+        "drm/drm_managed.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_mchbar_regs.h",
+        "regs/xe_pcode_regs.h",
+        "xe_device.h",
+        "xe_hwmon.h",
+        "xe_mmio.h",
+        "xe_pcode.h",
+        "xe_pcode_api.h",
+        "xe_sriov.h",
+        "xe_pm.h"
+      ],
+      "sha256": "f0d6d636dfd0b4ec22ccc13e52d31a9bc865bda73bb9ed7500042842e0793f1d",
+      "spdx": "MIT"
+    },
+    "xe_hwmon.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "1f74ac541af78cb5114bc29aa391a0c0e6b219aa663c6a339fdecc604581d744",
+      "spdx": "MIT"
+    },
+    "xe_irq.c": {
+      "includes": [
+        "xe_irq.h",
+        "linux/sched/clock.h",
+        "drm/drm_managed.h",
+        "display/xe_display.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_irq_regs.h",
+        "xe_device.h",
+        "xe_drv.h",
+        "xe_gsc_proxy.h",
+        "xe_gt.h",
+        "xe_guc.h",
+        "xe_hw_engine.h",
+        "xe_memirq.h",
+        "xe_mmio.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "4fc2d5528ebf0d75f5de96f79466892941a627c4d94d1679531b3d9f4430ace3",
+      "spdx": "MIT"
+    },
+    "xe_irq.h": {
+      "includes": [
+        "linux/interrupt.h"
+      ],
+      "sha256": "871a179fa436ddcdd6f79bc6d8cda92c4d63a47a7238c15bd275dc7308d43f73",
+      "spdx": "MIT"
+    },
+    "xe_lmtt.c": {
+      "includes": [
+        "linux/align.h",
+        "drm/drm_managed.h",
+        "regs/xe_gt_regs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_lmtt.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_res_cursor.h",
+        "xe_sriov.h",
+        "xe_sriov_printk.h",
+        "tests/xe_lmtt_test.c"
+      ],
+      "sha256": "271e67cbcacf554006899a2db8ea97f8cfa2b6000f6488f52c4c997bab043387",
+      "spdx": "MIT"
+    },
+    "xe_lmtt.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "652c2e0629ad9ab3f2ed56e487b784d63731edbfd8f4f70f078f67584deaac46",
+      "spdx": "MIT"
+    },
+    "xe_lmtt_2l.c": {
+      "includes": [
+        "linux/align.h",
+        "linux/bitfield.h",
+        "linux/log2.h",
+        "linux/sizes.h",
+        "xe_lmtt_types.h",
+        "xe_macros.h"
+      ],
+      "sha256": "43b2f90002825de2fe4d57410032696bff66e8cfd20e5b2c0fcd4ad3e8001213",
+      "spdx": "MIT"
+    },
+    "xe_lmtt_ml.c": {
+      "includes": [
+        "linux/align.h",
+        "linux/bitfield.h",
+        "linux/log2.h",
+        "linux/sizes.h",
+        "xe_lmtt_types.h",
+        "xe_macros.h"
+      ],
+      "sha256": "c3d3127dd7765fa22018eaa388dba27417789c7c8daa745d0fed7f7a58eb6402",
+      "spdx": "MIT"
+    },
+    "xe_lmtt_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "f6d2914ce3e1ebb4141ccfd87b1627989f6106a6cc17d60946404f5ea9b5d98d",
+      "spdx": "MIT"
+    },
+    "xe_lrc.c": {
+      "includes": [
+        "xe_lrc.h",
+        "generated/xe_wa_oob.h",
+        "linux/ascii85.h",
+        "instructions/xe_mi_commands.h",
+        "instructions/xe_gfxpipe_commands.h",
+        "instructions/xe_gfx_state_commands.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_lrc_layout.h",
+        "xe_bb.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_drm_client.h",
+        "xe_exec_queue_types.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_hw_fence.h",
+        "xe_map.h",
+        "xe_memirq.h",
+        "xe_sriov.h",
+        "xe_trace_lrc.h",
+        "xe_vm.h",
+        "xe_wa.h"
+      ],
+      "sha256": "ee646d4456b75798ca50f23267a3cee667c2b26849f90810f7350662cf39ebbe",
+      "spdx": "MIT"
+    },
+    "xe_lrc.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_lrc_types.h"
+      ],
+      "sha256": "4164fd746a446e4d140fe298ec250daf3dc9ec134690c19f6dbe2a6a70239863",
+      "spdx": "MIT"
+    },
+    "xe_lrc_types.h": {
+      "includes": [
+        "linux/kref.h",
+        "xe_hw_fence_types.h"
+      ],
+      "sha256": "331be167ac61891c3b0701af513ad212685785c35972c4da8d33b20af69fd2fe",
+      "spdx": "MIT"
+    },
+    "xe_macros.h": {
+      "includes": [
+        "linux/bug.h"
+      ],
+      "sha256": "9c0a1a788cb5da410c57627ee5010d9c10c95d20636cf3cc8c4c163cbd9f49ac",
+      "spdx": "MIT"
+    },
+    "xe_map.h": {
+      "includes": [
+        "linux/iosys-map.h",
+        "xe_device.h"
+      ],
+      "sha256": "221ae6cc5cfea91281194ffcef9f179aa18981214b7c40702f5513330b4aefd5",
+      "spdx": "MIT"
+    },
+    "xe_memirq.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "regs/xe_guc_regs.h",
+        "regs/xe_irq_regs.h",
+        "regs/xe_regs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_hw_engine.h",
+        "xe_map.h",
+        "xe_memirq.h"
+      ],
+      "sha256": "33bd41e4dfbdf8c9f9e7601d284eab6bb4dcc718031f20b3e498850ce3330572",
+      "spdx": "MIT"
+    },
+    "xe_memirq.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "0478b7deeb6be5cb484242e04712753c27591df1082f878187f26d67ee9c2f79",
+      "spdx": "MIT"
+    },
+    "xe_memirq_types.h": {
+      "includes": [
+        "linux/iosys-map.h"
+      ],
+      "sha256": "6c81cfeb5c871f5654bbbc864ea69a78ab0b4c3c1a9334f852ff7176d7a3ba58",
+      "spdx": "MIT"
+    },
+    "xe_migrate.c": {
+      "includes": [
+        "xe_migrate.h",
+        "linux/bitfield.h",
+        "linux/sizes.h",
+        "drm/drm_managed.h",
+        "drm/ttm/ttm_tt.h",
+        "uapi/drm/xe_drm.h",
+        "generated/xe_wa_oob.h",
+        "instructions/xe_gpu_commands.h",
+        "instructions/xe_mi_commands.h",
+        "regs/xe_gtt_defs.h",
+        "tests/xe_test.h",
+        "xe_assert.h",
+        "xe_bb.h",
+        "xe_bo.h",
+        "xe_exec_queue.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_hw_engine.h",
+        "xe_lrc.h",
+        "xe_map.h",
+        "xe_mocs.h",
+        "xe_pt.h",
+        "xe_res_cursor.h",
+        "xe_sched_job.h",
+        "xe_sync.h",
+        "xe_trace_bo.h",
+        "xe_vm.h",
+        "tests/xe_migrate.c"
+      ],
+      "sha256": "1009f389b9790b933d4aaca20feed3841af0a1627ae1eccbcce380b1bb9f3904",
+      "spdx": "MIT"
+    },
+    "xe_migrate.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "88af1816389fec2569a797fc816e6a2ede4a3882a658609a382654657568eb28",
+      "spdx": "MIT"
+    },
+    "xe_migrate_doc.h": {
+      "includes": [],
+      "sha256": "1c9f2f71c9f65c8d4a469e0355e86fe69e0a8cf96d3024d65f0cfc7c36a520fb",
+      "spdx": "MIT"
+    },
+    "xe_mmio.c": {
+      "includes": [
+        "xe_mmio.h",
+        "linux/delay.h",
+        "linux/io-64-nonatomic-lo-hi.h",
+        "linux/minmax.h",
+        "linux/pci.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "regs/xe_bars.h",
+        "regs/xe_regs.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_macros.h",
+        "xe_sriov.h",
+        "xe_trace.h"
+      ],
+      "sha256": "c077a2d0880a23517fe5d440c704532c3fa633077741ac39c0f124db8cf5fcb9",
+      "spdx": "MIT"
+    },
+    "xe_mmio.h": {
+      "includes": [
+        "xe_gt_types.h"
+      ],
+      "sha256": "90ca4ce5b9a2f6b02b1cbb7d26590ad3a5279bfb8f20d77aa60840858d73b80a",
+      "spdx": "MIT"
+    },
+    "xe_mocs.c": {
+      "includes": [
+        "xe_mocs.h",
+        "regs/xe_gt_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_mmio.h",
+        "xe_platform_types.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_step_types.h",
+        "tests/xe_mocs.c"
+      ],
+      "sha256": "2e65b36ea55aaee9682358cbda00ad507429be502c0699710a96f2b8d79b6215",
+      "spdx": "MIT"
+    },
+    "xe_mocs.h": {
+      "includes": [],
+      "sha256": "84b0dc93e036f8302e61a90f386028c6a664b2005a2a16910e2b5bd561bc131e",
+      "spdx": "MIT"
+    },
+    "xe_module.c": {
+      "includes": [
+        "xe_module.h",
+        "linux/init.h",
+        "linux/module.h",
+        "drm/drm_module.h",
+        "xe_drv.h",
+        "xe_hw_fence.h",
+        "xe_pci.h",
+        "xe_pm.h",
+        "xe_observation.h",
+        "xe_sched_job.h"
+      ],
+      "sha256": "9b2072d220b75e1b55dfe41156ec323d882357796f571b84c975c18d27959666",
+      "spdx": "MIT"
+    },
+    "xe_module.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "a14a3821c90f0fa036d1bc51a1852e61b5ca119b618428979881ab3498c8f487",
+      "spdx": "MIT"
+    },
+    "xe_oa.c": {
+      "includes": [
+        "linux/anon_inodes.h",
+        "linux/delay.h",
+        "linux/nospec.h",
+        "linux/poll.h",
+        "drm/drm_drv.h",
+        "drm/drm_managed.h",
+        "uapi/drm/xe_drm.h",
+        "abi/guc_actions_slpc_abi.h",
+        "instructions/xe_mi_commands.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_oa_regs.h",
+        "xe_assert.h",
+        "xe_bb.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_guc_pc.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_oa.h",
+        "xe_observation.h",
+        "xe_pm.h",
+        "xe_sched_job.h",
+        "xe_sriov.h",
+        "xe_sync.h"
+      ],
+      "sha256": "0a24da0e340405fc2ef3596397bcd67baa74a81d864b63b1b631f7567904f3ee",
+      "spdx": "MIT"
+    },
+    "xe_oa.h": {
+      "includes": [
+        "xe_oa_types.h"
+      ],
+      "sha256": "83e029c867032d906161fe1d4dbedbb7d6090fb5cfb29aae39d718416677897e",
+      "spdx": "MIT"
+    },
+    "xe_oa_types.h": {
+      "includes": [
+        "linux/bitops.h",
+        "linux/idr.h",
+        "linux/mutex.h",
+        "linux/types.h",
+        "uapi/drm/xe_drm.h",
+        "regs/xe_reg_defs.h",
+        "xe_hw_engine_types.h"
+      ],
+      "sha256": "bce1e17ec6940592987dc0cfd6416ae832fe4d1bc9d1f9ab68e402ff55b1f878",
+      "spdx": "MIT"
+    },
+    "xe_observation.c": {
+      "includes": [
+        "linux/errno.h",
+        "linux/sysctl.h",
+        "uapi/drm/xe_drm.h",
+        "xe_oa.h",
+        "xe_observation.h"
+      ],
+      "sha256": "879e3d7e24a37110b3ce8ba7c9e6588cada1005dea7780a1d225a73e1f411f99",
+      "spdx": "MIT"
+    },
+    "xe_observation.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "7488c79877f5daa8571a9e6b383f9eaccbc4c963018116aaed2cd38c13336dc2",
+      "spdx": "MIT"
+    },
+    "xe_pat.c": {
+      "includes": [
+        "xe_pat.h",
+        "uapi/drm/xe_drm.h",
+        "generated/xe_wa_oob.h",
+        "regs/xe_reg_defs.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_mmio.h",
+        "xe_sriov.h",
+        "xe_wa.h"
+      ],
+      "sha256": "8e3b7401df5b151324bc6fa3ae5a348f8e27a6bc46cb4b5b365179559edf86d4",
+      "spdx": "MIT"
+    },
+    "xe_pat.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "3bc7c64135dc2a4e3adb9bf689fc48fcbba6f5a8507e50805a5a23eeedec9441",
+      "spdx": "MIT"
+    },
+    "xe_pci.c": {
+      "includes": [
+        "xe_pci.h",
+        "kunit/static_stub.h",
+        "linux/device/driver.h",
+        "linux/module.h",
+        "linux/pci.h",
+        "linux/pm_runtime.h",
+        "drm/drm_color_mgmt.h",
+        "drm/drm_drv.h",
+        "drm/intel/pciids.h",
+        "display/xe_display.h",
+        "regs/xe_gt_regs.h",
+        "xe_device.h",
+        "xe_drv.h",
+        "xe_gt.h",
+        "xe_gt_sriov_vf.h",
+        "xe_guc.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_module.h",
+        "xe_pci_sriov.h",
+        "xe_pci_types.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_step.h",
+        "xe_tile.h",
+        "tests/xe_pci.c"
+      ],
+      "sha256": "b0af749cf5b239c10426b40365775f81ee0cfa78fa1876ac8a9ce247ea604efc",
+      "spdx": "MIT"
+    },
+    "xe_pci.h": {
+      "includes": [],
+      "sha256": "cf2e3e07e06d8877255da9528a7531a75e0111fb04480443166bdcb6790fbf26",
+      "spdx": "MIT"
+    },
+    "xe_pci_sriov.c": {
+      "includes": [
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_gt_sriov_pf_config.h",
+        "xe_gt_sriov_pf_control.h",
+        "xe_pci_sriov.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_sriov_pf_helpers.h",
+        "xe_sriov_printk.h"
+      ],
+      "sha256": "f06248b746ffae4ea2aafd540d82d87fb2383c6a3665331446dba70b619cbeff",
+      "spdx": "MIT"
+    },
+    "xe_pci_sriov.h": {
+      "includes": [],
+      "sha256": "f2de5caee9bd99ae52f50191c9887ba41b0ca53fe6a8c99c6d643c4d5aabe23f",
+      "spdx": "MIT"
+    },
+    "xe_pci_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "c29a228d2cad20ee9f6deff13dd6e179020ef5394153aaf479b678bd2fb284e8",
+      "spdx": "MIT"
+    },
+    "xe_pcode.c": {
+      "includes": [
+        "xe_pcode.h",
+        "linux/delay.h",
+        "linux/errno.h",
+        "drm/drm_managed.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_mmio.h",
+        "xe_pcode_api.h"
+      ],
+      "sha256": "9ab0a3584b6a2c4fddaeeeaad71b8d59a02347ee2923067035e4d3b01bdafd41",
+      "spdx": "MIT"
+    },
+    "xe_pcode.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "840e8e3482e8346777d84e178e38e4e4bc86f7b9b0deaae05e28616e275ce326",
+      "spdx": "MIT"
+    },
+    "xe_pcode_api.h": {
+      "includes": [
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "5b2f761d4b351530a9ed7b60e37f582acdc862249f950ec279517970675ca762",
+      "spdx": "MIT"
+    },
+    "xe_platform_types.h": {
+      "includes": [],
+      "sha256": "773e62792dc691f43d1a7e504d0c15ceed25d6f16bd5aec0c406de1238303cf5",
+      "spdx": "MIT"
+    },
+    "xe_pm.c": {
+      "includes": [
+        "xe_pm.h",
+        "linux/fault-inject.h",
+        "linux/pm_runtime.h",
+        "linux/suspend.h",
+        "drm/drm_managed.h",
+        "drm/ttm/ttm_placement.h",
+        "display/xe_display.h",
+        "xe_bo.h",
+        "xe_bo_evict.h",
+        "xe_device.h",
+        "xe_device_sysfs.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_guc.h",
+        "xe_irq.h",
+        "xe_pcode.h",
+        "xe_trace.h",
+        "xe_wa.h"
+      ],
+      "sha256": "9e8bdb0fb7f43669176d9d04179032d6477752cd9bab7eed3517392dd4a89548",
+      "spdx": "MIT"
+    },
+    "xe_pm.h": {
+      "includes": [
+        "linux/pm_runtime.h"
+      ],
+      "sha256": "4a0f3eceea5e222ddc1a3a5238f14fff29456c06be62cb358f54ae5e1cb60d25",
+      "spdx": "MIT"
+    },
+    "xe_preempt_fence.c": {
+      "includes": [
+        "xe_preempt_fence.h",
+        "linux/slab.h",
+        "xe_exec_queue.h",
+        "xe_vm.h"
+      ],
+      "sha256": "b2640820f70e1c17871a6530e3212d115aab747202669e8586020a92aceafc30",
+      "spdx": "MIT"
+    },
+    "xe_preempt_fence.h": {
+      "includes": [
+        "xe_preempt_fence_types.h"
+      ],
+      "sha256": "2cf48506c7f3d31ecc3d9fa2286480851a3f6e1a868120e565697a64507d390f",
+      "spdx": "MIT"
+    },
+    "xe_preempt_fence_types.h": {
+      "includes": [
+        "linux/dma-fence.h",
+        "linux/workqueue.h"
+      ],
+      "sha256": "f72d6096b3d96e29a3ba0e15d54da60ad9cbf2367870b6bd652b529f94b58d32",
+      "spdx": "MIT"
+    },
+    "xe_pt.c": {
+      "includes": [
+        "linux/dma-fence-array.h",
+        "xe_pt.h",
+        "regs/xe_gtt_defs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_drm_client.h",
+        "xe_exec_queue.h",
+        "xe_gt.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_migrate.h",
+        "xe_pt_types.h",
+        "xe_pt_walk.h",
+        "xe_res_cursor.h",
+        "xe_sched_job.h",
+        "xe_sync.h",
+        "xe_trace.h",
+        "xe_ttm_stolen_mgr.h",
+        "xe_vm.h"
+      ],
+      "sha256": "bde42cba17212c2a8e93998d07f90645a07b24660c72d6b73b93bce3ad03ad81",
+      "spdx": "MIT"
+    },
+    "xe_pt.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_pt_types.h"
+      ],
+      "sha256": "b68bc82da50dbbac6963798d2f119797b38b9dcc9d94792d386fd07610724596",
+      "spdx": "MIT"
+    },
+    "xe_pt_types.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_pt_walk.h"
+      ],
+      "sha256": "17b9d3d7620c7f6cf4b8fbd98bb5797372c44ff8ae710f9d3f9bc5cfa01a25e9",
+      "spdx": "MIT"
+    },
+    "xe_pt_walk.c": {
+      "includes": [
+        "xe_pt_walk.h"
+      ],
+      "sha256": "2da833b9b1113383ea3afdc4f1bd9d137b5ecf59e0a2e5fc04a946a8bb52ab00",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_pt_walk.h": {
+      "includes": [
+        "linux/pagewalk.h",
+        "linux/types.h"
+      ],
+      "sha256": "22fba9ac667a1dea7efb0c3cbb50bd9f35fecff2715f8ae11dae4778e790edce",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_query.c": {
+      "includes": [
+        "xe_query.h",
+        "linux/nospec.h",
+        "linux/sched/clock.h",
+        "drm/ttm/ttm_placement.h",
+        "generated/xe_wa_oob.h",
+        "uapi/drm/xe_drm.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_force_wake.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_guc_hwconfig.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_oa.h",
+        "xe_ttm_vram_mgr.h",
+        "xe_wa.h"
+      ],
+      "sha256": "a7a203739c5327fd8bb0211a5749cbad90402329f2e7861c99f652e53e2063bd",
+      "spdx": "MIT"
+    },
+    "xe_query.h": {
+      "includes": [],
+      "sha256": "9f0331f14d9c0b7a0918a9f4b9f75a8261513c9d67877dbd55c9d32672437fb2",
+      "spdx": "MIT"
+    },
+    "xe_range_fence.c": {
+      "includes": [
+        "linux/dma-fence.h",
+        "linux/interval_tree_generic.h",
+        "linux/slab.h",
+        "xe_macros.h",
+        "xe_range_fence.h"
+      ],
+      "sha256": "a35bd2994224fb08b235b421c8130ea3285c55f344713d9d48246813cb901122",
+      "spdx": "MIT"
+    },
+    "xe_range_fence.h": {
+      "includes": [
+        "linux/dma-fence.h",
+        "linux/rbtree.h",
+        "linux/types.h"
+      ],
+      "sha256": "cd167aa9a6cdd102d4d8079d22bdc3ece8cccc4c389c0e61ef7b429139b1dc79",
+      "spdx": "MIT"
+    },
+    "xe_reg_sr.c": {
+      "includes": [
+        "xe_reg_sr.h",
+        "kunit/visibility.h",
+        "linux/align.h",
+        "linux/string_helpers.h",
+        "linux/xarray.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_gt_mcr.h",
+        "xe_gt_printk.h",
+        "xe_hw_engine_types.h",
+        "xe_macros.h",
+        "xe_mmio.h",
+        "xe_rtp_types.h"
+      ],
+      "sha256": "44a3dbdbdef37d7a7b58c4e58a52e884d27190405327292b31339299feb12749",
+      "spdx": "MIT"
+    },
+    "xe_reg_sr.h": {
+      "includes": [],
+      "sha256": "af8e207a87ea1b3f6149f486861b8edf78bbaf1c3132eeeeac11a83fece98800",
+      "spdx": "MIT"
+    },
+    "xe_reg_sr_types.h": {
+      "includes": [
+        "linux/types.h",
+        "linux/xarray.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "073a8918d177adf338a00638b9aa3fa14e8a54ae288a05fefa010e99afb8dcdf",
+      "spdx": "MIT"
+    },
+    "xe_reg_whitelist.c": {
+      "includes": [
+        "xe_reg_whitelist.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_oa_regs.h",
+        "regs/xe_regs.h",
+        "xe_gt_types.h",
+        "xe_gt_printk.h",
+        "xe_platform_types.h",
+        "xe_reg_sr.h",
+        "xe_rtp.h",
+        "xe_step.h"
+      ],
+      "sha256": "ef150a02f7f987dd11961f2b94e80defbf083aa08068b1010f6157d0c5d34693",
+      "spdx": "MIT"
+    },
+    "xe_reg_whitelist.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "b07f989c8f49dfa1a987a0197524d3a80742e38f3e046a071a92504ee12e2b9a",
+      "spdx": "MIT"
+    },
+    "xe_res_cursor.h": {
+      "includes": [
+        "linux/scatterlist.h",
+        "drm/ttm/ttm_placement.h",
+        "drm/ttm/ttm_range_manager.h",
+        "drm/ttm/ttm_resource.h",
+        "drm/ttm/ttm_tt.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_macros.h",
+        "xe_ttm_vram_mgr.h"
+      ],
+      "sha256": "d8c8cf3f97671045f2e3a97d313c9774404ea0b232ceb56801827887ba27c821",
+      "spdx": "GPL-2.0-only OR MIT"
+    },
+    "xe_ring_ops.c": {
+      "includes": [
+        "xe_ring_ops.h",
+        "generated/xe_wa_oob.h",
+        "instructions/xe_gpu_commands.h",
+        "instructions/xe_mi_commands.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_lrc_layout.h",
+        "xe_exec_queue_types.h",
+        "xe_gt.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_sched_job.h",
+        "xe_sriov.h",
+        "xe_vm_types.h",
+        "xe_vm.h",
+        "xe_wa.h"
+      ],
+      "sha256": "a2a9191403901907e1522e5a94b5c5d5191b804a145cd4c61864b5ca42ec79af",
+      "spdx": "MIT"
+    },
+    "xe_ring_ops.h": {
+      "includes": [
+        "xe_hw_engine_types.h",
+        "xe_ring_ops_types.h"
+      ],
+      "sha256": "20b2731c63e79e0d65e36c92658ee5a33578136988ccac41bca0a664264d405e",
+      "spdx": "MIT"
+    },
+    "xe_ring_ops_types.h": {
+      "includes": [],
+      "sha256": "43c2ce6b76b830686bbab001473e29dcbbe8250a0b8d51d90522630e47ae9e3e",
+      "spdx": "MIT"
+    },
+    "xe_rtp.c": {
+      "includes": [
+        "xe_rtp.h",
+        "kunit/visibility.h",
+        "uapi/drm/xe_drm.h",
+        "xe_gt.h",
+        "xe_gt_topology.h",
+        "xe_macros.h",
+        "xe_reg_sr.h",
+        "xe_sriov.h"
+      ],
+      "sha256": "2c6ddf2c7c3eb9a396707c5cd81856f71e17b8b507ff12a1390812207a0abe54",
+      "spdx": "MIT"
+    },
+    "xe_rtp.h": {
+      "includes": [
+        "linux/types.h",
+        "linux/xarray.h",
+        "xe_rtp_helpers.h",
+        "xe_rtp_types.h"
+      ],
+      "sha256": "87832f4e29dec34039179cfd99acc448eed2e170d048303c5d14644327ab1f02",
+      "spdx": "MIT"
+    },
+    "xe_rtp_helpers.h": {
+      "includes": [
+        "xe_args.h"
+      ],
+      "sha256": "27992760ecbd8a3b2e7eadd0e3d1ed91da68d65768d7b985ead6d895916b4557",
+      "spdx": "MIT"
+    },
+    "xe_rtp_types.h": {
+      "includes": [
+        "linux/types.h",
+        "regs/xe_reg_defs.h"
+      ],
+      "sha256": "bd9cda4b3c7edf8203212dbcaaf475ee91ff4bd8dbe2e36e1193001455eebd5d",
+      "spdx": "MIT"
+    },
+    "xe_sa.c": {
+      "includes": [
+        "xe_sa.h",
+        "linux/kernel.h",
+        "drm/drm_managed.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_map.h"
+      ],
+      "sha256": "89a5528024abb116bebf8e6cb1a2461d40f16847737e407cd968b873010cc51c",
+      "spdx": "MIT"
+    },
+    "xe_sa.h": {
+      "includes": [
+        "xe_sa_types.h"
+      ],
+      "sha256": "d66709afe6f2745b27f39d44ef4c2019627dede5842ac243837d51b53f5d4111",
+      "spdx": "MIT"
+    },
+    "xe_sa_types.h": {
+      "includes": [
+        "drm/drm_suballoc.h"
+      ],
+      "sha256": "cf8d702575da885fcbf6baeb0a3379b6343df619c0c2acad2cdeac8493c977d7",
+      "spdx": "MIT"
+    },
+    "xe_sched_job.c": {
+      "includes": [
+        "xe_sched_job.h",
+        "uapi/drm/xe_drm.h",
+        "linux/dma-fence-chain.h",
+        "linux/slab.h",
+        "xe_device.h",
+        "xe_exec_queue.h",
+        "xe_gt.h",
+        "xe_hw_engine_types.h",
+        "xe_hw_fence.h",
+        "xe_lrc.h",
+        "xe_macros.h",
+        "xe_pm.h",
+        "xe_sync_types.h",
+        "xe_trace.h",
+        "xe_vm.h"
+      ],
+      "sha256": "9c922a04e293e52aae6a8af7c5803bbb61f8ab0c0004959f48f272d1aef3fd28",
+      "spdx": "MIT"
+    },
+    "xe_sched_job.h": {
+      "includes": [
+        "xe_sched_job_types.h"
+      ],
+      "sha256": "1e23567eb43d27d635f61b6f235d2f3b9f0abea48dcb354dc65bae9b428d0acd",
+      "spdx": "MIT"
+    },
+    "xe_sched_job_types.h": {
+      "includes": [
+        "linux/kref.h",
+        "drm/gpu_scheduler.h"
+      ],
+      "sha256": "497babebccda311b81f744f342cad5c5a1d1150eccae996bf1c9c90a5faae570",
+      "spdx": "MIT"
+    },
+    "xe_sriov.c": {
+      "includes": [
+        "linux/fault-inject.h",
+        "drm/drm_managed.h",
+        "regs/xe_regs.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_mmio.h",
+        "xe_sriov.h",
+        "xe_sriov_pf.h",
+        "xe_sriov_vf.h"
+      ],
+      "sha256": "144d0c11489a34cc48b47561d69b8d572200ae3c502cf3176dda65a73515b48c",
+      "spdx": "MIT"
+    },
+    "xe_sriov.h": {
+      "includes": [
+        "xe_assert.h",
+        "xe_device_types.h",
+        "xe_sriov_types.h"
+      ],
+      "sha256": "7264cbfa6730f57600d6311403bd3e18cf506e9f210eb01d5f5591d30ebdc17f",
+      "spdx": "MIT"
+    },
+    "xe_sriov_pf.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_module.h",
+        "xe_sriov.h",
+        "xe_sriov_pf.h",
+        "xe_sriov_printk.h"
+      ],
+      "sha256": "5c2cababbfed086b30aae43754318589eb3bb7f98eedc5558738a6a4740a0331",
+      "spdx": "MIT"
+    },
+    "xe_sriov_pf.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "fac65c72c90736ddedf9aa5a8bbc958e5221dd127b841a76cffe75b8497f0004",
+      "spdx": "MIT"
+    },
+    "xe_sriov_pf_helpers.h": {
+      "includes": [
+        "xe_assert.h",
+        "xe_device_types.h",
+        "xe_sriov.h",
+        "xe_sriov_types.h"
+      ],
+      "sha256": "64726d56c9a091031bee74d9df09c1ebc6405ac3aa1671045718ae8d8f6e196f",
+      "spdx": "MIT"
+    },
+    "xe_sriov_printk.h": {
+      "includes": [
+        "drm/drm_print.h",
+        "xe_device_types.h",
+        "xe_sriov_types.h"
+      ],
+      "sha256": "0b201d7344c2739046cf7df109c5d56c98a812b3244c13f11389ea47f0a808d4",
+      "spdx": "MIT"
+    },
+    "xe_sriov_types.h": {
+      "includes": [
+        "linux/build_bug.h",
+        "linux/mutex.h",
+        "linux/types.h",
+        "linux/workqueue_types.h"
+      ],
+      "sha256": "96b59cea8c789719f6efd838b71837ed8c495a4f037fb9fa4bd4d2440181f731",
+      "spdx": "MIT"
+    },
+    "xe_sriov_vf.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_gt_sriov_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_pm.h",
+        "xe_sriov.h",
+        "xe_sriov_printk.h",
+        "xe_sriov_vf.h"
+      ],
+      "sha256": "f637695b737a40d4ea988a78674c4aa1b2e18b88bc8cf3a5f5a9074ec3117f05",
+      "spdx": "MIT"
+    },
+    "xe_sriov_vf.h": {
+      "includes": [],
+      "sha256": "e1b31c3a0d2daecb5a11963599532ab2c7d97347637f858d2eaae7af9d4f2960",
+      "spdx": "MIT"
+    },
+    "xe_step.c": {
+      "includes": [
+        "xe_step.h",
+        "linux/bitfield.h",
+        "xe_device.h",
+        "xe_platform_types.h"
+      ],
+      "sha256": "331bb7e14e20b3cea2fb4a39c05ab7000d11d057ebc2497e4c6ad0f256197e87",
+      "spdx": "MIT"
+    },
+    "xe_step.h": {
+      "includes": [
+        "linux/types.h",
+        "xe_step_types.h"
+      ],
+      "sha256": "733b2531705630e5f4aae7ccff9c11c62f4356d9a2ad1fae34989f7ec689f72b",
+      "spdx": "MIT"
+    },
+    "xe_step_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "7804f5e7b9de0679736914bea63d9f3d4adb6e865142cb982c7a74ad15f61e3c",
+      "spdx": "MIT"
+    },
+    "xe_sync.c": {
+      "includes": [
+        "xe_sync.h",
+        "linux/dma-fence-array.h",
+        "linux/kthread.h",
+        "linux/sched/mm.h",
+        "linux/uaccess.h",
+        "drm/drm_print.h",
+        "drm/drm_syncobj.h",
+        "uapi/drm/xe_drm.h",
+        "xe_device_types.h",
+        "xe_exec_queue.h",
+        "xe_macros.h",
+        "xe_sched_job_types.h"
+      ],
+      "sha256": "b289433209cb4e1f4b3bc248e1f72fa5bd81bef93b4781d3220654a0a78aa6a7",
+      "spdx": "MIT"
+    },
+    "xe_sync.h": {
+      "includes": [
+        "xe_sync_types.h"
+      ],
+      "sha256": "8d4e2e3f04a460c95ef2e52afcc25db123fd426d14f5af0bdee29d42318b38fd",
+      "spdx": "MIT"
+    },
+    "xe_sync_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "fdd2ccc2399d2dc8d33e35f2cc1b757a5bdb2e387481f3cee4eaae216b04b8ae",
+      "spdx": "MIT"
+    },
+    "xe_tile.c": {
+      "includes": [
+        "linux/fault-inject.h",
+        "drm/drm_managed.h",
+        "xe_device.h",
+        "xe_ggtt.h",
+        "xe_gt.h",
+        "xe_migrate.h",
+        "xe_pcode.h",
+        "xe_sa.h",
+        "xe_tile.h",
+        "xe_tile_sysfs.h",
+        "xe_ttm_vram_mgr.h",
+        "xe_wa.h"
+      ],
+      "sha256": "2a491305a53aaa857b857e33ba69521250ce4096c86e32ea327bfacbd49c76d5",
+      "spdx": "MIT"
+    },
+    "xe_tile.h": {
+      "includes": [
+        "xe_device_types.h"
+      ],
+      "sha256": "e73c056c9749ff6779f4818d08b6199b99b382e6155948529011cbc9259ccbb0",
+      "spdx": "MIT"
+    },
+    "xe_tile_sysfs.c": {
+      "includes": [
+        "linux/kobject.h",
+        "linux/sysfs.h",
+        "drm/drm_managed.h",
+        "xe_pm.h",
+        "xe_tile.h",
+        "xe_tile_sysfs.h",
+        "xe_vram_freq.h"
+      ],
+      "sha256": "d7c0676f8d6e43477297fdc209a5f71ee95e8b03752af611fb3898160d2ae1a5",
+      "spdx": "MIT"
+    },
+    "xe_tile_sysfs.h": {
+      "includes": [
+        "xe_tile_sysfs_types.h"
+      ],
+      "sha256": "59e27c55273f6b378174714451742df90f07f72e5fa73bd386aa18e4616adfb2",
+      "spdx": "MIT"
+    },
+    "xe_tile_sysfs_types.h": {
+      "includes": [
+        "linux/kobject.h"
+      ],
+      "sha256": "6f564c4367356f91d8d19f1d5d20686a05cebe08c9c5e92a2bd7ba2efb6866b3",
+      "spdx": "MIT"
+    },
+    "xe_trace.c": {
+      "includes": [
+        "xe_trace.h"
+      ],
+      "sha256": "67f02469a1e9e587383e66cc310d0e732b749ad6dbad4a0ba3d98cb04a63e9bd",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace.h": {
+      "includes": [
+        "linux/tracepoint.h",
+        "linux/types.h",
+        "xe_exec_queue_types.h",
+        "xe_gpu_scheduler_types.h",
+        "xe_gt_tlb_invalidation_types.h",
+        "xe_gt_types.h",
+        "xe_guc_exec_queue_types.h",
+        "xe_sched_job.h",
+        "xe_vm.h",
+        "trace/define_trace.h"
+      ],
+      "sha256": "e312c0c27d0555611afb8a1a8cc8043424a76a6c569113611b8f186f5eff6548",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_bo.c": {
+      "includes": [
+        "xe_trace_bo.h"
+      ],
+      "sha256": "a8270345f9f278bf7485cdb68c07e4a3ad00a2dbaf8bd8a1a7c6472a2d790e3e",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_bo.h": {
+      "includes": [
+        "linux/tracepoint.h",
+        "linux/types.h",
+        "xe_bo.h",
+        "xe_bo_types.h",
+        "xe_vm.h",
+        "trace/define_trace.h"
+      ],
+      "sha256": "5f00f17df9c2311a88a4c2436be7bf8e127fd238dda984b73446a14a5f8c6d6c",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_guc.c": {
+      "includes": [
+        "xe_trace_guc.h"
+      ],
+      "sha256": "ac1f04cd27e6e826aba97a434f3f0b8f35de8e747456c7017f143d1221aae706",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_guc.h": {
+      "includes": [
+        "linux/tracepoint.h",
+        "linux/types.h",
+        "xe_device_types.h",
+        "xe_guc_exec_queue_types.h",
+        "trace/define_trace.h"
+      ],
+      "sha256": "697168bfcbfead7e741f1679a4e35e946f8b636edacd89bd4ff03498555d6ac5",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_lrc.c": {
+      "includes": [
+        "xe_trace_lrc.h"
+      ],
+      "sha256": "c99af0fe8e68471c337ff0f1124caf39351f870a30b0e4668ac158e8b1d9a4af",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_trace_lrc.h": {
+      "includes": [
+        "linux/tracepoint.h",
+        "linux/types.h",
+        "xe_gt_types.h",
+        "xe_lrc.h",
+        "xe_lrc_types.h",
+        "trace/define_trace.h"
+      ],
+      "sha256": "15655f50156b14ec051ddc2f04b0d18d35b48962307adfaf1e00bc822013b494",
+      "spdx": "GPL-2.0-only"
+    },
+    "xe_ttm_stolen_mgr.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "drm/ttm/ttm_device.h",
+        "drm/ttm/ttm_placement.h",
+        "drm/ttm/ttm_range_manager.h",
+        "generated/xe_wa_oob.h",
+        "regs/xe_bars.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_mmio.h",
+        "xe_res_cursor.h",
+        "xe_sriov.h",
+        "xe_ttm_stolen_mgr.h",
+        "xe_ttm_vram_mgr.h",
+        "xe_wa.h"
+      ],
+      "sha256": "967fdc08f6518c5b91f0904ac45857b913d95f26e6a43b578fd6dbd0cb38e8ff",
+      "spdx": "MIT"
+    },
+    "xe_ttm_stolen_mgr.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "390d762d07812e6556eee0bd09580ba7e4fca6ffd2acb7fe928c739bb3233069",
+      "spdx": "MIT"
+    },
+    "xe_ttm_sys_mgr.c": {
+      "includes": [
+        "xe_ttm_sys_mgr.h",
+        "drm/drm_managed.h",
+        "drm/ttm/ttm_placement.h",
+        "drm/ttm/ttm_range_manager.h",
+        "drm/ttm/ttm_tt.h",
+        "xe_bo.h",
+        "xe_gt.h"
+      ],
+      "sha256": "8941558027494dd48c8b25349ec64efe5d46cabea16cb714fed36fa1eb7f3ae1",
+      "spdx": "MIT"
+    },
+    "xe_ttm_sys_mgr.h": {
+      "includes": [],
+      "sha256": "d63e8c6c11757fa51a138bae792c25ee1074c0dca5fd1ac860004b5357e3d363",
+      "spdx": "MIT"
+    },
+    "xe_ttm_vram_mgr.c": {
+      "includes": [
+        "drm/drm_managed.h",
+        "drm/drm_drv.h",
+        "drm/ttm/ttm_placement.h",
+        "drm/ttm/ttm_range_manager.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_res_cursor.h",
+        "xe_ttm_vram_mgr.h"
+      ],
+      "sha256": "3fafbc7e83172d14350027b7e43060a5d4e73d60b5f843d5402c70d1cdd0096f",
+      "spdx": "MIT"
+    },
+    "xe_ttm_vram_mgr.h": {
+      "includes": [
+        "xe_ttm_vram_mgr_types.h"
+      ],
+      "sha256": "6bd06b69461008fc366833d2cdb16b857a8e081030ed54f5ceebe6021df81e63",
+      "spdx": "MIT"
+    },
+    "xe_ttm_vram_mgr_types.h": {
+      "includes": [
+        "drm/drm_buddy.h",
+        "drm/ttm/ttm_device.h"
+      ],
+      "sha256": "0518eb136d22ccd7d93d073a190c23f616f35ca807f201c38b882353a6e6abb2",
+      "spdx": "MIT"
+    },
+    "xe_tuning.c": {
+      "includes": [
+        "xe_tuning.h",
+        "kunit/visibility.h",
+        "regs/xe_gt_regs.h",
+        "xe_gt_types.h",
+        "xe_platform_types.h",
+        "xe_rtp.h"
+      ],
+      "sha256": "ee6428faa7ec90c714c9378c50ccf041ff7696f5be123703157b8273961c38f4",
+      "spdx": "MIT"
+    },
+    "xe_tuning.h": {
+      "includes": [],
+      "sha256": "2d9babf610ccab40e9f8408332f1a1890d990943a51cf9b5d3dddff98da8f92a",
+      "spdx": "MIT"
+    },
+    "xe_uc.c": {
+      "includes": [
+        "xe_uc.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_gsc.h",
+        "xe_gsc_proxy.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_gt_sriov_vf.h",
+        "xe_guc.h",
+        "xe_guc_pc.h",
+        "xe_huc.h",
+        "xe_sriov.h",
+        "xe_uc_fw.h",
+        "xe_wopcm.h"
+      ],
+      "sha256": "0db26b5d78e3f684452a84459e4c42a1f1b2fe3c2887ff4019d0e8ef6de32fdc",
+      "spdx": "MIT"
+    },
+    "xe_uc.h": {
+      "includes": [],
+      "sha256": "43fabd06c55c2df10b02074668237f00384bec3e13cf99d096c433fe12709dbc",
+      "spdx": "MIT"
+    },
+    "xe_uc_debugfs.c": {
+      "includes": [
+        "linux/debugfs.h",
+        "drm/drm_debugfs.h",
+        "xe_gt.h",
+        "xe_gsc_debugfs.h",
+        "xe_guc_debugfs.h",
+        "xe_huc_debugfs.h",
+        "xe_macros.h",
+        "xe_uc_debugfs.h"
+      ],
+      "sha256": "d232581734ffe53baba0b7aff4ba1dfd470685b9f9fd59c90141d8c1316cebca",
+      "spdx": "MIT"
+    },
+    "xe_uc_debugfs.h": {
+      "includes": [],
+      "sha256": "dc0c9fedd57c20b601e55ebaef68c51a6cd7ce660133f7e60f3fcd49138f4a9c",
+      "spdx": "MIT"
+    },
+    "xe_uc_fw.c": {
+      "includes": [
+        "linux/bitfield.h",
+        "linux/fault-inject.h",
+        "linux/firmware.h",
+        "drm/drm_managed.h",
+        "regs/xe_guc_regs.h",
+        "xe_bo.h",
+        "xe_device_types.h",
+        "xe_force_wake.h",
+        "xe_gsc.h",
+        "xe_gt.h",
+        "xe_gt_printk.h",
+        "xe_guc.h",
+        "xe_map.h",
+        "xe_mmio.h",
+        "xe_module.h",
+        "xe_sriov.h",
+        "xe_uc_fw.h"
+      ],
+      "sha256": "62461b7527aca258813cf97cecb58e629feff8edf273427100cc2ca4ce4abf7a",
+      "spdx": "MIT"
+    },
+    "xe_uc_fw.h": {
+      "includes": [
+        "linux/errno.h",
+        "xe_macros.h",
+        "xe_uc_fw_abi.h",
+        "xe_uc_fw_types.h"
+      ],
+      "sha256": "2de9410afdc9ba404adb6ccaef8cf514431576a6b7f11d6068b82dd13a88000f",
+      "spdx": "MIT"
+    },
+    "xe_uc_fw_abi.h": {
+      "includes": [
+        "linux/build_bug.h",
+        "linux/types.h"
+      ],
+      "sha256": "d36c7405c31d95e1a11ac9302e3136d2dca030ee1f283a90f4d775f9e625df2e",
+      "spdx": "MIT"
+    },
+    "xe_uc_fw_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "324b22f33e5c5588833d8da4b44160463d332d42c603117881080fcd2db9be4e",
+      "spdx": "MIT"
+    },
+    "xe_uc_types.h": {
+      "includes": [
+        "xe_gsc_types.h",
+        "xe_guc_types.h",
+        "xe_huc_types.h",
+        "xe_wopcm_types.h"
+      ],
+      "sha256": "e8e2a3592faf4992dd5c708f4234ce3a0f75e3e520bfa01c99c2763057aed9d8",
+      "spdx": "MIT"
+    },
+    "xe_vm.c": {
+      "includes": [
+        "xe_vm.h",
+        "linux/dma-fence-array.h",
+        "linux/nospec.h",
+        "drm/drm_exec.h",
+        "drm/drm_print.h",
+        "drm/ttm/ttm_tt.h",
+        "uapi/drm/xe_drm.h",
+        "linux/ascii85.h",
+        "linux/delay.h",
+        "linux/kthread.h",
+        "linux/mm.h",
+        "linux/swap.h",
+        "generated/xe_wa_oob.h",
+        "regs/xe_gtt_defs.h",
+        "xe_assert.h",
+        "xe_bo.h",
+        "xe_device.h",
+        "xe_drm_client.h",
+        "xe_exec_queue.h",
+        "xe_gt_pagefault.h",
+        "xe_gt_tlb_invalidation.h",
+        "xe_migrate.h",
+        "xe_pat.h",
+        "xe_pm.h",
+        "xe_preempt_fence.h",
+        "xe_pt.h",
+        "xe_res_cursor.h",
+        "xe_sync.h",
+        "xe_trace_bo.h",
+        "xe_wa.h",
+        "xe_hmm.h"
+      ],
+      "sha256": "96365ca5d7d72a057fd93833cc5a729fb9623df485c3898496d3c0980a0a60eb",
+      "spdx": "MIT"
+    },
+    "xe_vm.h": {
+      "includes": [
+        "xe_assert.h",
+        "xe_bo_types.h",
+        "xe_macros.h",
+        "xe_map.h",
+        "xe_vm_types.h"
+      ],
+      "sha256": "13b3c5846f065e0bcc5b75c7960056c0edf22622272ba9cea86c2a86141fbc69",
+      "spdx": "MIT"
+    },
+    "xe_vm_doc.h": {
+      "includes": [],
+      "sha256": "0516e38a98ed19f08712c81a6894bbc064e7f2d612abcb762bfeb879e574ab85",
+      "spdx": "MIT"
+    },
+    "xe_vm_types.h": {
+      "includes": [
+        "drm/drm_gpuvm.h",
+        "linux/dma-resv.h",
+        "linux/kref.h",
+        "linux/mmu_notifier.h",
+        "linux/scatterlist.h",
+        "xe_device_types.h",
+        "xe_pt_types.h",
+        "xe_range_fence.h"
+      ],
+      "sha256": "cb52adf6bba7e81386cd2855e1af517b2555033d0a1030ec712e675e7e554835",
+      "spdx": "MIT"
+    },
+    "xe_vram.c": {
+      "includes": [
+        "linux/pci.h",
+        "drm/drm_managed.h",
+        "drm/drm_print.h",
+        "regs/xe_bars.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_assert.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt_mcr.h",
+        "xe_gt_sriov_vf.h",
+        "xe_mmio.h",
+        "xe_module.h",
+        "xe_sriov.h",
+        "xe_vram.h"
+      ],
+      "sha256": "ba39673699793a5ffc004ae7267bc5d5e85f98c8b9924fa7bf88aca484e74aac",
+      "spdx": "MIT"
+    },
+    "xe_vram.h": {
+      "includes": [],
+      "sha256": "fb6f4bdfba9e5ec5cc678d97e03d5d494dac32363ee5823b03e04b8357958ab9",
+      "spdx": "MIT"
+    },
+    "xe_vram_freq.c": {
+      "includes": [
+        "linux/sysfs.h",
+        "drm/drm_managed.h",
+        "xe_gt_types.h",
+        "xe_pcode.h",
+        "xe_pcode_api.h",
+        "xe_tile.h",
+        "xe_tile_sysfs.h",
+        "xe_vram_freq.h"
+      ],
+      "sha256": "c37fe85ee5c66cb55b25b4f30925fe8cbfeafc3ce9193d7c6145740abc3c8051",
+      "spdx": "MIT"
+    },
+    "xe_vram_freq.h": {
+      "includes": [],
+      "sha256": "9fa972d6218eaaad634969f9312b6ba8ea12640c7dc5464817150b1a527c81dd",
+      "spdx": "MIT"
+    },
+    "xe_vsec.c": {
+      "includes": [
+        "linux/bitfield.h",
+        "linux/bits.h",
+        "linux/cleanup.h",
+        "linux/errno.h",
+        "linux/intel_vsec.h",
+        "linux/module.h",
+        "linux/mutex.h",
+        "linux/pci.h",
+        "linux/types.h",
+        "xe_device.h",
+        "xe_device_types.h",
+        "xe_drv.h",
+        "xe_mmio.h",
+        "xe_platform_types.h",
+        "xe_pm.h",
+        "xe_vsec.h",
+        "regs/xe_pmt.h"
+      ],
+      "sha256": "874cc28e1bf92f4c3bcbf386bd2947d9251383c1d70728494bea5c88f0cb6b76",
+      "spdx": "GPL-2.0"
+    },
+    "xe_vsec.h": {
+      "includes": [],
+      "sha256": "3d54753c6fb2d18c6889c02c0b14f3423b952576ae2938e126e74807effb826f",
+      "spdx": "GPL-2.0"
+    },
+    "xe_wa.c": {
+      "includes": [
+        "xe_wa.h",
+        "drm/drm_managed.h",
+        "kunit/visibility.h",
+        "linux/compiler_types.h",
+        "linux/fault-inject.h",
+        "generated/xe_wa_oob.h",
+        "regs/xe_engine_regs.h",
+        "regs/xe_gt_regs.h",
+        "regs/xe_regs.h",
+        "xe_device_types.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_hw_engine_types.h",
+        "xe_mmio.h",
+        "xe_platform_types.h",
+        "xe_rtp.h",
+        "xe_sriov.h",
+        "xe_step.h",
+        "generated/xe_wa_oob.c"
+      ],
+      "sha256": "80f17eb2f555ec2bbd40ac887a3c4a78bd981addb9cf515958a5dc44c128e5ae",
+      "spdx": "MIT"
+    },
+    "xe_wa.h": {
+      "includes": [
+        "xe_assert.h"
+      ],
+      "sha256": "87ac9df2f22ce030a2bb92c931371ac4e556fe12ca5a81941f928ff0d35e366d",
+      "spdx": "MIT"
+    },
+    "xe_wait_user_fence.c": {
+      "includes": [
+        "xe_wait_user_fence.h",
+        "drm/drm_device.h",
+        "drm/drm_file.h",
+        "drm/drm_utils.h",
+        "uapi/drm/xe_drm.h",
+        "xe_device.h",
+        "xe_gt.h",
+        "xe_macros.h",
+        "xe_exec_queue.h"
+      ],
+      "sha256": "f2b389957a9fbd0153a2719913a8fd442b968714a8b2e67d9e364677e38001ac",
+      "spdx": "MIT"
+    },
+    "xe_wait_user_fence.h": {
+      "includes": [],
+      "sha256": "e9f5a213328d87ae084489480428535208561e3b05759bcc677c802ae4a9c114",
+      "spdx": "MIT"
+    },
+    "xe_wopcm.c": {
+      "includes": [
+        "xe_wopcm.h",
+        "linux/fault-inject.h",
+        "regs/xe_guc_regs.h",
+        "xe_device.h",
+        "xe_force_wake.h",
+        "xe_gt.h",
+        "xe_mmio.h",
+        "xe_uc_fw.h"
+      ],
+      "sha256": "0de99eabecaa967c244b13746f425d0ad82dfed9756529f3485cd7b02b695e46",
+      "spdx": "MIT"
+    },
+    "xe_wopcm.h": {
+      "includes": [
+        "xe_wopcm_types.h"
+      ],
+      "sha256": "cb4859244dc4557d1ef415fde71fbf3bdcc8fbc95393b89d9adb6b1f036e0eb9",
+      "spdx": "MIT"
+    },
+    "xe_wopcm_types.h": {
+      "includes": [
+        "linux/types.h"
+      ],
+      "sha256": "673418f4b00879b4e3e6fadf63f0e241aefe9296df796262cb07e3188f20b11d",
+      "spdx": "MIT"
+    }
+  },
+  "evidence": {
+    "D01": {
+      "end": 33,
+      "folder": "drm-kmod-research",
+      "needle": "Copyright",
+      "path": "linuxkpi/bsd/include/linux/dma-fence.h",
+      "revision": "c16de0f9fa84f70b9551f69fde837a7f3a73c0e9",
+      "sha256": "c52fc14c80f0e4fc1f3923f4dcb761b7ab0608d2a8c82172bda624e1698672b3",
+      "start": 2,
+      "url": "https://github.com/freebsd/drm-kmod/blob/c16de0f9fa84f70b9551f69fde837a7f3a73c0e9/linuxkpi/bsd/include/linux/dma-fence.h#L2-L33"
+    },
+    "D02": {
+      "end": 53,
+      "folder": "drm-kmod-research",
+      "needle": "The DRM drivers ported",
+      "path": "README.md",
+      "revision": "c16de0f9fa84f70b9551f69fde837a7f3a73c0e9",
+      "sha256": "8eea5f93f8d4169b609cf75c59444cdaa1511a11080913ab99c186fb0bd264f0",
+      "start": 3,
+      "url": "https://github.com/freebsd/drm-kmod/blob/c16de0f9fa84f70b9551f69fde837a7f3a73c0e9/README.md#L3-L53"
+    },
+    "F01": {
+      "end": 125,
+      "folder": "freebsd-14.3-research",
+      "needle": "Redistribution and use",
+      "path": "sys/compat/linuxkpi/common/include/linux/module.h",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "133fe1c1aff9862890241c5aff55bdb46ca00c1cd4376e5959d95d462a16b45f",
+      "start": 8,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/include/linux/module.h#L8-L125"
+    },
+    "F02": {
+      "end": 93,
+      "folder": "freebsd-14.3-research",
+      "needle": "#include <sys/bus.h>",
+      "path": "sys/compat/linuxkpi/common/include/linux/pci.h",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "5d278d62280a8cef8b50caad4c66e4753e01258b7edff49bc2f2c68d5aa85ebc",
+      "start": 42,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/include/linux/pci.h#L42-L93"
+    },
+    "F03": {
+      "end": 218,
+      "folder": "freebsd-14.3-research",
+      "needle": "#include <ck_epoch.h>",
+      "path": "sys/compat/linuxkpi/common/src/linux_rcu.c",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "90d5f53cda6626e1a3be41880c172e5a7dd9875368325548d96981740dcad0d6",
+      "start": 46,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/src/linux_rcu.c#L46-L218"
+    },
+    "F04": {
+      "end": 697,
+      "folder": "freebsd-14.3-research",
+      "needle": "linux_create_workqueue_common(",
+      "path": "sys/compat/linuxkpi/common/src/linux_work.c",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "0fcfaec5dae883d8c885052f0f5c930d58bb34db20d1720a78df854f9e997e2e",
+      "start": 652,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/src/linux_work.c#L652-L697"
+    },
+    "F05": {
+      "end": 77,
+      "folder": "freebsd-14.3-research",
+      "needle": "linux_add_to_sleepqueue(",
+      "path": "sys/compat/linuxkpi/common/src/linux_schedule.c",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "5186ca773576f1d6c49430d9dfca690d7743005f793650999a4ef4ab61b6574c",
+      "start": 43,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/src/linux_schedule.c#L43-L77"
+    },
+    "F06": {
+      "end": 254,
+      "folder": "freebsd-14.3-research",
+      "needle": "linux_dma_tag_init(struct",
+      "path": "sys/compat/linuxkpi/common/src/linux_pci.c",
+      "revision": "833d39bd2e38421a14ea489a956261a0fa993fbc",
+      "sha256": "45d1793c5f4fe2517099d6520812a7081a9abdc7790d15c55a2db7456598c621",
+      "start": 195,
+      "url": "https://github.com/freebsd/freebsd-src/blob/833d39bd2e38421a14ea489a956261a0fa993fbc/sys/compat/linuxkpi/common/src/linux_pci.c#L195-L254"
+    },
+    "L01": {
+      "end": 49,
+      "folder": "linux-v6.14",
+      "needle": "config DRM_XE",
+      "path": "drivers/gpu/drm/xe/Kconfig",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "908f9c20997d8caae1f3483e271744bf5fa02f845c1c06c9d9335590fa11c2ca",
+      "start": 2,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/Kconfig#L2-L49"
+    },
+    "L02": {
+      "end": 132,
+      "folder": "linux-v6.14",
+      "needle": "xe-y += xe_bb.o",
+      "path": "drivers/gpu/drm/xe/Makefile",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "5ed3d5c2721d502c1b471598a2e444c5492d15df46fc29c2ad146d7ab9ed2b0f",
+      "start": 28,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/Makefile#L28-L132"
+    },
+    "L03": {
+      "end": 160,
+      "folder": "linux-v6.14",
+      "needle": "static const struct init_funcs init_funcs[]",
+      "path": "drivers/gpu/drm/xe/xe_module.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "9b2072d220b75e1b55dfe41156ec323d882357796f571b84c975c18d27959666",
+      "start": 84,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_module.c#L84-L160"
+    },
+    "L04": {
+      "end": 914,
+      "folder": "linux-v6.14",
+      "needle": "static int xe_pci_probe(",
+      "path": "drivers/gpu/drm/xe/xe_pci.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "b0af749cf5b239c10426b40365775f81ee0cfa78fa1876ac8a9ce247ea604efc",
+      "start": 790,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pci.c#L790-L914"
+    },
+    "L05": {
+      "end": 1060,
+      "folder": "linux-v6.14",
+      "needle": "static struct pci_driver xe_pci_driver",
+      "path": "drivers/gpu/drm/xe/xe_pci.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "b0af749cf5b239c10426b40365775f81ee0cfa78fa1876ac8a9ce247ea604efc",
+      "start": 1036,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pci.c#L1036-L1060"
+    },
+    "L06": {
+      "end": 742,
+      "folder": "linux-v6.14",
+      "needle": "MACRO__(0x56A0",
+      "path": "include/drm/intel/pciids.h",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "5d00630f56cf93f7d1ae6c8f823901da4f6dbb93b8b7e7b9a4144d63413c575c",
+      "start": 721,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/include/drm/intel/pciids.h#L721-L742"
+    },
+    "L07": {
+      "end": 325,
+      "folder": "linux-v6.14",
+      "needle": "static const struct xe_device_desc dg2_desc",
+      "path": "drivers/gpu/drm/xe/xe_pci.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "b0af749cf5b239c10426b40365775f81ee0cfa78fa1876ac8a9ce247ea604efc",
+      "start": 312,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pci.c#L312-L325"
+    },
+    "L08": {
+      "end": 791,
+      "folder": "linux-v6.14",
+      "needle": "int xe_device_probe(struct",
+      "path": "drivers/gpu/drm/xe/xe_device.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "95954b51c67fa242556a7947dce814756be85a4f2466e0d01eb3afbc43d8bcea",
+      "start": 629,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_device.c#L629-L791"
+    },
+    "L09": {
+      "end": 277,
+      "folder": "linux-v6.14",
+      "needle": "static void xe_file_close(",
+      "path": "drivers/gpu/drm/xe/xe_device.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "95954b51c67fa242556a7947dce814756be85a4f2466e0d01eb3afbc43d8bcea",
+      "start": 146,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_device.c#L146-L277"
+    },
+    "L10": {
+      "end": 853,
+      "folder": "linux-v6.14",
+      "needle": "void xe_device_remove(struct",
+      "path": "drivers/gpu/drm/xe/xe_device.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "95954b51c67fa242556a7947dce814756be85a4f2466e0d01eb3afbc43d8bcea",
+      "start": 801,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_device.c#L801-L853"
+    },
+    "L11": {
+      "end": 174,
+      "folder": "linux-v6.14",
+      "needle": "#define XE_GUC_FIRMWARE_DEFS",
+      "path": "drivers/gpu/drm/xe/xe_uc_fw.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "62461b7527aca258813cf97cecb58e629feff8edf273427100cc2ca4ce4abf7a",
+      "start": 109,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_uc_fw.c#L109-L174"
+    },
+    "L12": {
+      "end": 777,
+      "folder": "linux-v6.14",
+      "needle": "err = request_firmware(",
+      "path": "drivers/gpu/drm/xe/xe_uc_fw.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "62461b7527aca258813cf97cecb58e629feff8edf273427100cc2ca4ce4abf7a",
+      "start": 700,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_uc_fw.c#L700-L777"
+    },
+    "L13": {
+      "end": 220,
+      "folder": "linux-v6.14",
+      "needle": "int xe_uc_init_hw(struct",
+      "path": "drivers/gpu/drm/xe/xe_uc.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "0db26b5d78e3f684452a84459e4c42a1f1b2fe3c2887ff4019d0e8ef6de32fdc",
+      "start": 178,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_uc.c#L178-L220"
+    },
+    "L14": {
+      "end": 304,
+      "folder": "linux-v6.14",
+      "needle": "void xe_uc_stop_prepare",
+      "path": "drivers/gpu/drm/xe/xe_uc.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "0db26b5d78e3f684452a84459e4c42a1f1b2fe3c2887ff4019d0e8ef6de32fdc",
+      "start": 242,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_uc.c#L242-L304"
+    },
+    "L15": {
+      "end": 335,
+      "folder": "linux-v6.14",
+      "needle": "ret = dma_map_sgtable(",
+      "path": "drivers/gpu/drm/xe/xe_bo.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "ecfdb3d09d8bc96875a8c82b06858f936aba6a49063dec11dcb7a85d74408541",
+      "start": 313,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_bo.c#L313-L335"
+    },
+    "L16": {
+      "end": 336,
+      "folder": "linux-v6.14",
+      "needle": "ret = hmm_range_fault(",
+      "path": "drivers/gpu/drm/xe/xe_hmm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "299249231ceb100f0378186cc07fd05a7f67ea389c0f128fd644b31b7fe91ef0",
+      "start": 297,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_hmm.c#L297-L336"
+    },
+    "L17": {
+      "end": 658,
+      "folder": "linux-v6.14",
+      "needle": "static bool vma_userptr_invalidate(",
+      "path": "drivers/gpu/drm/xe/xe_vm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "96365ca5d7d72a057fd93833cc5a729fb9623df485c3898496d3c0980a0a60eb",
+      "start": 627,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_vm.c#L627-L658"
+    },
+    "L18": {
+      "end": 1088,
+      "folder": "linux-v6.14",
+      "needle": "err = mmu_interval_notifier_insert(",
+      "path": "drivers/gpu/drm/xe/xe_vm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "96365ca5d7d72a057fd93833cc5a729fb9623df485c3898496d3c0980a0a60eb",
+      "start": 1046,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_vm.c#L1046-L1088"
+    },
+    "L19": {
+      "end": 354,
+      "folder": "linux-v6.14",
+      "needle": "Point of no return",
+      "path": "drivers/gpu/drm/xe/xe_exec.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "43577f1a6ea08a9a678cbc361f33738389545ea74ffabddf20167cdd1c813ae7",
+      "start": 301,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_exec.c#L301-L354"
+    },
+    "L20": {
+      "end": 1815,
+      "folder": "linux-v6.14",
+      "needle": "int xe_guc_submit_reset_prepare(",
+      "path": "drivers/gpu/drm/xe/xe_guc_submit.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "c1439aae470306f44bca1bd3f35ddaae8b26f1d01ed78631bf074fce6b462d5f",
+      "start": 1730,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_guc_submit.c#L1730-L1815"
+    },
+    "L21": {
+      "end": 789,
+      "folder": "linux-v6.14",
+      "needle": "int xe_irq_install(",
+      "path": "drivers/gpu/drm/xe/xe_irq.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "4fc2d5528ebf0d75f5de96f79466892941a627c4d94d1679531b3d9f4430ace3",
+      "start": 731,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_irq.c#L731-L789"
+    },
+    "L22": {
+      "end": 202,
+      "folder": "linux-v6.14",
+      "needle": "call_rcu(&dma_fence->rcu",
+      "path": "drivers/gpu/drm/xe/xe_hw_fence.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "1ea33331cc129549adbd71fa49c57113450643c0e20d6dec43f6fe98cb24a6ec",
+      "start": 191,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_hw_fence.c#L191-L202"
+    },
+    "L23": {
+      "end": 165,
+      "folder": "linux-v6.14",
+      "needle": "void xe_gt_remove(",
+      "path": "drivers/gpu/drm/xe/xe_gt.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "e08869879e0ee4ee588aea03d08eb41df4d50f5b790afc9a43041572edb19fc2",
+      "start": 151,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_gt.c#L151-L165"
+    },
+    "L24": {
+      "end": 836,
+      "folder": "linux-v6.14",
+      "needle": "static int gt_reset(",
+      "path": "drivers/gpu/drm/xe/xe_gt.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "e08869879e0ee4ee588aea03d08eb41df4d50f5b790afc9a43041572edb19fc2",
+      "start": 768,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_gt.c#L768-L836"
+    },
+    "L25": {
+      "end": 215,
+      "folder": "linux-v6.14",
+      "needle": "int xe_pm_suspend(",
+      "path": "drivers/gpu/drm/xe/xe_pm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "9e8bdb0fb7f43669176d9d04179032d6477752cd9bab7eed3517392dd4a89548",
+      "start": 116,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pm.c#L116-L215"
+    },
+    "L26": {
+      "end": 666,
+      "folder": "linux-v6.14",
+      "needle": "int xe_exec_queue_create_ioctl(",
+      "path": "drivers/gpu/drm/xe/xe_exec_queue.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "6c15cb2265680ee2eec4745798f02b41ab91cb80903396fa08de222ef515543f",
+      "start": 537,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_exec_queue.c#L537-L666"
+    },
+    "L27": {
+      "end": 242,
+      "folder": "linux-v6.14",
+      "needle": "int xe_sync_entry_parse(",
+      "path": "drivers/gpu/drm/xe/xe_sync.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "b289433209cb4e1f4b3bc248e1f72fa5bd81bef93b4781d3220654a0a78aa6a7",
+      "start": 113,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_sync.c#L113-L242"
+    },
+    "L28": {
+      "end": 18,
+      "folder": "linux-v6.14",
+      "needle": "SPDX-License-Identifier",
+      "path": "drivers/gpu/drm/xe/xe_pt_walk.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "2da833b9b1113383ea3afdc4f1bd9d137b5ecf59e0a2e5fc04a946a8bb52ab00",
+      "start": 1,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pt_walk.c#L1-L18"
+    },
+    "L29": {
+      "end": 75,
+      "folder": "linux-v6.14",
+      "needle": "SPDX-License-Identifier",
+      "path": "drivers/gpu/drm/drm_managed.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "a7c3a1a1f7167ddd7b54872b1ecac1b9255259c64cf4bd89d96ca6e56a5e6fbd",
+      "start": 1,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/drm_managed.c#L1-L75"
+    },
+    "L30": {
+      "end": 326,
+      "folder": "linux-v6.14",
+      "needle": "swap_storage = shmem_file_setup(",
+      "path": "drivers/gpu/drm/ttm/ttm_tt.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "b7f3dc64e18767e563b31002bba8d13878233f7cc8e359bfed3cc1071a28847b",
+      "start": 276,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/ttm/ttm_tt.c#L276-L326"
+    },
+    "L31": {
+      "end": 1280,
+      "folder": "linux-v6.14",
+      "needle": "drm_gpuvm_exec_lock(struct",
+      "path": "drivers/gpu/drm/drm_gpuvm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "3283fa63bd5cbff93b5fec8af28b2a0f4fc0703db388cff539cd9319c04eb2a9",
+      "start": 1246,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/drm_gpuvm.c#L1246-L1280"
+    },
+    "L32": {
+      "end": 986,
+      "folder": "linux-v6.14",
+      "needle": "mmu_interval_notifier_remove(",
+      "path": "mm/mmu_notifier.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "f381cd396ca11d670095140d23a5a17441b1171360e10e1fdb98d98523922f17",
+      "start": 912,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/mm/mmu_notifier.c#L912-L986"
+    },
+    "L33": {
+      "end": 27,
+      "folder": "linux-v6.14",
+      "needle": "Copyright 2017 Red Hat",
+      "path": "drivers/gpu/drm/drm_syncobj.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "f4c5501171fab214458e60b6f961acd369aca282fa9747f143164dd549024b06",
+      "start": 2,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/drm_syncobj.c#L2-L27"
+    },
+    "L34": {
+      "end": 35,
+      "folder": "linux-v6.14",
+      "needle": "Copyright",
+      "path": "drivers/gpu/drm/scheduler/sched_main.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "3fad7f9b67295389996b04966e9c2f75eea2c23e237fa763e1ad070990207d2d",
+      "start": 2,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/scheduler/sched_main.c#L2-L35"
+    },
+    "L35": {
+      "end": 332,
+      "folder": "linux-v6.14",
+      "needle": "int dma_map_sgtable(",
+      "path": "kernel/dma/mapping.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "c17b19ab0f7f24b46d6f70a5b271a7a49fe387b82c85cc760162bd6e3263692f",
+      "start": 289,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/kernel/dma/mapping.c#L289-L332"
+    },
+    "L36": {
+      "end": 59,
+      "folder": "linux-v6.14",
+      "needle": "config DRM_AMDGPU",
+      "path": "drivers/gpu/drm/amd/amdgpu/Kconfig",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "420e340479408444412f70b3a77cacff282a868fe2b6c251f72e5d2499bbd305",
+      "start": 3,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/amd/amdgpu/Kconfig#L3-L59"
+    },
+    "L37": {
+      "end": 38,
+      "folder": "linux-v6.14",
+      "needle": "static void print_usage(",
+      "path": "drivers/gpu/drm/xe/xe_gen_wa_oob.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "8f29089827055acdfdc7f50478cf3568dfef9e1d129d022eecbd8a7f072f4175",
+      "start": 31,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_gen_wa_oob.c#L31-L38"
+    },
+    "L38": {
+      "end": 130,
+      "folder": "linux-v6.14",
+      "needle": "#define DRM_XE_DEVICE_QUERY",
+      "path": "include/uapi/drm/xe_drm.h",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "85a0ad07418491af6ed65683d878457ff22f9a4355d6fd96480a914a5dc508c3",
+      "start": 93,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/include/uapi/drm/xe_drm.h#L93-L130"
+    },
+    "L39": {
+      "end": 55,
+      "folder": "linux-v6.14",
+      "needle": "SPDX-License-Identifier",
+      "path": "drivers/gpu/drm/xe/xe_pt.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "bde42cba17212c2a8e93998d07f90645a07b24660c72d6b73b93bce3ad03ad81",
+      "start": 1,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pt.c#L1-L55"
+    },
+    "L40": {
+      "end": 748,
+      "folder": "linux-v6.14",
+      "needle": "guc_exec_queue_run_job(struct",
+      "path": "drivers/gpu/drm/xe/xe_guc_submit.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "c1439aae470306f44bca1bd3f35ddaae8b26f1d01ed78631bf074fce6b462d5f",
+      "start": 711,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_guc_submit.c#L711-L748"
+    },
+    "L41": {
+      "end": 1286,
+      "folder": "linux-v6.14",
+      "needle": "static void __guc_exec_queue_fini_async",
+      "path": "drivers/gpu/drm/xe/xe_guc_submit.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "c1439aae470306f44bca1bd3f35ddaae8b26f1d01ed78631bf074fce6b462d5f",
+      "start": 1239,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_guc_submit.c#L1239-L1286"
+    },
+    "L42": {
+      "end": 125,
+      "folder": "linux-v6.14",
+      "needle": "void xe_hw_fence_irq_finish",
+      "path": "drivers/gpu/drm/xe/xe_hw_fence.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "1ea33331cc129549adbd71fa49c57113450643c0e20d6dec43f6fe98cb24a6ec",
+      "start": 84,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_hw_fence.c#L84-L125"
+    },
+    "L43": {
+      "end": 1860,
+      "folder": "linux-v6.14",
+      "needle": "int xe_vm_create_ioctl(",
+      "path": "drivers/gpu/drm/xe/xe_vm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "96365ca5d7d72a057fd93833cc5a729fb9623df485c3898496d3c0980a0a60eb",
+      "start": 1776,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_vm.c#L1776-L1860"
+    },
+    "L44": {
+      "end": 58,
+      "folder": "linux-v6.14",
+      "needle": "#include <linux",
+      "path": "drivers/gpu/drm/xe/xe_bo.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "ecfdb3d09d8bc96875a8c82b06858f936aba6a49063dec11dcb7a85d74408541",
+      "start": 8,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_bo.c#L8-L58"
+    },
+    "L45": {
+      "end": 53,
+      "folder": "linux-v6.14",
+      "needle": "#include <linux",
+      "path": "drivers/gpu/drm/xe/xe_vm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "96365ca5d7d72a057fd93833cc5a729fb9623df485c3898496d3c0980a0a60eb",
+      "start": 8,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_vm.c#L8-L53"
+    },
+    "L46": {
+      "end": 438,
+      "folder": "linux-v6.14",
+      "needle": "int xe_pm_runtime_suspend(",
+      "path": "drivers/gpu/drm/xe/xe_pm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "9e8bdb0fb7f43669176d9d04179032d6477752cd9bab7eed3517392dd4a89548",
+      "start": 369,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_pm.c#L369-L438"
+    },
+    "L47": {
+      "end": 8,
+      "folder": "linux-v6.14",
+      "needle": "SPDX-License-Identifier",
+      "path": "drivers/gpu/drm/drm_gpuvm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "3283fa63bd5cbff93b5fec8af28b2a0f4fc0703db388cff539cd9319c04eb2a9",
+      "start": 1,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/drm_gpuvm.c#L1-L8"
+    },
+    "L48": {
+      "end": 24,
+      "folder": "linux-v6.14",
+      "needle": "SPDX-License-Identifier",
+      "path": "mm/hmm.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "3731d4e3c23c839ffb64f86528f069f703517811cbb7f27bb5a11d845386a118",
+      "start": 1,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/mm/hmm.c#L1-L24"
+    },
+    "L49": {
+      "end": 1458,
+      "folder": "linux-v6.14",
+      "needle": "int __pci_register_driver(",
+      "path": "drivers/pci/pci-driver.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "bb2147c14f6bf92eb45803078389ba74d7a21ef26edf175b455cc3b04a6cf0a4",
+      "start": 1435,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/pci/pci-driver.c#L1435-L1458"
+    },
+    "L50": {
+      "end": 71,
+      "folder": "linux-v6.14",
+      "needle": "struct xe_modparam xe_modparam",
+      "path": "drivers/gpu/drm/xe/xe_module.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "9b2072d220b75e1b55dfe41156ec323d882357796f571b84c975c18d27959666",
+      "start": 20,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_module.c#L20-L71"
+    },
+    "L51": {
+      "end": 600,
+      "folder": "linux-v6.14",
+      "needle": "int xe_device_probe_early(",
+      "path": "drivers/gpu/drm/xe/xe_device.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "95954b51c67fa242556a7947dce814756be85a4f2466e0d01eb3afbc43d8bcea",
+      "start": 577,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_device.c#L577-L600"
+    },
+    "L52": {
+      "end": 314,
+      "folder": "linux-v6.14",
+      "needle": "int xe_exec_ioctl(",
+      "path": "drivers/gpu/drm/xe/xe_exec.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "43577f1a6ea08a9a678cbc361f33738389545ea74ffabddf20167cdd1c813ae7",
+      "start": 105,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_exec.c#L105-L314"
+    },
+    "L53": {
+      "end": 626,
+      "folder": "linux-v6.14",
+      "needle": "int xe_gt_init_hwconfig(",
+      "path": "drivers/gpu/drm/xe/xe_gt.c",
+      "revision": "38fec10eb60d687e30c8c6b5420d86e8149f7557",
+      "sha256": "e08869879e0ee4ee588aea03d08eb41df4d50f5b790afc9a43041572edb19fc2",
+      "start": 556,
+      "url": "https://github.com/torvalds/linux/blob/38fec10eb60d687e30c8c6b5420d86e8149f7557/drivers/gpu/drm/xe/xe_gt.c#L556-L626"
+    },
+    "M01": {
+      "end": 185,
+      "folder": "mesa/mesa-26.2.4",
+      "needle": "xe_gem_mmap(struct",
+      "path": "src/intel/vulkan/xe/anv_kmd_backend.c",
+      "revision": "mesa-26.2.4",
+      "sha256": "90c62d8fb879a9e4b56bd5237c63dbe981d212b8f0703f53a1d3fab5187edcd1",
+      "start": 148,
+      "url": "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-26.2.4/src/intel/vulkan/xe/anv_kmd_backend.c#L148-185"
+    },
+    "M02": {
+      "end": 337,
+      "folder": "mesa/mesa-26.2.4",
+      "needle": "DRM_IOCTL_XE_VM_BIND",
+      "path": "src/intel/vulkan/xe/anv_kmd_backend.c",
+      "revision": "mesa-26.2.4",
+      "sha256": "90c62d8fb879a9e4b56bd5237c63dbe981d212b8f0703f53a1d3fab5187edcd1",
+      "start": 323,
+      "url": "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-26.2.4/src/intel/vulkan/xe/anv_kmd_backend.c#L323-337"
+    },
+    "M03": {
+      "end": 57,
+      "folder": "mesa/mesa-26.2.4",
+      "needle": "DRM_IOCTL_XE_EXEC",
+      "path": "src/intel/common/xe/intel_queue.c",
+      "revision": "mesa-26.2.4",
+      "sha256": "7ef169a9694a9426313b7dc693c869a150a8c7b10f8525d043deb0091eaa06f8",
+      "start": 38,
+      "url": "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-26.2.4/src/intel/common/xe/intel_queue.c#L38-57"
+    },
+    "M04": {
+      "end": 48,
+      "folder": "mesa/mesa-26.2.4",
+      "needle": "DRM_IOCTL_SYNCOBJ_CREATE",
+      "path": "src/intel/common/intel_bind_timeline.c",
+      "revision": "mesa-26.2.4",
+      "sha256": "1095bfdf4d47af870b30e3543553a2a17a09ce3f17fa6019888efe6836576b1f",
+      "start": 15,
+      "url": "https://gitlab.freedesktop.org/mesa/mesa/-/blob/mesa-26.2.4/src/intel/common/intel_bind_timeline.c#L15-48"
+    },
+    "N01": {
+      "end": 24,
+      "folder": "open-gpu-kernel-modules",
+      "needle": "kernel modules built here must be used",
+      "path": "README.md",
+      "revision": "e4a5faa2567f28c8eabe0ebb6422b6d0abcf37eb",
+      "sha256": "6aeda24d054d9eea8558c94048792e0dcead1635cab652b1cbad23fb50684cf8",
+      "start": 18,
+      "url": "https://github.com/NVIDIA/open-gpu-kernel-modules/blob/e4a5faa2567f28c8eabe0ebb6422b6d0abcf37eb/README.md#L18-L24"
+    },
+    "P01": {
+      "end": 622,
+      "folder": "IOPCIFamily-macos15",
+      "needle": "virtual IOReturn saveDeviceState",
+      "path": "IOKit/pci/IOPCIDevice.h",
+      "revision": "0eeb801b9d471778f5f177bd2e6c395a18f0ad95",
+      "sha256": "7b105e8fd9f9d927e653ef4c87d027a7febd55ac8227220a675943975d27b445",
+      "start": 542,
+      "url": "https://github.com/apple-oss-distributions/IOPCIFamily/blob/0eeb801b9d471778f5f177bd2e6c395a18f0ad95/IOKit/pci/IOPCIDevice.h#L542-L622"
+    },
+    "P02": {
+      "end": 2003,
+      "folder": "IOPCIFamily-macos15",
+      "needle": "IOPCIDevice::handleOpen(",
+      "path": "IOPCIDevice.cpp",
+      "revision": "0eeb801b9d471778f5f177bd2e6c395a18f0ad95",
+      "sha256": "4277be6b7300dd9759f7431a63815a0227afbc7cd880819678344149183b318d",
+      "start": 1919,
+      "url": "https://github.com/apple-oss-distributions/IOPCIFamily/blob/0eeb801b9d471778f5f177bd2e6c395a18f0ad95/IOPCIDevice.cpp#L1919-L2003"
+    },
+    "Q01": {
+      "end": 624,
+      "folder": "IOPCIFamily",
+      "needle": "virtual IOReturn saveDeviceState",
+      "path": "IOKit/pci/IOPCIDevice.h",
+      "revision": "4822b27a36e2de70e231ecf2bf3021384fab6ec2",
+      "sha256": "4199bda0880142f69425f52202394035eb070eb1f5e31018637d5e390007191a",
+      "start": 544,
+      "url": "https://github.com/apple-oss-distributions/IOPCIFamily/blob/4822b27a36e2de70e231ecf2bf3021384fab6ec2/IOKit/pci/IOPCIDevice.h#L544-L624"
+    },
+    "R01": {
+      "end": 1270,
+      "folder": "nvidia-macos-driver",
+      "needle": "_linux_pci_register_driver(struct",
+      "path": "gpu-port/xkpi/override/src/linux_pci.c",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "45d632f324d05ef599c438b45cb4cea1824d45dd1faa94849e2f83b7ef2dd2aa",
+      "start": 1230,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/override/src/linux_pci.c#L1230-L1270"
+    },
+    "R02": {
+      "end": 742,
+      "folder": "nvidia-macos-driver",
+      "needle": "error = pdrv->probe(pdev, id);",
+      "path": "gpu-port/xkpi/override/src/linux_pci.c",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "45d632f324d05ef599c438b45cb4cea1824d45dd1faa94849e2f83b7ef2dd2aa",
+      "start": 733,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/override/src/linux_pci.c#L733-L742"
+    },
+    "R03": {
+      "end": 271,
+      "folder": "nvidia-macos-driver",
+      "needle": "void NMXGPU::stop(",
+      "path": "gpu-port/xkpi/xnu/nmx_kext.cpp",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "1a0e1b1fd5479b2e004e89690606c68b8e18294ce80d09ba988ba8152c5a7e08",
+      "start": 234,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/xnu/nmx_kext.cpp#L234-L271"
+    },
+    "R04": {
+      "end": 488,
+      "folder": "nvidia-macos-driver",
+      "needle": "static int umap_populate(",
+      "path": "gpu-port/xkpi/override/src/nmx_linux_cdev.c",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "ca22a1918d96f09b30337f8a1b7de132b8d14911efc08423b556b1bb87088d8d",
+      "start": 460,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/override/src/nmx_linux_cdev.c#L460-L488"
+    },
+    "R05": {
+      "end": 47,
+      "folder": "nvidia-macos-driver",
+      "needle": "## Tests",
+      "path": "gpu-port/README.md",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "b999a335eabb62c8b5394660aa8e3cc16bebb8483aace53abf9a16991addff42",
+      "start": 31,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/README.md#L31-L47"
+    },
+    "R06": {
+      "end": 293,
+      "folder": "nvidia-macos-driver",
+      "needle": "static void nvmtl_nvenc_register",
+      "path": "plugin/NVMTLDevice.m",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "0c610170b53856da45aa40746fa2979ad1c7246498269ab52979b67b64f3d107",
+      "start": 214,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/plugin/NVMTLDevice.m#L214-L293"
+    },
+    "R07": {
+      "end": 22,
+      "folder": "nvidia-macos-driver",
+      "needle": "# cc.sh",
+      "path": "gpu-port/xkpi/cc.sh",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "4a8432535846ce79e48f29d4da6af5ee402c4a728f31a4bfaac687e277e25101",
+      "start": 2,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/cc.sh#L2-L22"
+    },
+    "R08": {
+      "end": 20,
+      "folder": "nvidia-macos-driver",
+      "needle": "# kext/build.sh",
+      "path": "gpu-port/xkpi/kext/build.sh",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "c6c07184bf6fec420898b1e2ac3545cfbdea336f34a2132ef4938d14297a9133",
+      "start": 2,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/kext/build.sh#L2-L20"
+    },
+    "R09": {
+      "end": 318,
+      "folder": "nvidia-macos-driver",
+      "needle": "struct UserMap",
+      "path": "gpu-port/xkpi/xnu/nmx_devfs.cpp",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "6ae8df4fa6acffa0dd77c92a459bfad811dd7a8c2a6bb6389449ab736c9e8641",
+      "start": 249,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/xkpi/xnu/nmx_devfs.cpp#L249-L318"
+    },
+    "R10": {
+      "end": 117,
+      "folder": "nvidia-macos-driver",
+      "needle": "Not done yet:",
+      "path": "gpu-port/README.md",
+      "revision": "de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66",
+      "sha256": "b999a335eabb62c8b5394660aa8e3cc16bebb8483aace53abf9a16991addff42",
+      "start": 101,
+      "url": "https://github.com/nullmoth/nvidia-macos-driver/blob/de9b33aa98dcb0ba6d5bf624fc3817e4a2d8bd66/gpu-port/README.md#L101-L117"
+    },
+    "X01": {
+      "end": 350,
+      "folder": "xnu-macos15",
+      "needle": "/*! @function setMemoryDescriptor",
+      "path": "iokit/IOKit/IODMACommand.h",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "14cf81900488a4a11e676fc846e5ecf5fc915bbbfe67fcd9cd0ec3a551999e71",
+      "start": 304,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/IOKit/IODMACommand.h#L304-L350"
+    },
+    "X02": {
+      "end": 776,
+      "folder": "xnu-macos15",
+      "needle": "/*! @function prepare",
+      "path": "iokit/IOKit/IOMemoryDescriptor.h",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "501df4524a1e35d680fab5e724a1260ff1a4739b95e557acb237b63c2eccdbfa",
+      "start": 726,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/IOKit/IOMemoryDescriptor.h#L726-L776"
+    },
+    "X03": {
+      "end": 1862,
+      "folder": "xnu-macos15",
+      "needle": "virtual void PMinit",
+      "path": "iokit/IOKit/IOService.h",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "6e9a7915aa9941798bee531f13000e757616daae0aab1e17f0c9213885c7e5f2",
+      "start": 1839,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/IOKit/IOService.h#L1839-L1862"
+    },
+    "X04": {
+      "end": 71,
+      "folder": "xnu-macos15",
+      "needle": "_kernel_thread_start",
+      "path": "config/Mach.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "25848d1a4f1380ca69177f36035b0c7aa7d346e9a3c3f64aba53507fd4c8a981",
+      "start": 23,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/Mach.exports#L23-L71"
+    },
+    "X05": {
+      "end": 752,
+      "folder": "xnu-macos15",
+      "needle": "_copyin",
+      "path": "config/Libkern.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "4a30e36e16c965d7ddfc761cd47e6d54f96ae8d0a78bb7f7014683243cd82386",
+      "start": 691,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/Libkern.exports#L691-L752"
+    },
+    "X06": {
+      "end": 148,
+      "folder": "xnu-macos15",
+      "needle": "_cdevsw_add",
+      "path": "config/BSDKernel.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "6d3c1441dbce51c8a42ebeced0101235ce54f08128ed404ced8071df3ad5ca1a",
+      "start": 105,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/BSDKernel.exports#L105-L148"
+    },
+    "X07": {
+      "end": 189,
+      "folder": "xnu-macos15",
+      "needle": "_get_task_map",
+      "path": "config/Unsupported.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "ebfacb06eba4788f2f845387319d2fb9940e63339394f0f4be563211003d68b4",
+      "start": 85,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/Unsupported.exports#L85-L189"
+    },
+    "X08": {
+      "end": 597,
+      "folder": "xnu-macos15",
+      "needle": "if (vp->v_type == VCHR",
+      "path": "bsd/kern/kern_mman.c",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "6a48f2aabb0c9f71835db0a6ef2c4c3853444665d19a439b510181e943068394",
+      "start": 590,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/bsd/kern/kern_mman.c#L590-L597"
+    },
+    "X09": {
+      "end": 1992,
+      "folder": "xnu-macos15",
+      "needle": "IOUserClient::clientDied",
+      "path": "iokit/Kernel/IOUserClient.cpp",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "b8204ca828cd419e60807a4c2670294aeb1d7e5483c6e852d05c1b11b5b8feed",
+      "start": 1961,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/Kernel/IOUserClient.cpp#L1961-L1992"
+    },
+    "X10": {
+      "end": 925,
+      "folder": "xnu-macos15",
+      "needle": "IODMACommand::prepare(",
+      "path": "iokit/Kernel/IODMACommand.cpp",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "9ae5426721f4251fcca37a44cb99372e02a4a6c445bb7d2034f0a75e3721093b",
+      "start": 836,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/Kernel/IODMACommand.cpp#L836-L925"
+    },
+    "X11": {
+      "end": 5841,
+      "folder": "xnu-macos15",
+      "needle": "IOMemoryDescriptor::createMappingInTask(",
+      "path": "iokit/Kernel/IOMemoryDescriptor.cpp",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "c16133a089fc04d629c8ae85f0d9896a38c615c976ab6f74456631575c1df9ec",
+      "start": 5777,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/Kernel/IOMemoryDescriptor.cpp#L5777-L5841"
+    },
+    "X12": {
+      "end": 3646,
+      "folder": "xnu-macos15",
+      "needle": "IOService::handleOpen(",
+      "path": "iokit/Kernel/IOService.cpp",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "20b213234fc060ee8ffafcbde41a87479058ebb7e9b4e4e5ac173cf2e2d28876",
+      "start": 3612,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/Kernel/IOService.cpp#L3612-L3646"
+    },
+    "X13": {
+      "end": 161,
+      "folder": "xnu-macos15",
+      "needle": "interruptEventSource(",
+      "path": "iokit/IOKit/IOInterruptEventSource.h",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "4d93f783c6693b3b9505edc9e3762a6a367d9836d3b16fb4a0c15ef46951a6c2",
+      "start": 140,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/IOKit/IOInterruptEventSource.h#L140-L161"
+    },
+    "X14": {
+      "end": 347,
+      "folder": "xnu-macos15",
+      "needle": "__ZN12IODMACommand19setMemoryDescriptor",
+      "path": "config/IOKit.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "583729fdb8f58992e356ca19d5b5085abc07c23b57be99b137262c01ee3eae5e",
+      "start": 333,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/IOKit.exports#L333-L347"
+    },
+    "X15": {
+      "end": 376,
+      "folder": "xnu-macos15",
+      "needle": "IOInterruptEventSource::checkForWork",
+      "path": "iokit/Kernel/IOInterruptEventSource.cpp",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "eeb34721f888cc03a24c006b87aa67032473562a4473f118cb94c83650c9d88e",
+      "start": 317,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/iokit/Kernel/IOInterruptEventSource.cpp#L317-L376"
+    },
+    "X16": {
+      "end": 51,
+      "folder": "xnu-macos15",
+      "needle": "__ZN12IODMACommand17withSpecification",
+      "path": "config/IOKit.x86_64.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "2d970900f4eafd2478f825ce7220ad11a8090a46b06af75ab0e3ca695ed0fbbe",
+      "start": 38,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/IOKit.x86_64.exports#L38-L51"
+    },
+    "X17": {
+      "end": 167,
+      "folder": "xnu-macos15",
+      "needle": "_pmap_find_phys",
+      "path": "config/Unsupported.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "ebfacb06eba4788f2f845387319d2fb9940e63339394f0f4be563211003d68b4",
+      "start": 158,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/Unsupported.exports#L158-L167"
+    },
+    "X18": {
+      "end": 768,
+      "folder": "xnu-macos15",
+      "needle": "_lck_mtx_lock",
+      "path": "config/Libkern.exports",
+      "revision": "43a90889846e00bfb5cf1d255cdc0a701a1e05a4",
+      "sha256": "4a30e36e16c965d7ddfc761cd47e6d54f96ae8d0a78bb7f7014683243cd82386",
+      "start": 747,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/43a90889846e00bfb5cf1d255cdc0a701a1e05a4/config/Libkern.exports#L747-L768"
+    },
+    "Y01": {
+      "end": 71,
+      "folder": "xnu",
+      "needle": "_kernel_thread_start",
+      "path": "config/Mach.exports",
+      "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+      "sha256": "25848d1a4f1380ca69177f36035b0c7aa7d346e9a3c3f64aba53507fd4c8a981",
+      "start": 23,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/config/Mach.exports#L23-L71"
+    },
+    "Y02": {
+      "end": 189,
+      "folder": "xnu",
+      "needle": "_get_task_map",
+      "path": "config/Unsupported.exports",
+      "revision": "f6217f891ac0bb64f3d375211650a4c1ff8ca1ea",
+      "sha256": "ebfacb06eba4788f2f845387319d2fb9940e63339394f0f4be563211003d68b4",
+      "start": 85,
+      "url": "https://github.com/apple-oss-distributions/xnu/blob/f6217f891ac0bb64f3d375211650a4c1ff8ca1ea/config/Unsupported.exports#L85-L189"
+    }
+  },
+  "hash_format": "SHA-256 of UTF-8 text with universal newlines normalized to LF",
+  "license_counts": {
+    "GPL-2.0": 8,
+    "GPL-2.0 AND MIT": 13,
+    "GPL-2.0-only": 10,
+    "GPL-2.0-only OR MIT": 1,
+    "MIT": 380,
+    "NO_SPDX": 1
+  }
+}

@@ -98,6 +98,9 @@ RTX 4060 Laptop GPU 已在 Windows 上通过真实计算回读与 64×64 离屏�
 
 ## 规划中的模块（尚未实现）
 
+研究：[固定来源的 LinuxKPI／Darwin 可行性分析](docs/research/linuxkpi/README.md)
+（Linux 6.14 xe／Intel DG2；仅研究，不表示后端迁移或 Darwin GPU 执行已通过）。
+
 逐步实现完整可用的模块，不创建空驱动：
 
 ```text

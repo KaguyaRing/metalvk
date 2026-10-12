@@ -98,6 +98,9 @@ The RTX 4060 Laptop GPU has passed real compute readback and a 64×64 offscreen 
 
 ## Planned modules (not implemented)
 
+Research: [Pinned LinuxKPI/Darwin feasibility study](docs/research/linuxkpi/README.md)
+(Linux 6.14 xe / Intel DG2; research only, no backend migration or Darwin GPU execution claim).
+
 Implement these incrementally as functional modules, rather than empty drivers:
 
 ```text
